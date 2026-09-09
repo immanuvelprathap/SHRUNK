@@ -1,0 +1,2327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.25, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0b1526">
+<title>SHRUNK · dFRAG-Patient Pitch Deck (Flow v9)</title>
+<!--
+================================================================================
+SHRUNK, PREZI-STYLE PITCH FLOW (v9)
+================================================================================
+
+A zoomable "world map" pitch deck. Each <section class="scene"> is one chapter;
+a virtual camera pans / zooms / rotates between them.
+
+STORY ORDER (data-order):
+   1 Prologue       : sovereign intelligence enters the corridor
+   2 Title          : Federated RAG edge clinical intelligence for mental health
+   3 Team           : founder & inventor + team members
+   4 Illustrations  : v6-style flow charts + mission USPs
+   5 Roadmap        : PoC conducted, mental-health LLM next step
+   6 The Ask        : pilots, validation, guidance, mentorship, network
+   7 Summary        : v6-style summary + patient companion app
+   8 Vision         : closing + Export PDF (one-pager generated from this HTML)
+
+HOW TO USE
+----------
+- Position scenes with inline left/top (top-left of a 1600x900 card).
+  data-order = story sequence · data-tilt = resting rotation ·
+  data-zoom = closer camera (1 = fit) · data-title = HUD label.
+- class="a" + style="--i:N" gives staggered entrances.
+- class="count" data-count animates numbers on scene entry.
+- Progress dots, journey path and overview map are auto-generated.
+- Controls: arrows / space / wheel / swipe · O map · F fullscreen.
+
+PAGE-INDEX (bottom progress bar)
+--------------------------------
+- The page-number index (dots + counter) is DRAGGABLE: grab it and drop it
+  anywhere along the screen edge, position persists via localStorage.
+- Double-click it to snap back to the bottom-center default.
+- Per-scene corner number: data-numpos="tl|tr|bl|br" picks the corner.
+
+PDF EXPORT
+----------
+The "Export PDF" button prints a hidden one-page summary (#onepager)
+that only appears in @media print, the PDF is generated from this
+HTML by the browser's "Save as PDF".
+
+GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x3200
+  1 Prologue (900,520)    2 Title (2800,520)       3 Team (4700,520)
+  5 Roadmap  (900,1580)   4 Illustrations (2800,1580)
+  6 Ask      (900,2640)   7 Summary (2800,2640)    8 Vision (4700,2640)
+================================================================================
+-->
+<style>
+    /* ============================= THEMES ============================= */
+    :root {
+        --radius: 40px;
+        --font: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+        --cam-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    body.theme-midnight {
+        --bg: #04070f; --bg-2: #0a1120;
+        --surface: rgba(13, 22, 40, 0.9); --surface-solid: #0d1628;
+        --surface-soft: rgba(148, 163, 184, 0.07);
+        --text: #f1f5f9; --text-muted: #93a4bc;
+        --primary: #38bdf8; --primary-2: #818cf8; --accent: #2dd4bf;
+        --gold: #f5b15c; --risk: #f87171;
+        --line: rgba(148, 163, 184, 0.16); --line-strong: rgba(148, 163, 184, 0.28);
+        --hud-bg: rgba(10, 17, 32, 0.78);
+        --shadow: 0 40px 90px -20px rgba(0, 0, 0, 0.65);
+        --grid-line: rgba(255, 255, 255, 0.028);
+        --art-sky1: #000; --art-sky2: #141a24; --art-sky3: #232a36;
+        --art-gnd: #0a0d13; --art-bld: #10151e; --art-fig: #020409;
+        color-scheme: dark;
+    }
+
+    body.theme-clinical {
+        --bg: #eef3f9; --bg-2: #dde7f2;
+        --surface: rgba(255, 255, 255, 0.94); --surface-solid: #ffffff;
+        --surface-soft: rgba(15, 23, 42, 0.045);
+        --text: #0e1a2b; --text-muted: #5b6b82;
+        --primary: #2563eb; --primary-2: #4f46e5; --accent: #0d9488;
+        --gold: #d97706; --risk: #dc2626;
+        --line: rgba(15, 23, 42, 0.12); --line-strong: rgba(15, 23, 42, 0.22);
+        --hud-bg: rgba(255, 255, 255, 0.85);
+        --shadow: 0 40px 80px -24px rgba(15, 23, 42, 0.28);
+        --grid-line: rgba(15, 23, 42, 0.05);
+        --art-sky1: #dfe7f0; --art-sky2: #cdd8e4; --art-sky3: #b8c6d6;
+        --art-gnd: #c3cfdd; --art-bld: #a9b8c9; --art-fig: #2c3849;
+        color-scheme: light;
+    }
+
+    body.theme-teal {
+        --bg: #021313; --bg-2: #062626;
+        --surface: rgba(8, 42, 42, 0.9); --surface-solid: #0a2e2e;
+        --surface-soft: rgba(153, 246, 228, 0.06);
+        --text: #ecfdfb; --text-muted: #8fbdb5;
+        --primary: #34d399; --primary-2: #2dd4bf; --accent: #22d3ee;
+        --gold: #fbbf24; --risk: #fb7185;
+        --line: rgba(153, 246, 228, 0.14); --line-strong: rgba(153, 246, 228, 0.26);
+        --hud-bg: rgba(6, 38, 38, 0.8);
+        --shadow: 0 40px 90px -20px rgba(0, 0, 0, 0.6);
+        --grid-line: rgba(153, 246, 228, 0.03);
+        --art-sky1: #000; --art-sky2: #0c2424; --art-sky3: #123333;
+        --art-gnd: #081c1c; --art-bld: #0d2828; --art-fig: #02100f;
+        color-scheme: dark;
+    }
+
+    body.theme-warm {
+        --bg: #160c07; --bg-2: #241209;
+        --surface: rgba(43, 24, 13, 0.92); --surface-solid: #2e1a0e;
+        --surface-soft: rgba(251, 191, 36, 0.06);
+        --text: #fdf3e7; --text-muted: #c9a587;
+        --primary: #fb923c; --primary-2: #f472b6; --accent: #facc15;
+        --gold: #f5b15c; --risk: #f87171;
+        --line: rgba(251, 191, 36, 0.16); --line-strong: rgba(251, 191, 36, 0.3);
+        --hud-bg: rgba(36, 18, 9, 0.8);
+        --shadow: 0 40px 90px -20px rgba(0, 0, 0, 0.6);
+        --grid-line: rgba(251, 191, 36, 0.035);
+        --art-sky1: #0a0503; --art-sky2: #1c1009; --art-sky3: #2a1a0f;
+        --art-gnd: #140b06; --art-bld: #1e1208; --art-fig: #080402;
+        color-scheme: dark;
+    }
+
+    /* ============================= BASE ============================= */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+        width: 100%; height: 100%;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        -webkit-font-smoothing: antialiased;
+    }
+
+    button { font-family: inherit; }
+
+    #viewport {
+        position: fixed; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        background: var(--bg);
+        overflow: hidden;
+    }
+
+    #stage {
+        position: relative;
+        width: 100vw; height: 56.25vw;
+        max-height: 100vh; max-width: 177.78vh;
+        overflow: hidden;
+        background: var(--bg-2);
+    }
+
+    #stage::after {
+        content: '';
+        position: absolute; inset: 0;
+        background: radial-gradient(ellipse at center, transparent 62%, rgba(0,0,0,0.28) 100%);
+        pointer-events: none;
+        z-index: 40;
+    }
+
+    #world {
+        position: absolute; left: 0; top: 0;
+        width: 5600px; height: 3200px;
+        transform-origin: 0 0;
+        will-change: transform;
+        transition: transform 0.95s var(--cam-ease);
+    }
+
+    .world-bg {
+        position: absolute; inset: -1600px;
+        background:
+            radial-gradient(circle at 30% 25%, color-mix(in srgb, var(--primary) 9%, transparent) 0%, transparent 42%),
+            radial-gradient(circle at 72% 78%, color-mix(in srgb, var(--accent) 8%, transparent) 0%, transparent 42%),
+            radial-gradient(circle at 50% 50%, var(--bg-2) 0%, var(--bg) 75%);
+    }
+
+    .world-grid {
+        position: absolute; inset: -1600px;
+        background-image:
+            linear-gradient(var(--grid-line) 1px, transparent 1px),
+            linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+        background-size: 140px 140px;
+        pointer-events: none;
+    }
+
+    .star { position: absolute; border-radius: 50%; background: var(--text); pointer-events: none; }
+
+    #flowpath { position: absolute; left: 0; top: 0; overflow: visible; z-index: 1; pointer-events: none; }
+    #flowpath path {
+        fill: none; stroke: var(--line-strong); stroke-width: 5;
+        stroke-linecap: round; stroke-dasharray: 4 34;
+        animation: march 2.6s linear infinite;
+    }
+    @keyframes march { to { stroke-dashoffset: -38; } }
+
+    /* ============================= SCENES ============================= */
+    .scene {
+        position: absolute;
+        width: 1600px; height: 900px;
+        transform: rotate(var(--tilt, 0deg));
+        transform-origin: center;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 60px 76px;
+        display: flex; flex-direction: column;
+        overflow: hidden;
+        z-index: 2;
+        backface-visibility: hidden;
+    }
+    .scene::before {
+        content: '';
+        position: absolute; top: 0; left: 8%; right: 8%;
+        height: 3px; border-radius: 3px;
+        background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        opacity: 0; transition: opacity 0.6s;
+    }
+    .scene.active::before { opacity: 0.9; }
+
+    .scene--bare { background: transparent; border: none; box-shadow: none; }
+    .scene--bare::before { display: none; }
+
+    .scene-num {
+        position: absolute; top: 40px; right: 56px;
+        font-size: 30px; font-weight: 800; letter-spacing: 0.08em;
+        color: var(--text); opacity: 0.14;
+    }
+    /* data-numpos lets each scene place its index in any corner */
+    .scene[data-numpos="tl"] .scene-num { top: 40px; left: 56px; right: auto; bottom: auto; }
+    .scene[data-numpos="tr"] .scene-num { top: 40px; right: 56px; left: auto; bottom: auto; }
+    .scene[data-numpos="bl"] .scene-num { bottom: 40px; left: 56px; right: auto; top: auto; }
+    .scene[data-numpos="br"] .scene-num { bottom: 40px; right: 56px; left: auto; top: auto; }
+
+    .scene-foot {
+        margin-top: auto;
+        display: flex; align-items: center; justify-content: space-between;
+        font-size: 19px; color: var(--text-muted);
+        letter-spacing: 0.06em; text-transform: uppercase;
+        padding-top: 24px; border-top: 1px solid var(--line);
+    }
+
+    /* iOS pseudo-fullscreen: iPhone Safari has no Fullscreen API, so we pin
+       the viewport over the whole screen instead */
+    body.ios-fs { overflow: hidden; }
+    body.ios-fs #viewport {
+        position: fixed; inset: 0; z-index: 99999;
+        width: 100vw; height: 100vh; height: 100dvh;
+    }
+    /* fill the whole phone screen during fullscreen / pseudo-fullscreen */
+    body.ios-fs #stage,
+    :root:fullscreen #stage,
+    :root:-webkit-full-screen #stage {
+        width: 100% !important; height: 100% !important;
+        max-width: none !important; max-height: none !important;
+    }
+
+    #world.overview .scene { cursor: pointer; }
+    #world.overview .scene:hover {
+        outline: 3px solid var(--accent);
+        outline-offset: 5px;
+    }
+    #world.overview .scene .a {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    /* Freeze decorative animation in map view, prevents repaint flicker */
+    #world.overview .scene,
+    #world.overview .scene *,
+    #world.overview .scene *::before,
+    #world.overview .scene *::after,
+    #world.overview .scene::before,
+    #world.overview #flowpath path {
+        animation-play-state: paused !important;
+        transition: none !important;
+    }
+    /* Flicker hardening: cheap shadows + drop GPU-heavy filter layers in overview */
+    #world.overview .scene {
+        box-shadow: 0 16px 44px -16px rgba(0,0,0,0.5) !important;
+    }
+    #world.overview .grain-layer { display: none !important; }
+    #world.overview .intro-art { filter: none; }
+    #world.overview .story, #world.overview .card { box-shadow: none; }
+    /* Map view: children stay inert, only the whole scene is hoverable.
+       Stops card/tooltip transforms from glitching inside the scaled world. */
+    #world.overview .scene * { pointer-events: none !important; }
+    #world.overview .illus-tip { display: none !important; }
+    #world.overview .card:hover,
+    #world.overview .illus:hover,
+    #world.overview .phase:hover,
+    #world.overview .ask-card:hover,
+    #world.overview .pill:hover,
+    #world.overview .btn:hover,
+    #world.overview .drive-link:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+
+    /* ======================= ENTRANCE ANIMATIONS ====================== */
+    /* transform (not `translate`) for compatibility with older Safari/iOS */
+    .scene .a {
+        opacity: 0;
+        transform: translateY(34px);
+        transition: opacity 0.55s ease, transform 0.55s var(--cam-ease);
+        transition-delay: 0s;
+    }
+    .scene.active .a {
+        opacity: 1;
+        transform: translateY(0);
+        transition-delay: calc(0.4s + var(--i, 0) * 0.09s);
+    }
+
+    /* ========================= TYPOGRAPHY ============================ */
+    .kicker {
+        display: inline-flex; align-items: center; gap: 14px;
+        font-size: 20px; font-weight: 700;
+        letter-spacing: 0.22em; text-transform: uppercase;
+        color: var(--accent); margin-bottom: 20px;
+    }
+    .kicker::before { content: ''; width: 44px; height: 3px; background: var(--accent); border-radius: 2px; }
+    .kicker--center { justify-content: center; }
+    .kicker--center::after { content: ''; width: 44px; height: 3px; background: var(--accent); border-radius: 2px; }
+
+    h1 {
+        font-size: 118px; font-weight: 800; line-height: 1.02; letter-spacing: -0.03em;
+        background: linear-gradient(120deg, var(--text) 20%, var(--primary) 60%, var(--accent));
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    h2 { font-size: 56px; font-weight: 800; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 18px; }
+    h2 .hl { color: var(--accent); }
+
+    .lede { font-size: 26px; line-height: 1.5; color: var(--text-muted); max-width: 1150px; }
+    .lede strong { color: var(--text); font-weight: 600; }
+
+    /* ========================== COMPONENTS =========================== */
+    .grid { display: grid; gap: 28px; }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+    .card {
+        background: var(--surface-soft); border: 1px solid var(--line);
+        border-radius: 24px; padding: 30px 28px;
+        transition: transform 0.35s var(--cam-ease), border-color 0.35s;
+    }
+    .card:hover { transform: translateY(-8px); border-color: var(--line-strong); }
+
+    .stat-num {
+        font-size: 60px; font-weight: 800; letter-spacing: -0.02em; line-height: 1;
+        color: var(--primary); font-variant-numeric: tabular-nums;
+    }
+    .stat-label { margin-top: 12px; font-size: 19px; line-height: 1.4; color: var(--text-muted); }
+
+    .pill {
+        display: inline-flex; align-items: center; gap: 12px;
+        padding: 14px 24px; border-radius: 999px;
+        background: var(--surface-soft); border: 1px solid var(--line);
+        font-size: 20px; font-weight: 600; color: var(--text);
+        transition: transform 0.3s var(--cam-ease), border-color 0.3s;
+    }
+    .pill:hover { transform: translateY(-4px); border-color: var(--accent); }
+    .pill .dotmark { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 14px var(--accent); }
+
+    .btn {
+        display: inline-flex; align-items: center; gap: 14px;
+        padding: 22px 44px; border-radius: 18px;
+        font-size: 24px; font-weight: 700; text-decoration: none;
+        cursor: pointer; border: none;
+        transition: transform 0.25s var(--cam-ease), box-shadow 0.25s;
+    }
+    .btn-primary {
+        background: linear-gradient(120deg, var(--primary), var(--accent));
+        color: #04121a;
+        box-shadow: 0 18px 46px -10px color-mix(in srgb, var(--primary) 45%, transparent);
+    }
+    .btn-primary:hover { transform: translateY(-4px) scale(1.02); }
+    .btn-ghost { background: transparent; color: var(--text); border: 2px solid var(--line-strong); }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    .quote {
+        margin-top: 34px;
+        padding: 28px 40px;
+        border-left: 6px solid var(--accent);
+        background: var(--surface-soft);
+        border-radius: 0 24px 24px 0;
+        font-size: 27px; line-height: 1.45; font-weight: 500; color: var(--text);
+    }
+    .quote em { color: var(--accent); font-style: normal; }
+
+    /* ============================ INTRO ============================== */
+    .scene--intro { padding: 0; background: #000; border-color: rgba(255,255,255,0.08); }
+    .intro-art { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .intro-copy {
+        position: absolute; inset: 0;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: flex-end;
+        text-align: center;
+        padding: 60px 70px 54px;
+        background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, transparent 32%, transparent 55%, rgba(0,0,0,0.88) 100%);
+    }
+    .intro-kicker {
+        font-size: 19px; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase;
+        color: #9a9a9a; margin-bottom: 18px;
+    }
+    .intro-h {
+        font-size: 58px; font-weight: 800; line-height: 1.12; letter-spacing: -0.02em;
+        color: #f2f2f2; max-width: 1150px; text-shadow: 0 6px 40px rgba(0,0,0,0.9);
+    }
+    .intro-h .dim { color: #8f8f8f; }
+    .intro-sub { margin-top: 20px; font-size: 23px; line-height: 1.5; color: #b5b5b5; max-width: 980px; }
+    .intro-sub em { color: #fff; font-style: normal; font-weight: 700; }
+    .intro-next {
+        margin-top: 34px; font-size: 17px; letter-spacing: 0.2em; text-transform: uppercase;
+        color: #8a8a8a; animation: hintPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes hintPulse { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
+    .intro-beam { transform-origin: 1290px 620px; transform-box: view-box; animation: beamSway 8s ease-in-out infinite; }
+    @keyframes beamSway { 0%,100% { opacity: 0.5; transform: rotate(-1.5deg); } 50% { opacity: 0.95; transform: rotate(2deg); } }
+    .intro-door { animation: doorGlow 6s ease-in-out infinite; }
+    @keyframes doorGlow { 0%,100% { opacity: 0.55; } 50% { opacity: 0.95; } }
+    .intro-fig { animation: figBreathe 7s ease-in-out infinite; }
+    @keyframes figBreathe { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+    /* ======================= CASE-STUDY STORYBOARD ==================== */
+    .case-tag {
+        display: inline-flex; align-items: center; gap: 12px;
+        align-self: flex-start;
+        font-size: 16px; font-weight: 700;
+        letter-spacing: 0.2em; text-transform: uppercase;
+        color: var(--gold);
+        background: color-mix(in srgb, var(--gold) 10%, transparent);
+        border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent);
+        padding: 9px 18px; border-radius: 999px;
+        margin-bottom: 14px;
+    }
+
+    .story {
+        margin: 14px 0 8px;
+        border-radius: 26px; overflow: hidden;
+        border: 1px solid var(--line);
+        background: var(--surface-solid);
+        position: relative; flex-shrink: 0;
+    }
+    .story svg { display: block; width: 100%; height: auto; }
+    .story-cap {
+        position: absolute; left: 26px; bottom: 18px;
+        font-size: 16px; font-weight: 600;
+        letter-spacing: 0.08em; text-transform: uppercase;
+        color: var(--text-muted);
+        background: var(--hud-bg);
+        padding: 7px 16px; border-radius: 999px;
+        border: 1px solid var(--line);
+    }
+
+    .u-sky1 { fill: var(--art-sky1); } .u-sky2 { fill: var(--art-sky2); } .u-sky3 { fill: var(--art-sky3); }
+    .u-gnd  { fill: var(--art-gnd); }  .u-bld  { fill: var(--art-bld); }  .u-fig  { fill: var(--art-fig); }
+    .u-ink  { fill: var(--text); }     .u-mut  { fill: var(--text-muted); }
+    .u-acc  { fill: var(--accent); }   .u-pri  { fill: var(--primary); }
+    .u-gold { fill: var(--gold); }     .u-risk { fill: var(--risk); }
+    .u-surf { fill: var(--surface-solid); }
+    .u-soft { fill: var(--surface-soft); }
+    .s-thin { stroke: var(--line-strong); fill: none; }
+    .s-good { stroke: var(--accent); fill: none; stroke-linecap: round; }
+    .s-bad  { stroke: var(--risk); fill: none; stroke-linecap: round; }
+    .s-dash { stroke-dasharray: 12 14; animation: storyDash 2.4s linear infinite; }
+    @keyframes storyDash { to { stroke-dashoffset: -40; } }
+    .f-float  { animation: floatY 5.5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    .f-float2 { animation: floatY 7s ease-in-out -2.4s infinite; transform-box: fill-box; transform-origin: center; }
+    .f-pulse  { animation: softPulse 3.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    @keyframes floatY { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-10px) rotate(3deg); } }
+    @keyframes softPulse { 0%,100% { opacity: 0.72; } 50% { opacity: 1; } }
+
+    /* Vision slide: patient app + clinician orbit the airlock */
+    .orbit-left  { animation: orbitL 14s linear infinite; }
+    .orbit-right { animation: orbitR 14s linear -7s infinite; }
+    .counter-left, .counter-right { animation: counterOrbit 14s linear infinite; }
+    @keyframes orbitL  { from { transform: rotate(0deg); }   to { transform: rotate(360deg); } }
+    @keyframes orbitR  { from { transform: rotate(180deg); } to { transform: rotate(540deg); } }
+    @keyframes counterOrbit { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+
+    .flow-caps { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
+    .flow-cap { display: inline-flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; color: var(--text); }
+    .flow-cap .cdot { width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 12px currentColor; }
+    .flow-arrow { color: var(--text-muted); font-size: 22px; }
+
+    /* ================== ILLUSTRATION PANELS (hover captions) ======== */
+    .illus-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; flex: 1; margin-top: 18px; align-items: stretch; }
+    .illus {
+        display: flex; flex-direction: column;
+        border-radius: 26px; overflow: hidden;
+        border: 1px solid var(--line);
+        background: var(--surface-solid);
+        transition: transform 0.35s var(--cam-ease), border-color 0.35s;
+    }
+    .illus:hover { transform: translateY(-8px); border-color: var(--line-strong); }
+    .illus svg { display: block; width: 100%; height: auto; flex: 1; }
+    .illus-cap {
+        position: relative;
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+        padding: 16px 18px; border-top: 1px solid var(--line);
+        font-size: 18px; font-weight: 700; color: var(--text);
+        cursor: help; text-align: center;
+    }
+    .illus-cap .info {
+        width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 13px; font-weight: 800; font-style: normal;
+        border: 1.5px solid var(--accent); color: var(--accent);
+    }
+    /* hover-readable subtitle */
+    .illus-tip {
+        position: absolute; left: 50%; bottom: calc(100% + 10px);
+        transform: translateX(-50%) translateY(6px);
+        width: 300px; padding: 14px 18px; border-radius: 14px;
+        background: var(--hud-bg); border: 1px solid var(--line-strong);
+        -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+        font-size: 15px; font-weight: 500; line-height: 1.45; color: var(--text);
+        text-align: left; pointer-events: none;
+        opacity: 0; transition: opacity 0.25s, transform 0.25s var(--cam-ease);
+        z-index: 20;
+    }
+    .illus-tip::after {
+        content: ''; position: absolute; top: 100%; left: 50%;
+        transform: translateX(-50%);
+        border: 7px solid transparent; border-top-color: var(--line-strong);
+    }
+    .illus-cap:hover .illus-tip { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ================== ROADMAP PHASE TILES (business cards) ======== */
+    .phase-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; margin-top: 30px; }
+    .phase {
+        position: relative; cursor: help;
+        background: var(--surface-soft); border: 1px solid var(--line);
+        border-radius: 26px; padding: 30px 26px;
+        transition: transform 0.35s var(--cam-ease), border-color 0.35s, box-shadow 0.35s;
+    }
+    .phase:hover {
+        transform: translateY(-10px);
+        border-color: var(--accent);
+        box-shadow: 0 24px 50px -18px color-mix(in srgb, var(--accent) 40%, transparent);
+    }
+    .phase:hover .illus-tip { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .phase .ph-n {
+        width: 52px; height: 52px; border-radius: 16px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 22px; font-weight: 800; margin-bottom: 16px;
+        background: var(--surface-solid); border: 2px solid var(--line-strong);
+        color: var(--accent);
+    }
+    .phase.done .ph-n { border-color: var(--accent); box-shadow: 0 0 28px -6px var(--accent); }
+    .phase h3 { font-size: 23px; margin-bottom: 6px; }
+    .phase .ph-tag {
+        font-size: 13px; font-weight: 700; letter-spacing: 0.14em;
+        text-transform: uppercase; color: var(--text-muted);
+    }
+
+    /* ===================== THE ASK - polished cards ================= */
+    .ask-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; margin-top: 34px; flex: 1; align-content: stretch; }
+    .ask-card {
+        position: relative; text-align: center;
+        background: var(--surface-soft); border: 1px solid var(--line);
+        border-radius: 30px; padding: 52px 26px 44px;
+        display: flex; flex-direction: column; justify-content: center;
+        min-height: 330px;
+        overflow: hidden;
+        transition: transform 0.35s var(--cam-ease), border-color 0.35s, box-shadow 0.35s;
+    }
+    .ask-card::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        opacity: 0.85;
+    }
+    .ask-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--accent);
+        box-shadow: 0 26px 56px -18px color-mix(in srgb, var(--primary) 45%, transparent);
+    }
+    .ask-ico {
+        width: 96px; height: 96px; margin: 0 auto 22px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; font-size: 44px;
+        background: var(--surface-solid); border: 1px solid var(--line-strong);
+        box-shadow: 0 0 0 10px var(--surface-soft);
+    }
+    .ask-card h3 { font-size: 27px; margin-bottom: 10px; }
+    .ask-card p { font-size: 18px; color: var(--text-muted); line-height: 1.55; }
+
+    /* ===================== MINI STEPS (core principle) ================ */
+    .steps-mini { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin-top: 14px; }
+    .step-mini { display: flex; gap: 14px; align-items: flex-start; }
+    .step-mini .n {
+        width: 44px; height: 44px; flex-shrink: 0; border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px; font-weight: 800;
+        background: var(--surface-solid); border: 2px solid var(--line-strong);
+        color: var(--accent);
+    }
+    .step-mini h3 { font-size: 20px; margin-bottom: 4px; }
+    .step-mini p { font-size: 16px; color: var(--text-muted); line-height: 1.4; }
+
+    /* ============================ TEAM =============================== */
+    .person { text-align: center; }
+    .avatar {
+        width: 140px; height: 140px; margin: 0 auto 22px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 52px; font-weight: 800; color: #04121a;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        box-shadow: 0 20px 50px -12px color-mix(in srgb, var(--primary) 40%, transparent);
+        overflow: hidden;
+    }
+    .avatar { position: relative; }
+    .avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    .person h3 { font-size: 28px; }
+    .person .role {
+        font-size: 17px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+        color: var(--accent); margin: 8px 0 12px;
+    }
+    .person p { font-size: 18px; color: var(--text-muted); line-height: 1.5; }
+    .person .credit { font-size: 15px; color: var(--gold); margin-top: 8px; font-style: italic; }
+    .drive-link {
+        display: inline-flex; align-items: center; gap: 10px;
+        margin-top: 22px; font-size: 17px; font-weight: 600;
+        color: var(--primary); text-decoration: none;
+        border-bottom: 1px dashed var(--line-strong); padding-bottom: 3px;
+    }
+    .drive-link:hover { color: var(--accent); }
+
+    /* ========================== MARKET =============================== */
+    .market-wrap { display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center; flex: 1; }
+    .circles { position: relative; height: 520px; }
+    .circ { position: absolute; border-radius: 50%; border: 2px solid; animation: floaty2 7s ease-in-out infinite; }
+    .circ-tam { width: 500px; height: 500px; left: 0; top: 10px; border-color: color-mix(in srgb, var(--primary) 45%, transparent); background: color-mix(in srgb, var(--primary) 7%, transparent); }
+    .circ-sam { width: 330px; height: 330px; left: 85px; top: 95px; border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: color-mix(in srgb, var(--accent) 9%, transparent); animation-delay: -2.2s; }
+    .circ-som { width: 175px; height: 175px; left: 162px; top: 172px; border-color: var(--gold); background: color-mix(in srgb, var(--gold) 14%, transparent); animation-delay: -4.4s; }
+    @keyframes floaty2 { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    .circ-tag {
+        position: absolute; font-size: 18px; font-weight: 700; letter-spacing: 0.08em;
+        padding: 7px 16px; border-radius: 999px;
+        background: var(--surface-solid); border: 1px solid var(--line-strong);
+        white-space: nowrap;
+    }
+    .market-list { display: flex; flex-direction: column; gap: 24px; }
+    .market-item { display: flex; gap: 20px; align-items: flex-start; }
+    .market-item .mi {
+        width: 52px; height: 52px; flex-shrink: 0; border-radius: 16px;
+        display: flex; align-items: center; justify-content: center; font-size: 24px;
+        background: var(--surface-soft); border: 1px solid var(--line);
+    }
+    .market-item h3 { font-size: 24px; margin-bottom: 5px; }
+    .market-item p { font-size: 19px; color: var(--text-muted); line-height: 1.45; }
+
+    /* ========================== ROADMAP ============================== */
+    .roadmap { position: relative; margin-top: 40px; }
+    .roadmap-track {
+        position: absolute; top: 24px; left: 4%; right: 4%;
+        height: 6px; border-radius: 4px; background: var(--line); overflow: hidden;
+    }
+    .roadmap-track::before {
+        content: ''; position: absolute; inset: 0; width: 38%; border-radius: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    .roadmap-track::after {
+        content: ''; position: absolute; top: 0; bottom: 0; left: 30%; width: 14%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+        animation: shimmer 2.6s ease-in-out infinite;
+    }
+    @keyframes shimmer { 0% { left: -14%; } 100% { left: 104%; } }
+    .milestones { display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; }
+    .milestone { text-align: center; }
+    .m-dot {
+        width: 54px; height: 54px; margin: 0 auto 20px; border-radius: 50%;
+        background: var(--surface-solid); border: 3px solid var(--line-strong);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 22px; font-weight: 800; color: var(--text-muted);
+        position: relative; z-index: 1;
+    }
+    .milestone.done .m-dot { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 30px -4px var(--accent); }
+    .milestone h3 { font-size: 23px; margin-bottom: 4px; }
+    .milestone .when { font-size: 16px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .milestone p { font-size: 18px; color: var(--text-muted); line-height: 1.45; }
+
+    /* ========================== HERO MARK ============================ */
+    .mark { position: relative; width: 170px; height: 170px; margin-bottom: 32px; }
+    .mark-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--accent); animation: ripple 3s ease-out infinite; opacity: 0; }
+    .mark-ring:nth-child(2) { animation-delay: 1s; }
+    .mark-ring:nth-child(3) { animation-delay: 2s; }
+    @keyframes ripple { 0% { transform: scale(0.55); opacity: 0.8; } 100% { transform: scale(1.35); opacity: 0; } }
+    .mark-core {
+        position: absolute; inset: 22%; border-radius: 32%;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 0 80px -10px var(--accent);
+    }
+    .mark-core svg { width: 60%; height: 60%; }
+    .name-credit { font-size: 15px; color: var(--gold); margin-top: 20px; font-style: italic; opacity: 0.85; }
+
+    /* ============================== HUD ============================== */
+    #hud { position: absolute; inset: 0; pointer-events: none; z-index: 100; font-family: var(--font); }
+    #brand {
+        position: absolute; top: 22px; left: 26px;
+        font-size: 14px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+        color: var(--text-muted); opacity: 0.75;
+    }
+    /* Vertical map-view tag, clean space on the left edge, no text overlap */
+    #overviewTag {
+        position: absolute; left: 14px; top: 50%;
+        transform: translateY(-50%);
+        writing-mode: vertical-rl; text-orientation: mixed;
+        font-size: 13px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+        color: var(--accent);
+        background: var(--hud-bg); border: 1px solid var(--line);
+        padding: 22px 10px; border-radius: 14px;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        opacity: 0; transition: opacity 0.4s;
+        pointer-events: none; white-space: nowrap;
+        z-index: 110;
+    }
+    body.overview-mode #overviewTag { opacity: 1; }
+    body.overview-mode #hint { opacity: 0 !important; }
+
+    #controls {
+        position: absolute; top: 18px; right: 20px;
+        display: flex; gap: 10px; pointer-events: auto; align-items: center;
+    }
+    .hud-btn {
+        width: 44px; height: 44px; border-radius: 50%;
+        background: var(--hud-bg); border: 1px solid var(--line);
+        color: var(--text); font-size: 18px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        transition: transform 0.2s, border-color 0.2s;
+    }
+    .hud-btn:hover { transform: scale(1.1); border-color: var(--accent); }
+    .hud-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .theme-switcher { position: relative; }
+    .theme-menu {
+        position: absolute; top: 54px; right: 0;
+        background: var(--hud-bg); border: 1px solid var(--line);
+        border-radius: 16px; padding: 8px;
+        display: none; flex-direction: column; gap: 4px; min-width: 170px;
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+    }
+    .theme-menu.open { display: flex; }
+    .theme-option {
+        background: transparent; border: none; color: var(--text);
+        padding: 10px 14px; border-radius: 10px; cursor: pointer;
+        text-align: left; font-size: 14px; transition: background 0.2s;
+    }
+    .theme-option:hover { background: var(--surface-soft); }
+    .theme-option.active { color: var(--accent); font-weight: 700; }
+
+    #progress {
+        position: absolute; bottom: 22px; left: 50%;
+        transform: translateX(-50%);
+        display: flex; gap: 9px; align-items: center;
+        background: var(--hud-bg); border: 1px solid var(--line);
+        border-radius: 999px; padding: 12px 20px;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        pointer-events: auto; max-width: 90vw;
+        cursor: grab; touch-action: none; user-select: none;
+    }
+    #progress.dragging { cursor: grabbing; border-color: var(--accent); transition: none; }
+    #progress .progress-toggle {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 18px; height: 18px; border-radius: 50%; border: none;
+        background: var(--line-strong); color: var(--text);
+        font: 700 11px/1 Inter, sans-serif; cursor: pointer;
+        margin-left: 6px; flex-shrink: 0; padding: 0;
+    }
+    #progress .progress-toggle:hover { background: var(--accent); color: #04121a; }
+    #progress.collapsed {
+        padding: 10px 14px; gap: 6px; opacity: 0.85;
+    }
+    #progress.collapsed .frame-dot { display: none; }
+    #progress.collapsed .frame-dot.active { display: inline-block; }
+    #progress.collapsed .progress-meta { margin-left: 0; }
+    #progress.collapsed .progress-toggle { transform: rotate(45deg); }
+    #progress .drag-grip {
+        display: inline-flex; flex-direction: column; gap: 3px;
+        margin-right: 4px; opacity: 0.5; flex-shrink: 0;
+    }
+    #progress .drag-grip i {
+        width: 14px; height: 2px; border-radius: 2px; background: var(--text-muted);
+    }
+    .frame-dot {
+        width: 11px; height: 11px; border-radius: 50%;
+        background: var(--line-strong); border: none; cursor: pointer; padding: 0;
+        transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+    .frame-dot:hover { transform: scale(1.3); }
+    .frame-dot.active { background: var(--accent); transform: scale(1.35); box-shadow: 0 0 12px var(--accent); }
+    .progress-meta { margin-left: 10px; display: flex; flex-direction: column; line-height: 1.25; }
+    #sceneTitle { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); white-space: nowrap; }
+    #frameCounter { font-size: 11px; color: var(--text-muted); }
+    #hint {
+        position: absolute; bottom: 84px; left: 50%;
+        transform: translateX(-50%);
+        font-size: 13px; color: var(--text-muted);
+        opacity: 0.65; text-align: center;
+        transition: opacity 0.6s; white-space: nowrap;
+    }
+
+    /* ===================== ACADEMIC / SAFETY SCENES ================== */
+    .split2 { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; margin-top: 26px; flex: 1; }
+    .acad-card {
+        background: var(--surface-soft); border: 1px solid var(--line);
+        border-radius: 26px; padding: 34px 36px;
+        display: flex; flex-direction: column; gap: 14px;
+        position: relative; overflow: hidden;
+    }
+    .acad-card::before {
+        content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 5px;
+        background: linear-gradient(180deg, var(--primary), var(--accent));
+    }
+    .acad-card h3 { font-size: 27px; }
+    .acad-card .who { font-size: 18px; font-weight: 700; color: var(--accent); }
+    .acad-card .where { font-size: 16px; color: var(--text-muted); }
+    .acad-card p { font-size: 18px; color: var(--text-muted); line-height: 1.5; }
+    .acad-banner {
+        margin-top: 26px; padding: 20px 28px;
+        border-radius: 20px;
+        background: var(--surface-soft); border: 1px dashed var(--line-strong);
+        font-size: 18px; color: var(--text-muted); line-height: 1.5;
+    }
+    .acad-banner b { color: var(--text); }
+
+    .triage-path {
+        display: flex; gap: 20px; align-items: stretch;
+        border-radius: 22px; padding: 22px 26px;
+        border: 1px solid var(--line);
+        background: var(--surface-soft);
+    }
+    .triage-path .tp-badge {
+        width: 58px; height: 58px; flex-shrink: 0; border-radius: 18px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 24px; font-weight: 800; color: #04121a;
+    }
+    .triage-path h3 { font-size: 24px; margin-bottom: 4px; }
+    .triage-path .cond { font-size: 17px; font-weight: 700; font-family: 'Consolas', monospace; margin: 6px 0; }
+    .triage-path p { font-size: 18px; color: var(--text-muted); line-height: 1.45; }
+    .tri-green .tp-badge { background: linear-gradient(135deg, #34d399, var(--accent)); }
+    .tri-green .cond { color: #34d399; }
+    .tri-yellow .tp-badge { background: linear-gradient(135deg, var(--gold), #fbbf24); }
+    .tri-yellow .cond { color: var(--gold); }
+    .tri-red .tp-badge { background: linear-gradient(135deg, var(--risk), #fb7185); color: #fff; }
+    .tri-red .cond { color: var(--risk); }
+
+    .callout {
+        margin-top: 22px; padding: 20px 28px;
+        border-radius: 20px; border: 1px solid var(--line-strong);
+        background: color-mix(in srgb, var(--primary-2) 8%, transparent);
+        font-size: 18px; line-height: 1.5; color: var(--text-muted);
+    }
+    .callout b { color: var(--text); }
+
+    /* ========================= SMALL SCREENS ========================= */
+    @media (max-width: 760px) {
+        #brand { display: none; }
+        .hud-btn { width: 40px; height: 40px; font-size: 16px; }
+        #progress { padding: 10px 14px; gap: 7px; }
+        .frame-dot { width: 9px; height: 9px; }
+        #sceneTitle { font-size: 10px; }
+        #hint { display: none; }
+    }
+
+    /* Portrait / phone: the 16:9 letterbox makes the deck unreadably small.
+       Let the stage fill the viewport so the camera fit uses the full
+       screen height, scenes letterbox inside the world instead. */
+    @media (max-aspect-ratio: 1/1) {
+        #stage {
+            width: 100vw; height: 100vh; height: 100dvh;
+            max-width: none; max-height: none;
+        }
+        #overviewTag { left: 8px; padding: 16px 8px; font-size: 11px; }
+        #controls { top: 12px; right: 12px; gap: 7px; }
+        .hud-btn { width: 38px; height: 38px; font-size: 15px; }
+        #progress { bottom: 14px; padding: 9px 12px; }
+        #rotateHint { display: block; }
+    }
+    #rotateHint {
+        display: none;
+        position: absolute; top: 14px; left: 50%;
+        transform: translateX(-50%);
+        font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
+        color: var(--text-muted);
+        background: var(--hud-bg); border: 1px solid var(--line);
+        padding: 8px 16px; border-radius: 999px;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        z-index: 110; white-space: nowrap;
+    }
+
+    /* ===================== REDUCED MOTION ============================ */
+    @media (prefers-reduced-motion: reduce) {
+        #world, .scene, .scene .a, .card, .pill, .btn, .hud-btn, .frame-dot {
+            transition: none !important; animation: none !important;
+        }
+        .scene .a { opacity: 1; transform: none; }
+        #flowpath path, .roadmap-track::after, .mark-ring, .intro-beam, .intro-door,
+        .intro-fig, .intro-next, .f-float, .f-float2, .f-pulse, .s-dash,
+        .circ { animation: none !important; }
+    }
+
+    /* ==================== PRINT, one-page PDF ======================= */
+    #onepager { display: none; }
+
+    /* One-pager styles live in normal scope so the same markup can be
+       rendered in a standalone mobile tab (mobile browsers can't print) */
+    #onepager {
+        background: #fff; color: #0e1a2b;
+        font-family: var(--font);
+        user-select: text;
+        -webkit-user-select: text;
+    }
+    #onepager.overlay {
+        display: block; position: fixed; inset: 0; z-index: 99998;
+        overflow: auto; padding: 20px; background: #fff;
+    }
+    .op-close {
+        display: none; position: sticky; top: 0; float: right; z-index: 9;
+        background: #0b1526; color: #fff; border: 0; border-radius: 8px;
+        padding: 8px 14px; font: 700 13px Inter, sans-serif; cursor: pointer;
+    }
+    #onepager.overlay .op-close { display: block; }
+
+    .op-band {
+            background: #0b1526; color: #fff;
+            border-radius: 8px; padding: 18px 22px;
+            border-left: 6px solid #2dd4bf;
+            display: flex; justify-content: space-between; align-items: flex-end;
+        }
+        .op-band h1 { font-size: 30px; margin: 0; -webkit-text-fill-color: #fff; background: none; }
+        .op-band .tag { font-size: 12px; color: #7dd3fc; margin-top: 4px; }
+        .op-band .meta { font-size: 10px; color: #93a4bc; text-align: right; line-height: 1.5; }
+        .op-sec { margin-top: 12px; }
+        .op-lbl {
+            font-size: 10px; font-weight: 800; letter-spacing: 0.14em;
+            text-transform: uppercase; color: #0d9488;
+            border-bottom: 1px solid #d7e0ea; padding-bottom: 4px; margin-bottom: 6px;
+        }
+        .op-p { font-size: 10px; color: #475569; line-height: 1.45; }
+        .op-row { display: flex; gap: 8px; margin-top: 6px; }
+        .op-box {
+            flex: 1; background: #f1f5f9; border: 1px solid #d7e0ea;
+            border-radius: 6px; padding: 8px 10px;
+        }
+        .op-num { font-size: 18px; font-weight: 800; color: #2563eb; }
+        .op-cap { font-size: 8.5px; color: #64748b; line-height: 1.35; margin-top: 2px; }
+        .op-flow { display: flex; align-items: stretch; gap: 6px; margin-top: 6px; }
+        .op-flow .op-box { flex: 1; }
+        .op-arr { align-self: center; color: #94a3b8; font-weight: 800; }
+        .op-box .t { font-size: 10px; font-weight: 800; color: #0e1a2b; }
+        .op-box .s { font-size: 8.5px; color: #64748b; line-height: 1.35; margin-top: 2px; }
+        .op-2col { display: flex; gap: 14px; margin-top: 6px; }
+        .op-2col > div { flex: 1; }
+        .op-list { font-size: 9.5px; color: #475569; line-height: 1.5; }
+        .op-foot {
+            margin-top: 12px; background: #0b1526; color: #fff;
+            border-radius: 8px; padding: 16px 22px;
+            border-left: 6px solid #2dd4bf;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .op-foot .big { font-size: 22px; font-weight: 800; color: #fff; -webkit-text-fill-color: #fff; background: none; }
+        .op-foot .small { font-size: 9px; color: #93a4bc; text-align: right; }
+
+    @media print {
+        @page { size: A4; margin: 0; }
+        html, body { overflow: visible; background: #fff; height: auto; }
+        #viewport, #hud, noscript { display: none !important; }
+        .op-close { display: none !important; }
+        #onepager {
+            display: block;
+            width: 210mm; min-height: 297mm;
+            background: #fff; color: #0e1a2b;
+            font-family: var(--font);
+            padding: 10mm 12mm;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+</style>
+</head>
+<body class="theme-midnight">
+
+<div id="viewport">
+    <div id="stage">
+        <div id="world">
+            <div class="world-bg"></div>
+            <div class="world-grid"></div>
+
+            <!-- Journey path between scene centers is generated by JS -->
+            <svg id="flowpath" width="5600" height="3200" viewBox="0 0 5600 3200" aria-hidden="true"></svg>
+            <!-- ============ SCENE 1 · PROLOGUE, B&W, "the distance" ============ -->
+            <section class="scene scene--intro" id="s0" data-title="Prologue" data-tilt="0" data-order="1"
+                     style="left:100px; top:70px;" aria-label="Prologue, the distance between doctor and patient">
+                <!--
+                  Black & white photographic backdrop (pure CSS/SVG, no external image):
+                  a lone patient figure in a dark waiting corridor; a single lit door -
+                  "the doctor", glowing far away. The beam sweeps, the figure breathes,
+                  dust drifts. Grayscale palette = stigma, distance, the old world.
+                -->
+                <svg class="intro-art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                    <defs>
+                        <!-- dawn palette: deep indigo sky warming to amber at the door -->
+                        <linearGradient id="iSky" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%"  stop-color="#0b1026"/>
+                            <stop offset="55%" stop-color="#1c2547"/>
+                            <stop offset="100%" stop-color="#3d3a55"/>
+                        </linearGradient>
+                        <linearGradient id="iFloor" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#4a4360"/>
+                            <stop offset="100%" stop-color="#12141f"/>
+                        </linearGradient>
+                        <radialGradient id="iDoor" cx="0.5" cy="0.5" r="0.5">
+                            <stop offset="0%" stop-color="#ffd9a0" stop-opacity="1"/>
+                            <stop offset="60%" stop-color="#f5b15c" stop-opacity="0.55"/>
+                            <stop offset="100%" stop-color="#f5b15c" stop-opacity="0"/>
+                        </radialGradient>
+                        <linearGradient id="iBeam" x1="1" y1="0.5" x2="0" y2="0.5">
+                            <stop offset="0%" stop-color="#ffd9a0" stop-opacity="0.38"/>
+                            <stop offset="100%" stop-color="#ffd9a0" stop-opacity="0"/>
+                        </linearGradient>
+                        <radialGradient id="iVig" cx="0.5" cy="0.45" r="0.75">
+                            <stop offset="55%" stop-color="#060818" stop-opacity="0"/>
+                            <stop offset="100%" stop-color="#060818" stop-opacity="0.82"/>
+                        </radialGradient>
+                        <filter id="iGrain" x="0" y="0" width="100%" height="100%">
+                            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="n"/>
+                            <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.05 0"/>
+                        </filter>
+                        <filter id="iBlur"><feGaussianBlur stdDeviation="16"/></filter>
+                    </defs>
+
+                    <!-- dawn sky / corridor wall -->
+                    <rect width="1600" height="560" fill="url(#iSky)"/>
+                    <rect y="560" width="1600" height="340" fill="url(#iFloor)"/>
+                    <line x1="0" y1="560" x2="1600" y2="560" stroke="#0a0c18" stroke-width="3" opacity="0.6"/>
+
+                    <!-- distant architecture, ward corridor silhouettes -->
+                    <g fill="#131830">
+                        <rect x="60"  y="360" width="210" height="200"/>
+                        <rect x="300" y="410" width="140" height="150"/>
+                        <rect x="1170" y="330" width="360" height="230"/>
+                        <rect x="1400" y="300" width="140" height="260"/>
+                    </g>
+                    <!-- windows, a few warm lights waking up -->
+                    <g fill="#ffd9a0" opacity="0.28">
+                        <rect x="100" y="390" width="26" height="34"/>
+                        <rect x="150" y="390" width="26" height="34" opacity="0.4"/>
+                        <rect x="330" y="435" width="22" height="28" opacity="0.35"/>
+                        <rect x="1440" y="330" width="24" height="30"/>
+                    </g>
+
+                    <!-- sovereign Swiss/Apertus glow behind the door -->
+                    <g opacity="0.22" fill="var(--accent)">
+                        <circle cx="1290" cy="560" r="90" fill="var(--accent)" filter="url(#iBlur)"/>
+                        <circle cx="1290" cy="560" r="42" fill="var(--primary-2)" opacity="0.7"/>
+                        <!-- Swiss cross -->
+                        <rect x="1282" y="540" width="16" height="40" rx="2" fill="#fff"/>
+                        <rect x="1270" y="552" width="40" height="16" rx="2" fill="#fff"/>
+                        <text x="1290" y="594" text-anchor="middle" font-size="10" fill="#fff" font-family="Inter,sans-serif" font-weight="800" letter-spacing="2">APERTUS</text>
+                    </g>
+
+                    <!-- the lit door, the doctor, far away, glowing warm -->
+                    <g class="intro-door">
+                        <rect x="1252" y="470" width="76" height="150" fill="#1a1430" stroke="#5c4a2e" stroke-width="2"/>
+                        <rect x="1262" y="480" width="56" height="140" fill="url(#iDoor)"/>
+                        <ellipse cx="1290" cy="560" rx="140" ry="60" fill="url(#iDoor)" opacity="0.6"/>
+                    </g>
+
+                    <!-- warm light beam reaching toward the figure -->
+                    <polygon class="intro-beam" points="1290,620 700,690 690,640" fill="url(#iBeam)"/>
+
+                    <!-- floor reflections -->
+                    <ellipse cx="1290" cy="640" rx="150" ry="14" fill="#ffd9a0" opacity="0.14"/>
+                    <ellipse cx="720" cy="700" rx="170" ry="10" fill="#ffd9a0" opacity="0.07"/>
+
+                    <!-- lone patient figure, foreground, facing the door -->
+                    <g class="intro-fig" fill="#0a0d1c">
+                        <circle cx="700" cy="555" r="27"/>
+                        <path d="M700 582 c-32 5 -50 36 -50 86 l0 42 100 0 0 -42 c0 -50 -18 -81 -50 -86 z"/>
+                        <ellipse cx="700" cy="714" rx="70" ry="9" fill="#000" opacity="0.6"/>
+                        <!-- warm rim light on the side facing the door -->
+                        <path d="M722 540 a27 27 0 0 1 0 30" fill="none" stroke="#ffd9a0" stroke-width="3" opacity="0.7"/>
+                    </g>
+
+                    <!-- drifting dust motes in the beam -->
+                    <g fill="#ffe9c4">
+                        <circle class="f-float"  cx="900"  cy="600" r="2.2" opacity="0.55"/>
+                        <circle class="f-float2" cx="1020" cy="560" r="1.8" opacity="0.45"/>
+                        <circle class="f-float"  cx="1120" cy="640" r="2.6" opacity="0.5"  style="animation-delay:-1.8s"/>
+                        <circle class="f-float2" cx="820"  cy="660" r="1.6" opacity="0.4"/>
+                        <circle class="f-float"  cx="1180" cy="590" r="2"   opacity="0.55" style="animation-delay:-3.1s"/>
+                    </g>
+
+                    <!-- low morning fog -->
+                    <ellipse cx="800" cy="700" rx="1000" ry="70" fill="#b9a8d8" opacity="0.09" filter="url(#iBlur)"/>
+
+                    <!-- film grain + vignette for photographic realism
+                         (grain layer drops out in overview to stop repaint flicker) -->
+                    <rect class="grain-layer" width="1600" height="900" filter="url(#iGrain)" fill="transparent"/>
+                    <rect width="1600" height="900" fill="url(#iVig)"/>
+                </svg>
+
+                <div class="intro-copy">
+                    <div class="intro-kicker a" style="--i:0">· The clinical workflow · A pain point ·</div>
+                    <div class="intro-h a" style="--i:1">
+                        Between every patient and every doctor,<br><span class="dim">there is a distance.</span>
+                    </div>
+                    <div class="intro-sub a" style="--i:2">
+                        Records locked in corridors. Fragmented narratives retold in consultation rooms.
+                        Stigma stretched across years. We SHRUNK it, with clinical intelligence that is
+                        sovereign, while patient data stays sealed.
+                    </div>
+                    <div class="intro-next a" style="--i:3">Press &#8594; and watch the distance close</div>
+                </div>
+            </section>
+
+            <!-- ============ SCENE 2 · TITLE, SHRUNK ============ -->
+            <section class="scene" id="s1" data-title="Title · SHRUNK" data-tilt="-1.5" data-order="2"
+                     style="left:2000px; top:70px;" aria-label="Title, SHRUNK">
+                <div style="display:grid; grid-template-columns: 1.15fr 1fr; gap:50px; align-items:center; flex:1;">
+                    <div>
+                        <div class="kicker a" style="--i:0">be-advanced Challenge Program · Bern, CH · (Confidential)</div>
+                        <h1 class="a" style="--i:1">SHRUNK</h1>
+                        <p class="a" style="--i:2; margin-top:2px; font-size:14px; letter-spacing:0.06em; text-transform:none; color:var(--text-muted); font-weight:500; line-height:1.4;">
+                            Federated RAG-based edge clinical intelligence system | mental health
+                        </p>
+                        <p class="a" style="--i:3; margin-top:8px; font-size:20px; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); font-weight:700;">
+                            Powered by dFRAG-Patient
+                        </p>
+                        <div class="lede a" style="--i:4; margin-top:18px; font-size:19px; line-height:1.55;">
+                            <p style="margin:0 0 10px 0;"><strong>&#127919; The Mission:</strong> built to assist mental health clinicians drowning in fragmented contexts.</p>
+                            <p style="margin:0 0 6px 0;">Our core USPs:</p>
+                            <ol style="margin:0 0 0 22px; padding:0; color:var(--text-muted); line-height:1.55;">
+                                <li style="margin-bottom:6px;">Adaptive clinical workflow for visibility of the patient black-box problem.</li>
+                                <li style="margin-bottom:6px;">A psychiatry-adapted teacher built on top of sovereign LLM ("Apertus") via LoRA adaptor that provides a context-aware, mental-health curated, evidence-based ecosystem.</li>
+                                <li style="margin-bottom:6px;">Distilled Student's insights across other interconnected clinics with PHI sealed node-sharing - SHRUNK'ed at scarce-resourced clinics.</li>
+                            </ol>
+                            <p style="margin:10px 0 0 0;">Hence, clinical intelligence moves while patient data never does.</p>
+                        </div>
+                        <p class="a" style="--i:4; margin-top:16px; font-size:19px; color:var(--text-muted); line-height:1.5;">
+                            <strong style="color:var(--text);">&#129504; The Technology:</strong> a
+                            domain-specific, Swiss sovereign open-weights LLM agent, fine-tuned and
+                            self-training on mental-health data, distils to a shrunk Student into an edge
+                            model. That supports native multilingual requirements in French, German, Italian
+                            and Swiss dialects.
+                        </p>
+                        <p class="a" style="--i:5; margin-top:16px; font-size:19px; color:var(--text-muted); line-height:1.5;">
+                            <strong style="color:var(--text);">&#128737;&#65039; The Wedge:</strong> the
+                            Swiss National EHR and <strong style="color:var(--text);">revFADP</strong>
+                            make centralized pools a legal crisis. SHRUNK provides an ecosystem where the
+                            legal crisis stays sealed at the edge of the patient's medium of
+                            access, while the necessary diagnosis conveyed remains
+                            <strong style="color:var(--text);">EHR / E-GD compliant</strong>.
+                        </p>
+                        <div class="a" style="--i:6; margin-top:24px; display:flex; gap:16px; flex-wrap:wrap;">
+                            <span class="pill" style="font-size:17px; padding:11px 20px;"><span class="dotmark" style="background:var(--primary);box-shadow:0 0 14px var(--primary);"></span>Mental Health × Edge AI</span>
+                            <span class="pill" style="font-size:17px; padding:11px 20px;"><span class="dotmark" style="background:var(--accent);box-shadow:0 0 14px var(--accent);"></span>Sovereign Swiss AI × Edge RAG</span>
+                        </div>
+                    </div>
+
+                    <!-- Stacked Apertus basis → Mental-Health LLM → Student edge -->
+                    <div class="story a" style="--i:3; margin:0;">
+                        <svg viewBox="0 0 520 520" role="img" aria-label="Apertus basis LLM supports a mental-health LLM with privacy locked, which distils to a Student edge at multi-node clinics">
+                            <rect width="520" height="520" class="u-sky2"/>
+
+                            <!-- Apertus basis layer -->
+                            <g>
+                                <rect x="60" y="380" width="400" height="90" rx="24" class="u-surf" stroke="var(--primary-2)" stroke-width="3"/>
+                                <text x="260" y="414" text-anchor="middle" font-size="18" fill="var(--primary-2)" font-family="Inter,sans-serif" font-weight="800" letter-spacing="2">APERTUS LLM</text>
+                                <text x="260" y="446" text-anchor="middle" font-size="12" fill="var(--text-muted)" font-family="Inter,sans-serif">Swiss sovereign open-weights basis</text>
+                            </g>
+
+                            <!-- arrow up with fine-tune label -->
+                            <g stroke="var(--primary-2)" stroke-width="2.5" opacity="0.8">
+                                <line class="s-dash" x1="260" y1="370" x2="260" y2="300"/>
+                            </g>
+                            <polygon points="252,302 268,302 260,286" fill="var(--primary-2)" opacity="0.9"/>
+                            <text x="290" y="340" font-size="11" fill="var(--primary-2)" font-family="Inter,sans-serif" font-weight="700" opacity="0.9">fine-tuned / self-training</text>
+
+                            <!-- Mental-Health LLM -->
+                            <g>
+                                <rect x="70" y="210" width="380" height="90" rx="24" class="u-surf" stroke="var(--primary)" stroke-width="3"/>
+                                <text x="260" y="244" text-anchor="middle" font-size="18" fill="var(--primary)" font-family="Inter,sans-serif" font-weight="800" letter-spacing="2">MENTAL-HEALTH LLM</text>
+                                <text x="260" y="276" text-anchor="middle" font-size="12" fill="var(--text-muted)" font-family="Inter,sans-serif">psychiatry-specific, privacy locked</text>
+                                <!-- lock icon -->
+                                <circle cx="108" cy="256" r="12" fill="var(--primary)" opacity="0.9"/>
+                                <rect x="104" y="252" width="8" height="8" rx="1" fill="#04121a" stroke="none"/>
+                            </g>
+
+                            <!-- arrow up to Student -->
+                            <g stroke="var(--primary)" stroke-width="2.5" opacity="0.8">
+                                <line class="s-dash" x1="260" y1="200" x2="260" y2="130"/>
+                            </g>
+                            <polygon points="252,132 268,132 260,116" fill="var(--primary)" opacity="0.9"/>
+                            <text x="290" y="170" font-size="11" fill="var(--primary)" font-family="Inter,sans-serif" font-weight="700" opacity="0.9">distils</text>
+
+                            <!-- Student edge at multi-node clinics -->
+                            <g>
+                                <rect x="100" y="40" width="320" height="80" rx="40" class="u-surf" stroke="var(--accent)" stroke-width="3"/>
+                                <text x="260" y="70" text-anchor="middle" font-size="17" fill="var(--accent)" font-family="Inter,sans-serif" font-weight="800" letter-spacing="2">STUDENT · EDGE</text>
+                                <text x="260" y="95" text-anchor="middle" font-size="12" fill="var(--text-muted)" font-family="Inter,sans-serif">multi-node clinics, limited hardware</text>
+                            </g>
+
+                            <!-- small multi-node dots -->
+                            <g fill="var(--accent)">
+                                <circle cx="160" cy="130" r="6" opacity="0.85"/>
+                                <circle cx="260" cy="130" r="6" opacity="0.85"/>
+                                <circle cx="360" cy="130" r="6" opacity="0.85"/>
+                                <text x="260" y="150" text-anchor="middle" font-size="10" fill="var(--text-muted)" font-family="Inter,sans-serif">nodes</text>
+                            </g>
+
+                            <!-- caption -->
+                            <text x="260" y="505" text-anchor="middle" font-size="14" fill="var(--text-muted)" font-family="Inter,sans-serif" font-style="italic">basis LLM → mental-health LLM → clinic edge</text>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ SCENE 3 · TEAM ============ -->
+            <section class="scene" id="s6" data-title="The Team" data-tilt="1" data-order="3"
+                     style="left:3900px; top:70px;" aria-label="The team">
+                <div class="scene-num">01</div>
+                <div class="kicker a" style="--i:0">The Team</div>
+                <h2 class="a" style="--i:1">The minds engineering<br><span class="hl">clinical intelligence.</span></h2>
+
+                <div class="grid grid-3" style="margin-top:22px;">
+                    <div class="card person a" style="--i:2">
+                        <div class="avatar">
+                            <!-- Immanuvel's headshot, pulled live from the shared Google
+                                 Drive folder. To use a local copy instead, save the image
+                                 as docs/assets/immanuvel.jpeg and change src accordingly. -->
+                            <img src="https://drive.google.com/thumbnail?id=1bLGkfZ-J6Pqod5HxSMPVH5CrSTb_d9R6&sz=w400"
+                                 alt="Immanuvel Prathap Sagayaraju"
+                                 onerror="this.onerror=null;this.src='assets/immanuvel.jpeg';">
+                        </div>
+                        <h3 style="font-size:24px;">Immanuvel Prathap<br>Sagayaraju</h3>
+                        <div class="role">Founder &amp; Inventor</div>
+                        <p style="font-size:16px;">Master's student in Artificial Intelligence in Medicine at the University of Bern. When I'm not working on healthcare AI, you'll probably find me exploring the unexplored and walking the unwalked, and mostly paragliding somewhere in the Swiss skies. I'm always happy to connect, exchange ideas, and explore what we can build together.</p>
+                        <div style="display:flex; gap:18px; justify-content:center; margin-top:14px;">
+                            <a class="drive-link" style="margin-top:0;" href="https://www.linkedin.com/in/immanuvelprathaps/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+                            <a class="drive-link" style="margin-top:0;" href="https://orcid.org/0009-0003-3517-7674" target="_blank" rel="noopener">ORCID &#8599;</a>
+                        </div>
+                    </div>
+                    <div class="card person a" style="--i:3">
+                        <div class="avatar" style="background:linear-gradient(135deg,var(--primary-2),var(--primary));">PG
+                            <!-- Pallav's headshot, pulled live from the shared Google Drive
+                                 link. To use a local copy instead, save the image as
+                                 docs/assets/pallav.jpeg and it will load automatically. -->
+                            <img src="https://drive.google.com/thumbnail?id=11_5fxCmp3eCk0JUdq7wSmlGhLl-EwyjS&sz=w400"
+                                 alt="Pallav Gupta"
+                                 onerror="this.onerror=null;this.src='assets/pallav.jpeg';this.onerror=function(){this.style.display='none';};">
+                        </div>
+                        <h3 style="font-size:24px;">Pallav Gupta</h3>
+                        <div class="role">Team Member</div>
+                        <p style="font-size:16px;">I love solving problems, mostly because life keeps giving me plenty of them, and I want to build something that creates value, not just income.</p>
+                        <div style="display:flex; gap:18px; justify-content:center; margin-top:14px;">
+                            <a class="drive-link" style="margin-top:0;" href="https://www.linkedin.com/in/gupta-pallav" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+                            <a class="drive-link" style="margin-top:0;" href="https://orcid.org/0009-0003-4021-4804" target="_blank" rel="noopener">ORCID &#8599;</a>
+                        </div>
+                    </div>
+                    <div class="card person a" style="--i:4">
+                        <div class="avatar" style="background:linear-gradient(135deg,var(--gold),var(--primary-2));">AS
+                            <!-- Anisha's headshot, pulled live from the shared Google Drive
+                                 link. To use a local copy instead, save the image as
+                                 docs/assets/anisha.jpeg and it will load automatically. -->
+                            <img src="https://drive.google.com/thumbnail?id=1GfSKE5extlS_DZUXxPy05owWu4BBqCWd&sz=w400"
+                                 alt="Anisha Sharma"
+                                 onerror="this.onerror=null;this.src='assets/anisha.jpeg';this.onerror=function(){this.style.display='none';};">
+                        </div>
+                        <h3 style="font-size:24px;">Anisha Sharma</h3>
+                        <div class="role">Team Member</div>
+                        <p style="font-size:16px;">Builds reliable, scalable AI applications and backend systems, with experience in LLMs, RAG, and NLP. Focused on turning complex customer needs into practical, production-ready solutions.</p>
+                        <div style="display:flex; gap:18px; justify-content:center; margin-top:14px;">
+                            <a class="drive-link" style="margin-top:0;" href="https://in.linkedin.com/in/anisha-sharma-profile" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+                            <a class="drive-link" style="margin-top:0;" href="https://orcid.org/0009-0001-3777-7345" target="_blank" rel="noopener">ORCID &#8599;</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quote a" style="--i:5; margin-top:26px; padding:18px 28px; font-size:22px; line-height:1.5; text-align:center; border:1px solid var(--line-strong); border-radius:18px; background:var(--surface-soft);">
+                    "What if healthcare intelligence could move, <em>without forcing sensitive patient data to move with it?</em>"
+                </div>
+
+            </section>
+
+            <!-- ============ SCENE 4 · THE BLACK BOX → THE DISTANCE CLOSES ============ -->
+            <section class="scene" id="s2" data-title="Problem → Solution" data-tilt="1.2" data-order="4"
+                     style="left:2000px; top:1130px;" aria-label="The problem and the solution, illustrated">
+                <div class="scene-num">02</div>
+                <div class="kicker a" style="--i:0">The Problem, and the Shift</div>
+                <h2 class="a" style="--i:1">What if healthcare intelligence could move<br><span class="hl">without the data?</span></h2>
+
+                <div class="illus-grid">
+                    <!-- Frame 1 · THE BLACK BOX -->
+                    <div class="illus a" style="--i:2">
+                        <svg viewBox="0 0 460 340" role="img" aria-label="The patient is a black box between visits while records sit in scattered silos">
+                            <rect width="460" height="340" class="u-sky2"/>
+                            <!-- scattered data silos -->
+                            <g>
+                                <rect x="30" y="70" width="70" height="56" rx="10" class="u-bld" stroke="var(--line-strong)" stroke-width="2"/>
+                                <rect x="360" y="60" width="70" height="56" rx="10" class="u-bld" stroke="var(--line-strong)" stroke-width="2"/>
+                                <rect x="30" y="220" width="70" height="56" rx="10" class="u-bld" stroke="var(--line-strong)" stroke-width="2"/>
+                                <rect x="360" y="226" width="70" height="56" rx="10" class="u-bld" stroke="var(--line-strong)" stroke-width="2"/>
+                                <text x="65" y="103" text-anchor="middle" font-size="11" fill="var(--text-muted)" font-family="Inter,sans-serif">clinic</text>
+                                <text x="395" y="93" text-anchor="middle" font-size="11" fill="var(--text-muted)" font-family="Inter,sans-serif">hospital</text>
+                                <text x="65" y="253" text-anchor="middle" font-size="11" fill="var(--text-muted)" font-family="Inter,sans-serif">therapy</text>
+                                <text x="395" y="254" text-anchor="middle" font-size="10" fill="var(--text-muted)" font-family="Inter,sans-serif">general</text>
+                                <text x="395" y="266" text-anchor="middle" font-size="10" fill="var(--text-muted)" font-family="Inter,sans-serif">practice</text>
+                            </g>
+                            <!-- broken links reaching for the patient -->
+                            <g stroke="var(--risk)" stroke-width="2.5" opacity="0.75">
+                                <line class="s-dash" x1="100" y1="98" x2="158" y2="130"/>
+                                <line class="s-dash" x1="360" y1="90" x2="302" y2="124" style="animation-delay:-0.8s"/>
+                                <line class="s-dash" x1="100" y1="248" x2="158" y2="216" style="animation-delay:-1.4s"/>
+                                <line class="s-dash" x1="360" y1="254" x2="302" y2="222" style="animation-delay:-0.5s"/>
+                            </g>
+                            <!-- the patient as a sealed black box -->
+                            <g>
+                                <rect x="168" y="110" width="124" height="124" rx="18" class="u-fig" stroke="var(--risk)" stroke-width="3"/>
+                                <!-- patient silhouette sealed inside -->
+                                <circle cx="230" cy="152" r="16" fill="none" stroke="var(--text-muted)" stroke-width="3" opacity="0.85"/>
+                                <path d="M230 168 c-19 3 -28 19 -28 42 l56 0 c0 -23 -9 -39 -28 -42 z" fill="none" stroke="var(--text-muted)" stroke-width="3" opacity="0.85"/>
+                                <path d="M206 196 l8 -8 8 8 8 -8 8 8" fill="none" stroke="var(--risk)" stroke-width="2.5" stroke-linecap="round" opacity="0.9"/>
+                                <text x="230" y="96" text-anchor="middle" font-size="13" fill="var(--risk)" font-family="Inter,sans-serif" font-weight="800" letter-spacing="2">THE BLACK BOX</text>
+                                <text x="230" y="258" text-anchor="middle" font-size="12" fill="var(--text-muted)" font-family="Inter,sans-serif">longitudinal story: incomplete or missing</text>
+                            </g>
+                            <text x="230" y="318" text-anchor="middle" font-size="12" fill="var(--text-muted)" font-family="Inter,sans-serif" font-style="italic">between visits, the doctor sees nothing</text>
+                        </svg>
+                        <div class="illus-cap">
+                            <span>Adaptive workflow, black-box visible</span>
+                            <span class="info">i</span>
+                            <div class="illus-tip">Between appointments the doctor knows nothing, and the long-term record is fragmented, incomplete or simply missing. SHRUNK's adaptive clinical workflow makes the patient black-box visible.</div>
+                        </div>
+                    </div>
+
+                    <!-- Frame 2 · APERTUS + PRIVACY LOCK -->
+                    <div class="illus a" style="--i:3">
+                        <svg viewBox="0 0 460 340" role="img" aria-label="Apertus basis supports a mental-health LLM; records stay home under revFADP">
+                            <rect width="460" height="340" class="u-sky2"/>
+                            <!-- the faded central cloud that can never fill -->
+                            <g opacity="0.55">
+                                <ellipse cx="370" cy="110" rx="74" ry="44" class="u-surf" stroke="var(--text-muted)" stroke-width="2.5" stroke-dasharray="8 8"/>
+                                <text x="370" y="104" text-anchor="middle" font-size="13" fill="var(--text-muted)" font-family="Inter,sans-serif" font-weight="700">central pool</text>
+                                <text x="370" y="124" text-anchor="middle" font-size="11" fill="var(--text-muted)" font-family="Inter,sans-serif">stays empty</text>
+                            </g>
+                            <!-- locked homes, records stay inside -->
+                            <g>
+                                <circle cx="90" cy="90" r="46" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-dasharray="6 8"/>
+                                <rect x="74" y="72" width="32" height="40" rx="5" class="u-surf" stroke="var(--line-strong)" stroke-width="2"/>
+                                <line x1="80" y1="84" x2="100" y2="84" stroke="var(--line-strong)" stroke-width="2"/>
+                                <line x1="80" y1="94" x2="100" y2="94" stroke="var(--line-strong)" stroke-width="2"/>
+                                <circle cx="90" cy="124" r="8" class="u-acc"/>
+                                <path d="M86 122 v-3 a4 4 0 0 1 8 0 v3" fill="none" stroke="#04121a" stroke-width="2"/>
+                                <text x="90" y="152" text-anchor="middle" font-size="11" fill="var(--primary)" font-family="Inter,sans-serif">clinic</text>
+                            </g>
+                            <g>
+                                <circle cx="90" cy="212" r="46" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-dasharray="6 8"/>
+                                <rect x="74" y="194" width="32" height="40" rx="5" class="u-surf" stroke="var(--line-strong)" stroke-width="2"/>
+                                <line x1="80" y1="206" x2="100" y2="206" stroke="var(--line-strong)" stroke-width="2"/>
+                                <line x1="80" y1="216" x2="100" y2="216" stroke="var(--line-strong)" stroke-width="2"/>
+                                <circle cx="90" cy="246" r="8" class="u-acc"/>
+                                <path d="M86 244 v-3 a4 4 0 0 1 8 0 v3" fill="none" stroke="#04121a" stroke-width="2"/>
+                                <text x="90" y="276" text-anchor="middle" font-size="11" fill="var(--primary)" font-family="Inter,sans-serif">patient device</text>
+                            </g>
+                            <!-- drifting records turned back by the shield -->
+                            <g>
+                                <rect class="f-float"  x="172" y="66"  width="30" height="38" rx="5" class="u-surf" stroke="var(--risk)" stroke-width="2" transform="rotate(-8 187 85)"/>
+                                <rect class="f-float2" x="176" y="120" width="30" height="38" rx="5" class="u-surf" stroke="var(--risk)" stroke-width="2" transform="rotate(6 191 139)"/>
+                                <rect class="f-float"  x="172" y="196" width="30" height="38" rx="5" class="u-surf" stroke="var(--risk)" stroke-width="2" transform="rotate(-5 187 215)" style="animation-delay:-1.6s"/>
+                                <text x="188" y="48" text-anchor="middle" font-size="11.5" fill="var(--risk)" font-family="Inter,sans-serif">records try to drift</text>
+                            </g>
+                            <!-- Apertus / privacy shield -->
+                            <g>
+                                <path d="M250 96 l38 14 v30 c0 30 -18 46 -38 56 c-20 -10 -38 -26 -38 -56 v-30 z" class="u-surf" stroke="var(--accent)" stroke-width="3.5"/>
+                                <rect x="238" y="126" width="24" height="20" rx="4" fill="var(--accent)"/>
+                                <path d="M242 126 v-8 a8 8 0 0 1 16 0 v8" fill="none" stroke="var(--accent)" stroke-width="3.5"/>
+                                <circle cx="250" cy="136" r="3" fill="#04121a"/>
+                                <!-- Swiss cross -->
+                                <rect x="245" y="104" width="10" height="22" fill="#fff"/>
+                                <rect x="234" y="113" width="32" height="4" fill="#fff"/>
+                                <text x="250" y="78" text-anchor="middle" font-size="12.5" fill="var(--accent)" font-family="Inter,sans-serif" font-weight="800">APERTUS</text>
+                                <text x="250" y="216" text-anchor="middle" font-size="12.5" fill="var(--risk)" font-family="Inter,sans-serif" font-weight="800">EHR / E-GD</text>
+                            </g>
+                            <!-- the homes and the law enclose everything -->
+                            <rect x="30" y="52" width="290" height="232" rx="20" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="10 10" opacity="0.7"/>
+                            <text x="175" y="304" text-anchor="middle" font-size="11.5" fill="var(--accent)" font-family="Inter,sans-serif" font-weight="700">mental-health LLM, privacy locked</text>
+                            <text x="230" y="330" text-anchor="middle" font-size="12" fill="var(--text-muted)" font-family="Inter,sans-serif" font-style="italic">every record stays home, the pool never fills</text>
+                        </svg>
+                        <div class="illus-cap">
+                            <span>Apertus + mental-health LLM, privacy locked</span>
+                            <span class="info">i</span>
+                            <div class="illus-tip">revFADP and EHR / E-GD rules forbid pooling sensitive data. Apertus provides a sovereign, open-weights basis for a psychiatry-adapted mental-health LLM with privacy locked.</div>
+                        </div>
+                    </div>
+
+                    <!-- Frame 3 · INSIGHT TRAVELS, THE DISTANCE SHRINKS -->
+                    <div class="illus a" style="--i:4">
+                        <svg viewBox="0 0 460 340" role="img" aria-label="De-identified insight crosses the airlock to other clinics and back to the clinician">
+                            <rect width="460" height="340" class="u-sky2"/>
+                            <!-- patient edge, sealed -->
+                            <g>
+                                <circle cx="92" cy="170" r="64" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-dasharray="6 9" opacity="0.9"/>
+                                <circle cx="80" cy="150" r="15" class="u-fig"/>
+                                <path d="M80 165 c-16 3 -25 18 -25 42 l0 10 50 0 0 -10 c0 -24 -9 -39 -25 -42 z" class="u-fig"/>
+                                <rect x="102" y="160" width="34" height="44" rx="6" class="u-surf" stroke="var(--accent)" stroke-width="2.5"/>
+                                <rect x="110" y="176" width="18" height="14" rx="3" class="u-acc" opacity="0.8"/>
+                                <text x="92" y="76" text-anchor="middle" font-size="12.5" fill="var(--primary)" font-family="Inter,sans-serif" font-weight="800">PATIENT APP</text>
+                                <text x="92" y="258" text-anchor="middle" font-size="11.5" fill="var(--primary)" font-family="Inter,sans-serif">record stays sealed here</text>
+                            </g>
+                            <!-- the airlock, insight passes -->
+                            <g>
+                                <rect x="200" y="136" width="58" height="100" rx="10" class="u-surf" stroke="var(--risk)" stroke-width="3"/>
+                                <line x1="229" y1="136" x2="229" y2="236" stroke="var(--risk)" stroke-width="2.5"/>
+                                <text x="229" y="120" text-anchor="middle" font-size="12.5" fill="var(--risk)" font-family="Inter,sans-serif" font-weight="800">AIRLOCK</text>
+                                <path class="s-good s-dash" d="M 142 186 L 200 186" stroke-width="3"/>
+                                <path class="s-good s-dash" d="M 258 186 L 316 186" stroke-width="3" style="animation-delay:-0.7s"/>
+                                <text x="229" y="256" text-anchor="middle" font-size="11.5" fill="var(--text-muted)" font-family="Inter,sans-serif">only insight crosses</text>
+                            </g>
+                            <!-- clinician + other clinics -->
+                            <g>
+                                <rect x="318" y="128" width="110" height="108" rx="12" class="u-surf" stroke="var(--accent)" stroke-width="2.5"/>
+                                <circle cx="373" cy="166" r="15" class="u-fig"/>
+                                <path d="M373 181 c-15 2 -22 16 -22 38 l44 0 c0 -22 -7 -36 -22 -38 z" class="u-fig"/>
+                                <path d="M363 180 l10 10 10 -10" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+                                <text x="373" y="112" text-anchor="middle" font-size="12.5" fill="var(--accent)" font-family="Inter,sans-serif" font-weight="800">CLINICIAN</text>
+                                <text x="373" y="258" text-anchor="middle" font-size="11.5" fill="var(--accent)" font-family="Inter,sans-serif">triage · diagnosis · treatment</text>
+                            </g>
+                            <text x="230" y="318" text-anchor="middle" font-size="12" fill="var(--text-muted)" font-family="Inter,sans-serif" font-style="italic">SHRUNK'ed insights shrink the distance</text>
+                        </svg>
+                        <div class="illus-cap">
+                            <span>Distilled insights across clinics</span>
+                            <span class="info">i</span>
+                            <div class="illus-tip">The Student distils mental-health insight and shares it through the airlock to other interconnected clinics. Only SHRUNK'ed, context-aware insight moves; the record stays sealed.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+
+            <!-- ============ SCENE 5 · ROADMAP ============ -->
+            <section class="scene" id="s7" data-title="Roadmap" data-tilt="-1.2" data-order="5"
+                     style="left:100px; top:1130px;" aria-label="The road ahead">
+                <div class="scene-num">03</div>
+                <div class="kicker a" style="--i:0">The Road Ahead</div>
+                <h2 class="a" style="--i:1">From PoC (Proof of Concept)<br>to <span class="hl">Rollout!</span></h2>
+
+                <!-- The road forward, full-width animation, milestones as signposts -->
+                <div class="story a" style="--i:2; margin-left:auto; margin-right:auto; width:100%;">
+                    <svg viewBox="0 0 1400 300" role="img" aria-label="A road through five phases toward a lit horizon">
+                        <rect x="0" y="0" width="1400" height="300" class="u-sky2"/>
+                        <circle cx="1290" cy="66" r="52" class="u-gold" opacity="0.9"/>
+                        <circle cx="1290" cy="66" r="80" class="u-gold" opacity="0.15"/>
+                        <!-- winding road -->
+                        <path d="M 50 268 C 330 200, 520 240, 770 170 S 1160 120, 1350 106"
+                              fill="none" stroke="var(--line-strong)" stroke-width="56" stroke-linecap="round"/>
+                        <path class="s-dash" d="M 50 268 C 330 200, 520 240, 770 170 S 1160 120, 1350 106"
+                              fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/>
+                        <!-- signposts with mini icons above each -->
+                        <g font-family="Inter,sans-serif" font-size="17" font-weight="800" text-anchor="middle">
+                            <g><line x1="240" y1="228" x2="240" y2="140" stroke="var(--text-muted)" stroke-width="5"/><rect x="170" y="100" width="140" height="42" rx="10" class="u-acc"/><text x="240" y="128" fill="#04121a">BOOK &amp; IP</text></g>
+                            <g><line x1="490" y1="218" x2="490" y2="136" stroke="var(--text-muted)" stroke-width="5"/><rect x="420" y="94" width="140" height="42" rx="10" class="u-surf" stroke="var(--accent)" stroke-width="2.5"/><text x="490" y="122" fill="var(--accent)">PROVEN</text></g>
+                            <g><line x1="740" y1="182" x2="740" y2="102" stroke="var(--text-muted)" stroke-width="5"/><rect x="670" y="60" width="140" height="42" rx="10" class="u-surf" stroke="var(--accent)" stroke-width="2.5"/><text x="740" y="88" fill="var(--accent)">PILOTS</text></g>
+                            <g><line x1="980" y1="152" x2="980" y2="76" stroke="var(--text-muted)" stroke-width="5"/><rect x="910" y="34" width="140" height="42" rx="10" class="u-surf" stroke="var(--accent)" stroke-width="2.5"/><text x="980" y="62" fill="var(--accent)">CLINICAL</text></g>
+                            <g><line x1="1200" y1="122" x2="1200" y2="52" stroke="var(--text-muted)" stroke-width="5"/><rect x="1130" y="10" width="140" height="42" rx="10" class="u-surf" stroke="var(--gold)" stroke-width="2.5"/><text x="1200" y="38" fill="var(--gold)">ROLLOUT</text></g>
+                        </g>
+                        <!-- the walker on the road -->
+                        <g fill="var(--text)">
+                            <circle cx="110" cy="226" r="15"/>
+                            <path d="M110 241 c-17 3 -24 19 -24 40 l48 0 c0 -21 -7 -37 -24 -40 z"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- Phase tiles: hover each for details -->
+                <div class="phase-grid">
+                    <div class="phase done a" style="--i:3">
+                        <div class="ph-n">&#10003;</div>
+                        <h3>Book chapter &amp; IP</h3>
+                        <div class="ph-tag">Foundation</div>
+                        <div class="illus-tip">Agreement signed with Springer Nature Switzerland AG, manuscript under review. Intellectual-property gathering is underway.</div>
+                    </div>
+                    <div class="phase done a" style="--i:4">
+                        <div class="ph-n">&#10003;</div>
+                        <h3>PoC conducted</h3>
+                        <div class="ph-tag">Evidence</div>
+                        <div class="illus-tip">Pipeline verified end-to-end on synthetic data. Next step: build a mental-health LLM on top of Apertus with privacy locked.</div>
+                    </div>
+                    <div class="phase a" style="--i:5">
+                        <div class="ph-n">3</div>
+                        <h3>Clinical pilots</h3>
+                        <div class="ph-tag">Real world</div>
+                        <div class="illus-tip">Swiss clinics test the doctor dashboard and patient companion app under live, everyday pressure.</div>
+                    </div>
+                    <div class="phase a" style="--i:6">
+                        <div class="ph-n">4</div>
+                        <h3>Clinical validation</h3>
+                        <div class="ph-tag">Trust</div>
+                        <div class="illus-tip">Independent psychiatrists and clinicians validate triage, note-taking, diagnosis and treatment planning; plus sovereign-AI, revFADP, privacy and cybersecurity review.</div>
+                    </div>
+                    <div class="phase a" style="--i:7">
+                        <div class="ph-n">5</div>
+                        <h3>Regulated rollout</h3>
+                        <div class="ph-tag">Scale</div>
+                        <div class="illus-tip">Swissmedic software compliance and medical-record integrations bring SHRUNK to clinics.</div>
+                    </div>
+                </div>
+
+                <div class="scene-foot a" style="--i:8; justify-content:center; text-transform:none; letter-spacing:0.02em; font-size:16px; text-align:center;">
+                    <span>Grounded in the book chapter signed with Springer Nature Switzerland AG (under review): "dFRAG-Patient: An Enterprise-Grade, Privacy-Preserving Decentralized Federated RAG Framework for Adaptive Psychiatric Decision Support."</span>
+                </div>
+            </section>
+            <!-- ============ SCENE 7 · SUMMARY (after the Ask) ============ -->
+            <section class="scene" id="s10" data-title="Summary" data-tilt="1.4" data-order="7"
+                     style="left:2000px; top:2190px;" aria-label="Summary, the pitch in one view">
+                <div class="scene-num">05</div>
+                <div class="kicker a" style="--i:0">Summary</div>
+                <h2 class="a" style="--i:1">The whole pitch,<br><span class="hl">in one view.</span></h2>
+
+                <div class="grid grid-2" style="margin-top:26px;">
+                    <div class="card a" style="--i:2">
+                        <div class="stat-num" style="font-size:30px;color:var(--risk);">The Problem</div>
+                        <div class="stat-label" style="font-size:17px;">Mental health clinicians drown in fragmented contexts. Doctors at each node only see local data, so the patient is a black box between visits and doctor-to-doctor collaboration is limited. Patients miss a continuous longitudinal view for triage, diagnosis and treatment planning.</div>
+                    </div>
+                    <div class="card a" style="--i:3">
+                        <div class="stat-num" style="font-size:30px;color:var(--primary);">The Mandate</div>
+                        <div class="stat-label" style="font-size:17px;">revFADP and the coming Swiss National EHR / E-GD rules forbid pooling sensitive data. A central fix is legally off the table.</div>
+                    </div>
+                    <div class="card a" style="--i:4">
+                        <div class="stat-num" style="font-size:30px;color:var(--accent);">The Solution</div>
+                        <div class="stat-label" style="font-size:17px;">
+                            A <strong style="color:var(--text);">psychiatry-adapted Teacher LLM</strong> built on sovereign Apertus via a LoRA adapter provides a context-aware, mental-health-curated, evidence-based ecosystem.
+                            A distilled <strong style="color:var(--text);">Student</strong> shares SHRUNK'ed insight across clinics through a privacy airlock while the record stays sealed.
+                            A <strong style="color:var(--text);">patient companion app</strong> adds real-time tracking and a longitudinal triage, diagnosis and treatment-planning view.
+                        </div>
+                    </div>
+                    <div class="card a" style="--i:5">
+                        <div class="stat-num" style="font-size:30px;color:var(--gold);">The Road</div>
+                        <div class="stat-label" style="font-size:17px;">Book chapter &amp; IP → PoC conducted → mental-health LLM on top of Apertus → clinical pilots → clinical validation → regulated rollout, with patient companion app.</div>
+                    </div>
+                </div>
+
+                <div class="card a" style="--i:6; margin-top:26px; padding:26px 32px; border-color:var(--accent); background:color-mix(in srgb, var(--accent) 8%, transparent);">
+                    <div class="stat-num" style="font-size:30px;color:var(--accent);">The Ask, in one line</div>
+                    <div class="stat-label" style="font-size:19px;">Real-world pilots, independent validation, regulatory guidance, business mentorship and network, the five partnerships that turn this prototype into a market-ready product.</div>
+                </div>
+
+                <!-- 5-step flow SVG -->
+                <div class="story a" style="--i:7; margin-top:24px;">
+                    <svg viewBox="0 0 1100 130" role="img" aria-label="Apertus Alps, psychiatry fine-tune, airlock, student, clinician and patient app">
+                        <rect width="1100" height="130" class="u-sky2"/>
+                        <g fill="var(--text-muted)" font-family="Inter,sans-serif" font-size="11" font-weight="700" text-anchor="middle">
+                            <text x="96" y="120">Apertus / Alps</text>
+                            <text x="280" y="120">Fine-tune</text>
+                            <text x="470" y="120">Airlock</text>
+                            <text x="660" y="120">Student</text>
+                            <text x="850" y="120">Clinician</text>
+                            <text x="1000" y="120">Patient app</text>
+                        </g>
+                        <!-- arrows -->
+                        <g stroke="var(--line-strong)" stroke-width="2.5" stroke-linecap="round" fill="none">
+                            <line x1="136" y1="70" x2="220" y2="70"/>
+                            <line x1="330" y1="70" x2="420" y2="70"/>
+                            <line x1="520" y1="70" x2="610" y2="70"/>
+                            <line x1="710" y1="70" x2="800" y2="70"/>
+                            <line x1="900" y1="70" x2="960" y2="70"/>
+                        </g>
+                        <g fill="var(--line-strong)">
+                            <polygon points="220,66 230,70 220,74"/><polygon points="420,66 430,70 420,74"/>
+                            <polygon points="610,66 620,70 610,74"/><polygon points="800,66 810,70 800,74"/>
+                            <polygon points="960,66 970,70 960,74"/>
+                        </g>
+                        <!-- Alps icon -->
+                        <g transform="translate(96,40)">
+                            <path d="M-14 26 l14 -26 14 26" fill="none" stroke="var(--primary-2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M-8 26 l8 -14 8 14" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </g>
+                        <!-- Fine-tune / brain -->
+                        <g transform="translate(280,40)">
+                            <circle r="20" fill="none" stroke="var(--primary)" stroke-width="2.5"/>
+                            <path d="M-10 -4 q6 -10 14 0 q4 6 -2 10 q-8 4 -12 -6" fill="none" stroke="var(--primary)" stroke-width="1.8" stroke-linecap="round"/>
+                        </g>
+                        <!-- Airlock -->
+                        <g transform="translate(470,40)">
+                            <rect x="-18" y="-22" width="36" height="44" rx="8" fill="none" stroke="var(--risk)" stroke-width="2.5"/>
+                            <line x1="0" y1="-22" x2="0" y2="22" stroke="var(--risk)" stroke-width="2"/>
+                            <rect x="-6" y="-2" width="12" height="10" rx="2" fill="var(--risk)"/>
+                        </g>
+                        <!-- Student chip -->
+                        <g transform="translate(660,40)">
+                            <rect x="-18" y="-16" width="36" height="32" rx="16" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+                            <circle r="6" fill="var(--accent)" opacity="0.8"/>
+                        </g>
+                        <!-- Clinician + patient app -->
+                        <g transform="translate(850,40)">
+                            <circle r="14" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+                            <path d="M-8 -6 l8 8 12 -12" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </g>
+                        <g transform="translate(1000,40)">
+                            <rect x="-10" y="-18" width="20" height="36" rx="5" fill="none" stroke="var(--primary)" stroke-width="2"/>
+                            <circle cy="6" r="2" fill="var(--primary)"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <div class="card a" style="--i:8; margin-top:24px; padding:26px 32px; border-color:var(--accent); background:color-mix(in srgb, var(--accent) 8%, transparent);">
+                    <div class="stat-num" style="font-size:30px;color:var(--accent);">The Ask, in one line</div>
+                    <div class="stat-label" style="font-size:19px;">Real-world pilots, independent validation, regulatory guidance, business mentorship and network, the five partnerships that turn this prototype into a market-ready product.</div>
+                </div>
+
+                <div class="scene-foot a" style="--i:9">
+                    <span>SHRUNK · dFRAG-Patient · Bern, CH</span>
+                    <span>Problem · Mandate · Solution · Road · Ask</span>
+                </div>
+            </section>
+
+            <!-- ============ SCENE 6 · THE ASK ============ -->
+            <section class="scene" id="s8" data-title="The Ask" data-tilt="1.6" data-order="6"
+                     style="left:100px; top:2190px;" aria-label="The ask">
+                <div class="scene-num">04</div>
+                <div class="kicker a" style="--i:0">The Ask</div>
+                <h2 class="a" style="--i:1">What turns this prototype<br>into <span class="hl">a market-ready product.</span></h2>
+                <p class="lede a" style="--i:2; font-size:21px;">Five kinds of partners make the distance disappear for good.</p>
+
+                <div class="ask-grid">
+                    <div class="ask-card a" style="--i:3">
+                        <div class="ask-ico" style="color:var(--accent);">
+                            <svg viewBox="0 0 48 48" style="width:60%;height:60%" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="6" y="8" width="36" height="28" rx="4"/><line x1="6" y1="22" x2="42" y2="22"/><polyline points="12,32 18,26 24,32 32,22 36,28"/><line x1="22" y1="42" x2="26" y2="42"/><line x1="18" y1="46" x2="30" y2="46"/>
+                            </svg>
+                        </div>
+                        <h3>Pilots</h3>
+                        <p>Real-time study of the doctor dashboard and patient companion app among Swiss healthcare institutes, plus honest workflow feedback.</p>
+                    </div>
+                    <div class="ask-card a" style="--i:4">
+                        <div class="ask-ico" style="color:var(--primary);">
+                            <svg viewBox="0 0 48 48" style="width:60%;height:60%" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M24 6 l18 8 v20 c0 12 -10 20 -18 24 c-8 -4 -18 -12 -18 -24 v-20 z"/><rect x="21" y="20" width="6" height="10" rx="1" fill="currentColor" opacity="0.25" stroke="none"/><path d="M21 20 v-5 a3 3 0 0 1 6 0 v5"/><rect x="20" y="10" width="3" height="9" fill="currentColor" stroke="none"/><rect x="15" y="13" width="13" height="3" fill="currentColor" stroke="none"/>
+                            </svg>
+                        </div>
+                        <h3>Validation</h3>
+                        <p>Clinical review plus independent sovereign-AI, revFADP, privacy and cybersecurity validation of the Apertus Teacher, the distilled Student and the airlocks.</p>
+                    </div>
+                    <div class="ask-card a" style="--i:5">
+                        <div class="ask-ico" style="color:var(--gold);">
+                            <svg viewBox="0 0 48 48" style="width:60%;height:60%" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="14" y="8" width="20" height="36" rx="5"/><line x1="24" y1="8" x2="24" y2="44"/><rect x="19" y="22" width="10" height="12" rx="2" fill="currentColor" opacity="0.2" stroke="none"/><path d="M19 22 v-6 a5 5 0 0 1 10 0 v6"/><circle cx="24" cy="28" r="2" fill="currentColor" stroke="none"/>
+                            </svg>
+                        </div>
+                        <h3>Guidance</h3>
+                        <p>Mentorship from regulatory pioneers in Swissmedic software compliance and cantonal EMR procurement.</p>
+                    </div>
+                    <div class="ask-card a" style="--i:6">
+                        <div class="ask-ico" style="color:var(--primary-2);">
+                            <svg viewBox="0 0 48 48" style="width:60%;height:60%" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6,34 14,34 20,24 28,34 36,16 42,22"/><line x1="6" y1="40" x2="42" y2="40"/><line x1="30" y1="6" x2="42" y2="6"/><line x1="36" y1="0" x2="36" y2="12"/>
+                            </svg>
+                        </div>
+                        <h3>Mentorship</h3>
+                        <p>Business-model and go-to-market strategy, and placement.</p>
+                    </div>
+                    <div class="ask-card a" style="--i:7">
+                        <div class="ask-ico" style="color:var(--risk);">
+                            <svg viewBox="0 0 48 48" style="width:60%;height:60%" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="14" y="4" width="20" height="36" rx="5"/><circle cx="24" cy="33" r="2" fill="currentColor" stroke="none"/><path d="M18 16 a4 4 0 0 1 4 -4 h8 a4 4 0 0 1 4 4 v0"/><line x1="6" y1="40" x2="42" y2="40" opacity="0.25"/>
+                            </svg>
+                        </div>
+                        <h3>Network</h3>
+                        <p>Building the network to create future opportunities.</p>
+                    </div>
+                </div>
+
+                <div class="scene-foot a" style="--i:8">
+                    <span>SHRUNK · dFRAG-Patient</span>
+                    <span>be-advanced Challenge Program · Bern, CH</span>
+                </div>
+            </section>
+
+            <!-- ============ SCENE 8 · VISION / CONTACT ============ -->
+            <section class="scene scene--bare" id="s9" data-title="Vision & Contact" data-tilt="0" data-zoom="1.05" data-order="8"
+                     style="left:3900px; top:2190px; align-items:center; text-align:center; justify-content:center;"
+                     aria-label="Vision and contact">
+                <div class="kicker kicker--center a" style="--i:0">The Vision</div>
+                <h1 class="a" style="--i:1; font-size:96px;">One patient.<br>One continuous story.</h1>
+                <p class="lede a" style="--i:2; margin-top:30px; max-width:960px;">
+                    SHRUNK · powered by dFRAG-Patient - sovereign, mental-health specific intelligence
+                    moves; patient data stays sealed. A companion app keeps the patient close with real-time
+                    tracking and a longitudinal view of triage, diagnosis and treatment.
+                </p>
+
+                <!-- patient app and clinician orbiting the airlock -->
+                <div class="story a" style="--i:3; margin-top:36px; width:320px;">
+                    <svg viewBox="0 0 320 120" role="img" aria-label="The patient app and the clinician orbit a glowing privacy airlock">
+                        <g transform="translate(160,60)">
+                            <!-- orbit ring -->
+                            <ellipse cx="0" cy="0" rx="110" ry="40" fill="none" stroke="var(--line-strong)" stroke-width="2" stroke-dasharray="6 8" opacity="0.6"/>
+                            <!-- glowing airlock center -->
+                            <circle cx="0" cy="0" r="18" fill="var(--accent)" class="f-pulse" opacity="0.9"/>
+                            <rect x="-6" y="-8" width="12" height="14" rx="2" fill="var(--surface-solid)"/>
+                            <circle cx="0" cy="-1" r="2" fill="var(--text)"/>
+
+                            <!-- patient app, orbiting left -->
+                            <g class="orbit-left" style="transform-origin:0 0;">
+                                <g class="counter-left" style="transform-origin:0 0;">
+                                    <g transform="translate(-90,0)">
+                                        <rect x="-12" y="-20" width="24" height="40" rx="6" fill="var(--surface-soft)" stroke="var(--primary)" stroke-width="2.5"/>
+                                        <circle cy="10" r="3" fill="var(--primary)"/>
+                                    </g>
+                                </g>
+                            </g>
+
+                            <!-- clinician, orbiting right -->
+                            <g class="orbit-right" style="transform-origin:0 0;">
+                                <g class="counter-right" style="transform-origin:0 0;">
+                                    <g transform="translate(90,0)">
+                                        <circle r="16" fill="var(--surface-soft)" stroke="var(--accent)" stroke-width="2.5"/>
+                                        <path d="M-7 -2 l5 5 9 -10" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+
+                <div class="a" style="--i:4; margin-top:52px; display:flex; gap:22px; justify-content:center;">
+                    <a class="btn btn-primary" href="mailto:immanuvel.sagayaraju@students.unibe.ch">Request the full deck &#8594;</a>
+                    <button class="btn btn-ghost" onclick="exportPdf()">&#8681; Export PDF one-pager</button>
+                </div>
+                <div class="a" style="--i:4; margin-top:60px; font-size:18px; color:var(--text-muted); letter-spacing:0.16em; text-transform:uppercase;">
+                    Press O anytime for the map view
+                </div>
+            </section>
+
+        </div><!-- #world -->
+    </div><!-- #stage -->
+
+    <!-- ============================== HUD ============================== -->
+    <div id="hud">
+        <div id="brand">SHRUNK · DFRAG-Patient</div>
+        <div id="overviewTag">Map view · click a scene to jump</div>
+        <div id="controls">
+            <button class="hud-btn" id="prevBtn" aria-label="Previous scene">&#10094;</button>
+            <button class="hud-btn" id="nextBtn" aria-label="Next scene">&#10095;</button>
+            <button class="hud-btn" id="mapBtn" aria-label="Toggle overview map">&#8982;</button>
+            <div class="theme-switcher">
+                <button class="hud-btn" id="themeBtn" aria-label="Change theme">&#127912;</button>
+                <div class="theme-menu" id="themeMenu">
+                    <button class="theme-option active" data-theme="theme-midnight">Investor Midnight</button>
+                    <button class="theme-option" data-theme="theme-clinical">Clinical Light</button>
+                    <button class="theme-option" data-theme="theme-teal">Deep Teal</button>
+                    <button class="theme-option" data-theme="theme-warm">Warm Care</button>
+                </div>
+            </div>
+            <button class="hud-btn" id="fsBtn" aria-label="Toggle fullscreen">&#9974;</button>
+        </div>
+        <div id="progress" title="Drag to move · double-click to reset"></div>
+        <div id="hint">&#8592; &#8594; / wheel / swipe to navigate &nbsp;·&nbsp; O for map &nbsp;·&nbsp; F for fullscreen</div>
+        <div id="rotateHint">&#8635; Rotate to landscape for the full experience</div>
+    </div>
+</div>
+<!-- ============ PRINT-ONLY ONE-PAGER, the PDF is generated FROM this HTML ============ -->
+<div id="onepager" aria-hidden="true">
+    <button class="op-close" onclick="document.getElementById('onepager').classList.remove('overlay')">&#10005; Close</button>
+    <div class="op-band">
+        <div>
+            <h1>SHRUNK</h1>
+            <div class="tag">Federated RAG-based edge clinical intelligence system | mental health. Powered by dFRAG-Patient.</div>
+        </div>
+        <div class="meta">PITCH DECK ONE-PAGER<br>be-advanced Challenge Program, Bern CH<br>(Confidential)</div>
+    </div>
+
+    <div class="op-sec">
+        <div class="op-lbl">The Problem, the patient is a black box</div>
+        <p class="op-p">Doctors at each node work in isolation with fragmented local data, so the patient is a black box between visits and doctor-to-doctor clinical intelligence sharing is legally and technically hard. On the patient side, the continuous longitudinal view needed for triage, diagnosis and treatment planning is missing.</p>
+        <p class="op-p" style="margin-top:6px;"><b>What if healthcare intelligence could move, without
+        forcing sensitive patient data to move with it?</b></p>
+    </div>
+
+    <div class="op-sec">
+        <div class="op-lbl">The Solution, clinical intelligence moves, sensitive data stays</div>
+        <div class="op-flow">
+            <div class="op-box"><div class="t">1 · Apertus basis</div><div class="s">Swiss sovereign open-weights LLM, multilingual FR/DE/IT/dialects</div></div>
+            <div class="op-arr">&#8594;</div>
+            <div class="op-box"><div class="t">2 · Mental-health LLM</div><div class="s">fine-tuned and self-training on mental-health data, privacy locked</div></div>
+            <div class="op-arr">&#8594;</div>
+            <div class="op-box"><div class="t">3 · Student edge</div><div class="s">a shrunk model distils to clinic hardware across multiple nodes</div></div>
+            <div class="op-arr">&#8594;</div>
+            <div class="op-box"><div class="t">4 · Airlock</div><div class="s">PHI stays sealed, only de-identified insight crosses to other doctors</div></div>
+        </div>
+        <p class="op-p" style="margin-top:6px;">The result: clinicians get SHRUNK'ed, evidence-based,
+        context-aware insight from other nodes while each patient record stays sealed at the local clinic and on
+        the patient's own medium of access. The black box opens, the distance between doctor and patient shrinks,
+        and the patient companion app adds real-time tracking plus a longitudinal triage, diagnosis and
+        treatment-planning view.</p>
+    </div>
+
+    <div class="op-sec">
+        <div class="op-2col">
+            <div>
+                <div class="op-lbl">Why Now</div>
+                <div class="op-list">
+                    <b>Swiss National EHR</b>, the mandatory centralised EHR creates a legal crisis for psychiatrists under revFADP.<br>
+                    <b>Sovereign Swiss model</b>, Apertus is open weights, Apache 2.0, trained on the Alps supercomputer, natively multilingual FR/DE/IT/dialects; mental-health LLM and Student distillation keep intelligence local.<br>
+                    <b>Doctor-to-doctor sharing</b>, the privacy airlock makes PHI-sealed, evidence-based insight sharing between nodes possible for the first time.<br>
+                    <b>Runs on existing hardware</b>, the shrunk Student works on the machines clinics already have.
+                </div>
+            </div>
+            <div>
+                <div class="op-lbl">Team</div>
+                <div class="op-list">
+                    <b>Immanuvel Prathap Sagayaraju</b>, Founder &amp; Inventor<br>
+                    <b>Pallav Gupta</b>, Team Member<br>
+                    <b>Anisha Sharma</b>, Team Member - builds reliable, scalable AI applications and backend systems with LLMs, RAG and NLP
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="op-sec">
+        <div class="op-lbl">The Road, from book chapter to regulated rollout</div>
+        <div class="op-row">
+            <div class="op-box"><div class="t">Book chapter &amp; IP</div><div class="s">agreement signed with Springer Nature Switzerland AG, under review · IP gathering</div></div>
+            <div class="op-box"><div class="t">PoC conducted</div><div class="s">pipeline verified end-to-end on synthetic data; next step is a mental-health LLM on top of Apertus</div></div>
+            <div class="op-box"><div class="t">Clinical pilots</div><div class="s">Swiss partner clinics put the airlock, doctor dashboard and patient app under live pressure</div></div>
+            <div class="op-box"><div class="t">Clinical validation</div><div class="s">independent psychiatrists test triage/notes/diagnosis/treatment; plus sovereign-AI, revFADP, privacy and cybersecurity validation</div></div>
+            <div class="op-box"><div class="t">Regulated rollout</div><div class="s">Swissmedic software compliance and medical-record integrations</div></div>
+        </div>
+    </div>
+
+    <div class="op-sec">
+        <div class="op-lbl">The Ask</div>
+        <div class="op-row">
+            <div class="op-box"><div class="t">Pilots</div><div class="s">real-time study of the doctor dashboard and patient companion app in Swiss healthcare institutes</div></div>
+            <div class="op-box"><div class="t">Validation</div><div class="s">sovereign-AI, revFADP, privacy and cybersecurity validation of Apertus, Student and airlocks</div></div>
+            <div class="op-box"><div class="t">Guidance</div><div class="s">Swissmedic compliance &amp; cantonal EMR procurement</div></div>
+            <div class="op-box"><div class="t">Mentorship</div><div class="s">business model, go-to-market &amp; placement</div></div>
+            <div class="op-box"><div class="t">Network</div><div class="s">building future opportunities</div></div>
+        </div>
+    </div>
+
+    <div class="op-foot">
+        <div class="big">One patient. One continuous story.<br><span style="font-size:13px; font-weight:600; color:#93a4bc;">Sovereign intelligence moves; patient data never does.</span></div>
+        <div class="small">SHRUNK · dFRAG-Patient · be-advanced Challenge Program (Bern, CH)<br>immanuvel.sagayaraju@students.unibe.ch</div>
+    </div>
+</div>
+
+<script>
+(function () {
+    'use strict';
+
+    // ============================ SETUP ============================
+    var WORLD_W = 5600, WORLD_H = 3200;
+    var world = document.getElementById('world');
+    var stage = document.getElementById('stage');
+    var progressEl = document.getElementById('progress');
+    var scenes = Array.prototype.slice.call(document.querySelectorAll('.scene'));
+    // Story order comes from data-order, DOM/layout order stays free.
+    scenes.sort(function (a, b) {
+        return (parseInt(a.dataset.order || '0', 10) -
+                parseInt(b.dataset.order || '0', 10));
+    });
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var states = scenes.map(function (el) {
+        var rect = { w: el.offsetWidth, h: el.offsetHeight };
+        var tilt = parseFloat(el.dataset.tilt || '0');
+        el.style.setProperty('--tilt', tilt + 'deg');
+        return {
+            el: el,
+            cx: el.offsetLeft + rect.w / 2,
+            cy: el.offsetTop + rect.h / 2,
+            w: rect.w, h: rect.h,
+            rot: -tilt,
+            zoom: parseFloat(el.dataset.zoom || '1'),
+            title: el.dataset.title || ''
+        };
+    });
+
+    var TOTAL = states.length;
+    var current = 0;
+    var overview = false;
+
+    // ===================== PROGRESS DOTS + LABELS ====================
+    var meta = document.createElement('div');
+    meta.className = 'progress-meta';
+    meta.innerHTML = '<span id="sceneTitle"></span><span id="frameCounter"></span>';
+
+    var dots = states.map(function (s, i) {
+        var b = document.createElement('button');
+        b.className = 'frame-dot';
+        b.setAttribute('aria-label', 'Go to scene ' + (i + 1) + ': ' + s.title);
+        b.title = s.title;
+        b.addEventListener('click', function () { goTo(i); });
+        progressEl.appendChild(b);
+        return b;
+    });
+    var toggle = document.createElement('button');
+    toggle.className = 'progress-toggle';
+    toggle.setAttribute('aria-label', 'Collapse or expand page index');
+    toggle.innerHTML = '&#8722;';
+    toggle.addEventListener('pointerdown', function (e) { e.stopPropagation(); });
+    toggle.addEventListener('click', function () {
+        progressEl.classList.toggle('collapsed');
+        toggle.innerHTML = progressEl.classList.contains('collapsed') ? '&#43;' : '&#8722;';
+    });
+    progressEl.appendChild(toggle);
+    progressEl.appendChild(meta);
+    var titleEl = document.getElementById('sceneTitle');
+    var counterEl = document.getElementById('frameCounter');
+
+    // ============ DRAGGABLE PAGE-INDEX (move + align anywhere) ========
+    (function initDraggableProgress() {
+        var grip = document.createElement('span');
+        grip.className = 'drag-grip';
+        grip.setAttribute('aria-hidden', 'true');
+        grip.innerHTML = '<i></i><i></i><i></i>';
+        progressEl.insertBefore(grip, progressEl.firstChild);
+
+        var KEY = 'flowProgressPos';
+        function applyPos(x, y) {
+            progressEl.style.transform = 'none';
+            progressEl.style.bottom = 'auto';
+            progressEl.style.right = 'auto';
+            progressEl.style.left = x + 'px';
+            progressEl.style.top = y + 'px';
+        }
+        function resetPos() {
+            ['left', 'top', 'right', 'bottom', 'transform'].forEach(function (p) {
+                progressEl.style[p] = '';
+            });
+            try { localStorage.removeItem(KEY); } catch (e) {}
+        }
+        try {
+            var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+            if (saved && typeof saved.x === 'number' && typeof saved.y === 'number') {
+                applyPos(saved.x, saved.y);
+            }
+        } catch (e) {}
+
+        var sx = 0, sy = 0, ox = 0, oy = 0, moved = false;
+        progressEl.addEventListener('pointerdown', function (e) {
+            var r = progressEl.getBoundingClientRect();
+            var hr = progressEl.parentElement.getBoundingClientRect();
+            sx = e.clientX; sy = e.clientY;
+            ox = r.left - hr.left; oy = r.top - hr.top;
+            moved = false;
+            applyPos(ox, oy); // pin to explicit coords before moving
+            progressEl.setPointerCapture(e.pointerId);
+            progressEl.classList.add('dragging');
+        });
+        progressEl.addEventListener('pointermove', function (e) {
+            if (!progressEl.classList.contains('dragging')) return;
+            var dx = e.clientX - sx, dy = e.clientY - sy;
+            if (!moved && Math.abs(dx) + Math.abs(dy) < 5) return;
+            moved = true;
+            var hr = progressEl.parentElement.getBoundingClientRect();
+            var nx = Math.min(Math.max(ox + dx, 4), hr.width - progressEl.offsetWidth - 4);
+            var ny = Math.min(Math.max(oy + dy, 4), hr.height - progressEl.offsetHeight - 4);
+            progressEl.style.left = nx + 'px';
+            progressEl.style.top = ny + 'px';
+        });
+        function endDrag() {
+            if (!progressEl.classList.contains('dragging')) return;
+            progressEl.classList.remove('dragging');
+            if (moved) {
+                try {
+                    localStorage.setItem(KEY, JSON.stringify({
+                        x: parseFloat(progressEl.style.left),
+                        y: parseFloat(progressEl.style.top)
+                    }));
+                } catch (e) {}
+                // swallow the click that follows a drag so dots don't fire
+                progressEl.dataset.suppress = '1';
+                setTimeout(function () { delete progressEl.dataset.suppress; }, 150);
+            }
+        }
+        progressEl.addEventListener('pointerup', endDrag);
+        progressEl.addEventListener('pointercancel', endDrag);
+        progressEl.addEventListener('dblclick', resetPos);
+        progressEl.addEventListener('click', function (e) {
+            if (progressEl.dataset.suppress === '1') {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+        }, true);
+    })();
+
+    // ===================== JOURNEY PATH (auto) =======================
+    (function buildPath() {
+        if (states.length < 2) return;
+        var svg = document.getElementById('flowpath');
+        var pts = states.map(function (s) { return [s.cx, s.cy]; });
+        var d = 'M ' + pts[0][0] + ' ' + pts[0][1];
+        for (var i = 0; i < pts.length - 1; i++) {
+            var p0 = pts[Math.max(0, i - 1)];
+            var p1 = pts[i];
+            var p2 = pts[i + 1];
+            var p3 = pts[Math.min(pts.length - 1, i + 2)];
+            var c1x = p1[0] + (p2[0] - p0[0]) / 6;
+            var c1y = p1[1] + (p2[1] - p0[1]) / 6;
+            var c2x = p2[0] - (p3[0] - p1[0]) / 6;
+            var c2y = p2[1] - (p3[1] - p1[1]) / 6;
+            d += ' C ' + c1x + ' ' + c1y + ', ' + c2x + ' ' + c2y + ', ' + p2[0] + ' ' + p2[1];
+        }
+        var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', d);
+        svg.appendChild(path);
+    })();
+
+    // ============================ CAMERA =============================
+    function stageSize() { return { w: stage.clientWidth, h: stage.clientHeight }; }
+
+    function camFor(index) {
+        var s = states[index];
+        var st = stageSize();
+        var fit = Math.min(st.w / s.w, st.h / s.h) * 0.96 * s.zoom;
+        return { x: s.cx, y: s.cy, scale: fit, rot: s.rot };
+    }
+
+    function camOverview() {
+        var st = stageSize();
+        return {
+            x: WORLD_W / 2, y: WORLD_H / 2,
+            scale: Math.min(st.w / WORLD_W, st.h / WORLD_H) * 0.985,
+            rot: 0
+        };
+    }
+
+    var lastCam = null;
+    function applyCam(cam, instant) {
+        var st = stageSize();
+        var dur = 0.95;
+        if (lastCam) {
+            var dist = Math.hypot(cam.x - lastCam.x, cam.y - lastCam.y);
+            var zoomJump = Math.abs(Math.log(cam.scale / lastCam.scale));
+            dur = Math.min(1.5, Math.max(0.8, 0.7 + dist / 4500 + zoomJump * 0.35));
+        }
+        if (reducedMotion || instant) dur = 0;
+        world.style.transitionDuration = dur + 's';
+        world.style.transform =
+            'translate(' + (st.w / 2) + 'px,' + (st.h / 2) + 'px)' +
+            ' rotate(' + cam.rot + 'deg)' +
+            ' scale(' + cam.scale + ')' +
+            ' translate(' + (-cam.x) + 'px,' + (-cam.y) + 'px)';
+        lastCam = cam;
+    }
+
+    // ======================= COUNT-UP NUMBERS ========================
+    function runCounters(sceneEl) {
+        Array.prototype.forEach.call(sceneEl.querySelectorAll('.count'), function (el) {
+            var target = parseFloat(el.dataset.count || '0');
+            var dec = parseInt(el.dataset.decimals || '0', 10);
+            if (reducedMotion || target === 0) { el.textContent = target.toFixed(dec); return; }
+            var start = null, DUR = 1100;
+            function tick(t) {
+                if (!start) start = t;
+                var p = Math.min(1, (t - start) / DUR);
+                el.textContent = (target * (1 - Math.pow(1 - p, 3))).toFixed(dec);
+                if (p < 1 && sceneEl.classList.contains('active')) requestAnimationFrame(tick);
+            }
+            el.textContent = (0).toFixed(dec);
+            requestAnimationFrame(tick);
+        });
+    }
+
+    // ========================== NAVIGATION ===========================
+    function setActive(index) {
+        states.forEach(function (s, i) {
+            s.el.classList.toggle('active', i === index && !overview);
+        });
+        dots.forEach(function (d, i) { d.classList.toggle('active', i === index); });
+        titleEl.textContent = states[index].title;
+        counterEl.textContent = (index + 1) + ' / ' + TOTAL;
+        runCounters(states[index].el);
+    }
+
+    function goTo(index, instant) {
+        if (index < 0) index = 0;
+        if (index >= TOTAL) index = TOTAL - 1;
+        overview = false;
+        document.body.classList.remove('overview-mode');
+        world.classList.remove('overview');
+        current = index;
+        applyCam(camFor(index), instant);
+        setActive(index);
+    }
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    function toggleOverview() {
+        overview = !overview;
+        document.body.classList.toggle('overview-mode', overview);
+        world.classList.toggle('overview', overview);
+        if (overview) {
+            states.forEach(function (s) { s.el.classList.remove('active'); });
+            document.querySelectorAll('.count').forEach(function (el) {
+                var dec = parseInt(el.dataset.decimals || '0', 10);
+                el.textContent = parseFloat(el.dataset.count || '0').toFixed(dec);
+            });
+            applyCam(camOverview());
+        } else {
+            applyCam(camFor(current));
+            setActive(current);
+        }
+    }
+
+    scenes.forEach(function (el, i) {
+        el.addEventListener('click', function () { if (overview) goTo(i); });
+    });
+
+    // ========================== INPUT ================================
+    document.getElementById('nextBtn').addEventListener('click', next);
+    document.getElementById('prevBtn').addEventListener('click', prev);
+    document.getElementById('mapBtn').addEventListener('click', toggleOverview);
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (overview) { toggleOverview(); } else { next(); }
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (!overview) prev();
+        } else if (e.key === 'Home') {
+            e.preventDefault(); goTo(0);
+        } else if (e.key === 'End') {
+            e.preventDefault(); goTo(TOTAL - 1);
+        } else if (e.key === 'o' || e.key === 'O') {
+            e.preventDefault(); toggleOverview();
+        } else if (e.key === 'Escape' && overview) {
+            e.preventDefault(); toggleOverview();
+        } else if (e.key === 'f' || e.key === 'F') {
+            e.preventDefault(); toggleFullscreen();
+        }
+    });
+
+    var lastWheel = 0;
+    document.addEventListener('wheel', function (e) {
+        e.preventDefault();
+        var now = performance.now();
+        if (now - lastWheel < 550) return;
+        var delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+        if (Math.abs(delta) < 12) return;
+        lastWheel = now;
+        if (delta > 0) { if (overview) toggleOverview(); else next(); }
+        else { if (!overview) prev(); }
+    }, { passive: false });
+
+    var tX = 0, tY = 0;
+    document.addEventListener('touchstart', function (e) {
+        tX = e.changedTouches[0].screenX;
+        tY = e.changedTouches[0].screenY;
+    }, { passive: true });
+    document.addEventListener('touchend', function (e) {
+        var dx = tX - e.changedTouches[0].screenX;
+        var dy = tY - e.changedTouches[0].screenY;
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+            if (dx > 0) { if (overview) toggleOverview(); else next(); }
+            else { if (!overview) prev(); }
+        }
+    }, { passive: true });
+
+    function pseudoFS() {
+        // iOS (iPhone) has no Fullscreen API - fake it with a fixed overlay.
+        document.body.classList.toggle('ios-fs');
+        setTimeout(refit, 60);
+    }
+    function toggleFullscreen() {
+        var el = document.documentElement;
+        var req = el.requestFullscreen || el.webkitRequestFullscreen;
+        var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+        if (fsEl) {
+            (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+            document.body.classList.remove('ios-fs');
+        } else if (req) {
+            var p = req.call(el);
+            if (p && p.catch) p.catch(pseudoFS);
+            // try to lock landscape on phones that allow it (Android)
+            try {
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('landscape').catch(function () {});
+                }
+            } catch (e) {}
+            setTimeout(refit, 120);
+        } else {
+            pseudoFS();
+        }
+    }
+    document.getElementById('fsBtn').addEventListener('click', toggleFullscreen);
+    document.addEventListener('fullscreenchange', refit);
+    document.addEventListener('webkitfullscreenchange', refit);
+
+    // ======================= MOBILE-SAFE PDF EXPORT ====================
+    // window.print() is unreliable/blank on iOS & Android. On mobile we open
+    // the one-pager in a real tab (with a Print/Save-as-PDF button) or fall
+    // back to an in-page overlay if popups are blocked.
+    window.exportPdf = function () {
+        var isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (!isMobile) { window.print(); return; }
+        var op = document.getElementById('onepager');
+        var css = '';
+        var styles = document.querySelectorAll('style');
+        for (var i = 0; i < styles.length; i++) css += styles[i].textContent;
+        var doc =
+            '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+            '<meta name="viewport" content="width=device-width, initial-scale=1">' +
+            '<title>SHRUNK one-pager</title><style>' + css +
+            'body{background:#fff !important;margin:0}' +
+            '#onepager{display:block !important;width:auto;max-width:860px;margin:0 auto;padding:18px}' +
+            '.m-bar{position:sticky;top:0;display:flex;gap:10px;padding:10px 14px;background:#0b1526;color:#fff;' +
+            'font:600 14px Inter,sans-serif;align-items:center;justify-content:space-between;z-index:9}' +
+            '.m-bar button{background:#2dd4bf;border:0;border-radius:8px;padding:9px 16px;' +
+            'font:700 13px Inter,sans-serif;color:#04121a;cursor:pointer}' +
+            '@media print{.m-bar{display:none}.op-close{display:none}}' +
+            '</style></head><body class="theme-midnight">' +
+            '<div class="m-bar"><span>SHRUNK one-pager</span>' +
+            '<button onclick="window.print()">Print / Save as PDF</button></div>' +
+            '<div id="onepager">' + op.innerHTML + '</div></body></html>';
+        var w = window.open('', '_blank');
+        if (!w) {
+            // popup blocked - show the one-pager as an in-page overlay instead
+            op.classList.add('overlay');
+            op.scrollIntoView();
+            return;
+        }
+        w.document.open();
+        w.document.write(doc);
+        w.document.close();
+    };
+
+    var resizeT;
+    function refit() {
+        clearTimeout(resizeT);
+        resizeT = setTimeout(function () {
+            applyCam(overview ? camOverview() : camFor(current), true);
+        }, 90);
+    }
+    window.addEventListener('resize', refit);
+    // iOS Safari: address-bar show/hide and rotation fire on visualViewport
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', refit);
+    }
+    window.addEventListener('orientationchange', function () {
+        setTimeout(refit, 250);
+    });
+
+    // ========================== THEMES ===============================
+    var themeBtn = document.getElementById('themeBtn');
+    var themeMenu = document.getElementById('themeMenu');
+    var themeOptions = document.querySelectorAll('.theme-option');
+    var THEMES = ['theme-midnight', 'theme-clinical', 'theme-teal', 'theme-warm'];
+
+    themeBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        themeMenu.classList.toggle('open');
+    });
+    document.addEventListener('click', function (e) {
+        if (!themeMenu.contains(e.target) && e.target !== themeBtn) {
+            themeMenu.classList.remove('open');
+        }
+    });
+    themeOptions.forEach(function (opt) {
+        opt.addEventListener('click', function () {
+            document.body.classList.remove.apply(document.body.classList, THEMES);
+            document.body.classList.add(opt.dataset.theme);
+            themeOptions.forEach(function (o) { o.classList.remove('active'); });
+            opt.classList.add('active');
+            themeMenu.classList.remove('open');
+            try { localStorage.setItem('flowThemeV2', opt.dataset.theme); } catch (err) {}
+        });
+    });
+    var saved = 'theme-midnight';
+    try { saved = localStorage.getItem('flowThemeV2') || saved; } catch (err) {}
+    if (THEMES.indexOf(saved) === -1) saved = 'theme-midnight';
+    document.body.classList.remove.apply(document.body.classList, THEMES);
+    document.body.classList.add(saved);
+    themeOptions.forEach(function (o) {
+        o.classList.toggle('active', o.dataset.theme === saved);
+    });
+
+    // ====================== AMBIENT STARFIELD ========================
+    (function stars() {
+        if (reducedMotion) return;
+        var bg = document.querySelector('.world-bg');
+        var frag = document.createDocumentFragment();
+        for (var i = 0; i < 90; i++) {
+            var s = document.createElement('div');
+            s.className = 'star';
+            var size = Math.random() * 3 + 1;
+            s.style.width = size + 'px';
+            s.style.height = size + 'px';
+            s.style.left = Math.random() * 100 + '%';
+            s.style.top = Math.random() * 100 + '%';
+            s.style.opacity = Math.random() * 0.35 + 0.06;
+            frag.appendChild(s);
+        }
+        bg.appendChild(frag);
+    })();
+
+    var hintEl = document.getElementById('hint');
+    var hinted = false;
+    world.addEventListener('transitionstart', function () {
+        if (!hinted) { hinted = true; hintEl.style.opacity = '0'; }
+    });
+
+    // ============================ INIT ===============================
+    goTo(0, true);
+})();
+</script>
+
+</body>
+</html>
