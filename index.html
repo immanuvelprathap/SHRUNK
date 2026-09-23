@@ -18,13 +18,14 @@ a virtual camera pans / zooms / rotates between them.
 
 STORY ORDER (data-order):
    1 Prologue       : sovereign intelligence enters the corridor
-   2 Title          : Federated RAG edge clinical intelligence for mental health
-   3 Team           : founder & inventor + team members
-   4 Illustrations  : v6-style flow charts + mission USPs
-   5 Roadmap        : PoC conducted, mental-health LLM next step
-   6 The Ask        : pilots, validation, guidance, mentorship, network
-   7 Summary        : v6-style summary + patient companion app
-   8 Vision         : closing + Export PDF (one-pager generated from this HTML)
+   2 60-Second Story : the patient, the shadow record, and SHRUNK
+   3 Title          : Federated RAG edge clinical intelligence for mental health
+   4 Team           : founder & inventor + team members
+   5 Illustrations  : v6-style flow charts + mission USPs
+   6 Roadmap        : PoC conducted, mental-health LLM next step
+   7 The Ask        : pilots, validation, guidance, mentorship, network
+   8 Summary        : v6-style summary + patient companion app
+   9 Vision         : closing + Export PDF (one-pager generated from this HTML)
 
 HOW TO USE
 ----------
@@ -50,9 +51,9 @@ that only appears in @media print, the PDF is generated from this
 HTML by the browser's "Save as PDF".
 
 GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x3200
-  1 Prologue (900,520)    2 Title (2800,520)       3 Team (4700,520)
-  5 Roadmap  (900,1580)   4 Illustrations (2800,1580)
-  6 Ask      (900,2640)   7 Summary (2800,2640)    8 Vision (4700,2640)
+  1 Prologue (900,520)    3 Title (2800,520)       4 Team (4700,520)
+  6 Roadmap  (900,1580)   2 Story (2800,1580)      5 Illustrations (4700,1580)
+  7 Ask      (900,2640)   8 Summary (2800,2640)    9 Vision (4700,2640)
 ================================================================================
 -->
 <style>
@@ -992,6 +993,95 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x3200
             print-color-adjust: exact;
         }
     }
+
+    /* ===================== 60-SECOND STORY SCENE ===================== */
+    .story-scene { justify-content: flex-start; }
+    .story-video-wrap {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+        margin: 20px 0 14px;
+        border-radius: 24px;
+        overflow: hidden;
+        background: var(--bg);
+        border: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .story-video-wrap video {
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        display: block;
+    }
+    .story-caption {
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        padding: 18px 26px 34px;
+        background: linear-gradient(rgba(4,7,15,0.88), transparent);
+        color: var(--text);
+        font-size: 23px;
+        font-weight: 600;
+        text-align: center;
+        pointer-events: none;
+        z-index: 2;
+    }
+    .story-controls {
+        display: flex;
+        gap: 14px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .story-controls .btn {
+        padding: 14px 28px;
+        font-size: 18px;
+        border-radius: 14px;
+    }
+    .story-transcript {
+        position: absolute;
+        inset: 0;
+        background: var(--surface);
+        border-radius: 24px;
+        padding: 26px 34px;
+        overflow: auto;
+        z-index: 5;
+    }
+    .story-transcript.hidden { display: none; }
+    .story-transcript h3 {
+        font-size: 22px;
+        color: var(--accent);
+        margin-bottom: 14px;
+    }
+    .story-transcript ol {
+        list-style: decimal;
+        padding-left: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .story-transcript li {
+        font-size: 17px;
+        color: var(--text);
+        line-height: 1.45;
+    }
+    .story-transcript li.active {
+        color: var(--accent);
+        font-weight: 700;
+    }
+    .story-close-transcript {
+        position: absolute;
+        top: 18px; right: 18px;
+        background: var(--line);
+        border: none;
+        color: var(--text);
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        font-size: 18px;
+        cursor: pointer;
+        z-index: 6;
+    }
 </style>
 </head>
 <body class="theme-midnight">
@@ -1130,8 +1220,35 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x3200
                 </div>
             </section>
 
-            <!-- ============ SCENE 2 · TITLE, SHRUNK ============ -->
-            <section class="scene" id="s1" data-title="Title · SHRUNK" data-tilt="-1.5" data-order="2"
+            <!-- ============ SCENE 2 · 60-SECOND STORY ============ -->
+            <section class="scene story-scene" id="sStory" data-title="60-Second Story" data-tilt="-1.5" data-order="2"
+                     style="left:2000px; top:1130px;" aria-label="60-second SHRUNK story">
+                <div class="scene-num">01</div>
+                <div class="kicker a" style="--i:0">The invisible problem</div>
+                <h2 class="a" style="--i:1; font-size:54px;">Every patient has two stories.</h2>
+
+                <div class="story-video-wrap a" style="--i:2">
+                    <video id="storyVideo" poster="assets/scene_01.png" playsinline controls preload="auto">
+                        <source src="assets/story.mp4" type="video/mp4" />
+                        <p style="color:var(--text-muted); padding:20px;">Your browser does not support the video. <a href="assets/story.mp4" style="color:var(--accent);">Download the MP4</a>.</p>
+                    </video>
+                    <div id="storyCaption" class="story-caption">In the corridor, a story is about to be lost.</div>
+                    <div id="storyTranscript" class="story-transcript hidden">
+                        <h3>60-second story transcript</h3>
+                        <button id="storyCloseTranscript" class="story-close-transcript" aria-label="Close transcript">&times;</button>
+                        <ol id="storyTranscriptList"></ol>
+                    </div>
+                </div>
+
+                <div class="story-controls a" style="--i:3">
+                    <button id="storyPlayBtn" class="btn btn-primary">Play story</button>
+                    <button id="storyReplayBtn" class="btn btn-ghost">Replay</button>
+                    <button id="storyTranscriptBtn" class="btn btn-ghost">Show transcript</button>
+                </div>
+            </section>
+
+            <!-- ============ SCENE 3 · TITLE, SHRUNK ============ -->
+            <section class="scene" id="s1" data-title="Title · SHRUNK" data-tilt="-1.5" data-order="3"
                      style="left:2000px; top:70px;" aria-label="Title, SHRUNK">
                 <div style="display:grid; grid-template-columns: 1.15fr 1fr; gap:50px; align-items:center; flex:1;">
                     <div>
@@ -1232,10 +1349,10 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x3200
                 </div>
             </section>
 
-            <!-- ============ SCENE 3 · TEAM ============ -->
-            <section class="scene" id="s6" data-title="The Team" data-tilt="1" data-order="3"
+            <!-- ============ SCENE 4 · TEAM ============ -->
+            <section class="scene" id="s6" data-title="The Team" data-tilt="1" data-order="4"
                      style="left:3900px; top:70px;" aria-label="The team">
-                <div class="scene-num">01</div>
+                <div class="scene-num">02</div>
                 <div class="kicker a" style="--i:0">The Team</div>
                 <h2 class="a" style="--i:1">The minds engineering<br><span class="hl">clinical intelligence.</span></h2>
 
@@ -1299,10 +1416,10 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x3200
 
             </section>
 
-            <!-- ============ SCENE 4 · THE BLACK BOX → THE DISTANCE CLOSES ============ -->
-            <section class="scene" id="s2" data-title="Problem → Solution" data-tilt="1.2" data-order="4"
-                     style="left:2000px; top:1130px;" aria-label="The problem and the solution, illustrated">
-                <div class="scene-num">02</div>
+            <!-- ============ SCENE 5 · THE BLACK BOX → THE DISTANCE CLOSES ============ -->
+            <section class="scene" id="s2" data-title="Problem → Solution" data-tilt="1.2" data-order="5"
+                     style="left:3900px; top:1130px;" aria-label="The problem and the solution, illustrated">
+                <div class="scene-num">03</div>
                 <div class="kicker a" style="--i:0">The Problem, and the Shift</div>
                 <h2 class="a" style="--i:1">What if healthcare intelligence could move<br><span class="hl">without the data?</span></h2>
 
@@ -1454,10 +1571,10 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x3200
 
 
 
-            <!-- ============ SCENE 5 · ROADMAP ============ -->
-            <section class="scene" id="s7" data-title="Roadmap" data-tilt="-1.2" data-order="5"
+            <!-- ============ SCENE 6 · ROADMAP ============ -->
+            <section class="scene" id="s7" data-title="Roadmap" data-tilt="-1.2" data-order="6"
                      style="left:100px; top:1130px;" aria-label="The road ahead">
-                <div class="scene-num">03</div>
+                <div class="scene-num">04</div>
                 <div class="kicker a" style="--i:0">The Road Ahead</div>
                 <h2 class="a" style="--i:1">From PoC (Proof of Concept)<br>to <span class="hl">Rollout!</span></h2>
 
@@ -1526,10 +1643,10 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x3200
                     <span>Grounded in the book chapter signed with Springer Nature Switzerland AG (under review): "dFRAG-Patient: An Enterprise-Grade, Privacy-Preserving Decentralized Federated RAG Framework for Adaptive Psychiatric Decision Support."</span>
                 </div>
             </section>
-            <!-- ============ SCENE 7 · SUMMARY (after the Ask) ============ -->
-            <section class="scene" id="s10" data-title="Summary" data-tilt="1.4" data-order="7"
+            <!-- ============ SCENE 8 · SUMMARY (after the Ask) ============ -->
+            <section class="scene" id="s10" data-title="Summary" data-tilt="1.4" data-order="8"
                      style="left:2000px; top:2190px;" aria-label="Summary, the pitch in one view">
-                <div class="scene-num">05</div>
+                <div class="scene-num">06</div>
                 <div class="kicker a" style="--i:0">Summary</div>
                 <h2 class="a" style="--i:1">The whole pitch,<br><span class="hl">in one view.</span></h2>
 
@@ -1630,10 +1747,10 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x3200
                 </div>
             </section>
 
-            <!-- ============ SCENE 6 · THE ASK ============ -->
-            <section class="scene" id="s8" data-title="The Ask" data-tilt="1.6" data-order="6"
+            <!-- ============ SCENE 7 · THE ASK ============ -->
+            <section class="scene" id="s8" data-title="The Ask" data-tilt="1.6" data-order="7"
                      style="left:100px; top:2190px;" aria-label="The ask">
-                <div class="scene-num">04</div>
+                <div class="scene-num">05</div>
                 <div class="kicker a" style="--i:0">The Ask</div>
                 <h2 class="a" style="--i:1">What turns this prototype<br>into <span class="hl">a market-ready product.</span></h2>
                 <p class="lede a" style="--i:2; font-size:21px;">Five kinds of partners make the distance disappear for good.</p>
@@ -1692,8 +1809,8 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x3200
                 </div>
             </section>
 
-            <!-- ============ SCENE 8 · VISION / CONTACT ============ -->
-            <section class="scene scene--bare" id="s9" data-title="Vision & Contact" data-tilt="0" data-zoom="1.05" data-order="8"
+            <!-- ============ SCENE 9 · VISION / CONTACT ============ -->
+            <section class="scene scene--bare" id="s9" data-title="Vision & Contact" data-tilt="0" data-zoom="1.05" data-order="9"
                      style="left:3900px; top:2190px; align-items:center; text-align:center; justify-content:center;"
                      aria-label="Vision and contact">
                 <div class="kicker kicker--center a" style="--i:0">The Vision</div>
@@ -2088,6 +2205,7 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x3200
         titleEl.textContent = states[index].title;
         counterEl.textContent = (index + 1) + ' / ' + TOTAL;
         runCounters(states[index].el);
+        syncStoryPlayback(index);
     }
 
     function goTo(index, instant) {
@@ -2317,6 +2435,104 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x3200
     world.addEventListener('transitionstart', function () {
         if (!hinted) { hinted = true; hintEl.style.opacity = '0'; }
     });
+
+    // ===================== 60-SECOND STORY PLAYER =====================
+    var storyVideo = document.getElementById('storyVideo');
+    var storyCaption = document.getElementById('storyCaption');
+    var storyPlayBtn = document.getElementById('storyPlayBtn');
+    var storyReplayBtn = document.getElementById('storyReplayBtn');
+    var storyTranscriptBtn = document.getElementById('storyTranscriptBtn');
+    var storyTranscript = document.getElementById('storyTranscript');
+    var storyTranscriptList = document.getElementById('storyTranscriptList');
+    var storyCaptions = [
+        { start: 0, end: 6, text: "In the corridor, a story is about to be lost." },
+        { start: 6, end: 12, text: "At 2 a.m., she tells the truth to her phone and therapy journal." },
+        { start: 12, end: 18, text: "In the clinic, fear edits the story." },
+        { start: 18, end: 24, text: "The doctor has no visibility into her journal, chat, or sleep." },
+        { start: 24, end: 30, text: "When doctors share, only fragments travel." },
+        { start: 30, end: 36, text: "Treatment misses the real person." },
+        { start: 36, end: 42, text: "SHRUNK makes the invisible visible — a Swiss Apertus brain inside the clinic." },
+        { start: 42, end: 48, text: "One continuous story, controlled by the patient." },
+        { start: 48, end: 54, text: "The intelligence flows safely, with her consent." },
+        { start: 54, end: 60, text: "SHRUNK AI — the model comes to the data." }
+    ];
+
+    if (storyVideo) {
+        function updateStoryCaption() {
+            var t = storyVideo.currentTime;
+            var s = storyCaptions[storyCaptions.length - 1];
+            for (var i = 0; i < storyCaptions.length; i++) {
+                if (t >= storyCaptions[i].start && t < storyCaptions[i].end) { s = storyCaptions[i]; break; }
+            }
+            if (storyCaption) storyCaption.textContent = s.text;
+            highlightStoryTranscript(s.start);
+        }
+        function highlightStoryTranscript(start) {
+            if (!storyTranscriptList) return;
+            var items = storyTranscriptList.querySelectorAll('li');
+            for (var i = 0; i < items.length; i++) items[i].classList.remove('active');
+            for (var i = 0; i < storyCaptions.length; i++) {
+                if (storyCaptions[i].start === start && items[i]) { items[i].classList.add('active'); break; }
+            }
+        }
+        function buildStoryTranscript() {
+            if (!storyTranscriptList) return;
+            storyTranscriptList.innerHTML = storyCaptions.map(function (s) {
+                return '<li>' + String(s.start).padStart(2, '0') + 's — ' + s.text + '</li>';
+            }).join('');
+        }
+        function setStoryPlayLabel(paused) {
+            if (!storyPlayBtn) return;
+            storyPlayBtn.textContent = paused ? 'Play story' : 'Pause';
+        }
+
+        storyVideo.addEventListener('play', function () { setStoryPlayLabel(false); });
+        storyVideo.addEventListener('pause', function () { setStoryPlayLabel(true); });
+        storyVideo.addEventListener('ended', function () { setStoryPlayLabel(true); });
+        storyVideo.addEventListener('timeupdate', updateStoryCaption);
+
+        if (storyPlayBtn) {
+            storyPlayBtn.addEventListener('click', function () {
+                if (storyVideo.paused) { storyVideo.play(); } else { storyVideo.pause(); }
+            });
+        }
+        if (storyReplayBtn) {
+            storyReplayBtn.addEventListener('click', function () {
+                storyVideo.currentTime = 0;
+                storyVideo.play();
+            });
+        }
+        if (storyTranscriptBtn && storyTranscript) {
+            storyTranscriptBtn.addEventListener('click', function () {
+                storyTranscript.classList.toggle('hidden');
+                storyTranscriptBtn.textContent = storyTranscript.classList.contains('hidden') ? 'Show transcript' : 'Hide transcript';
+            });
+        }
+        var storyCloseTranscript = document.getElementById('storyCloseTranscript');
+        if (storyCloseTranscript && storyTranscript && storyTranscriptBtn) {
+            storyCloseTranscript.addEventListener('click', function () {
+                storyTranscript.classList.add('hidden');
+                storyTranscriptBtn.textContent = 'Show transcript';
+            });
+        }
+        buildStoryTranscript();
+        updateStoryCaption();
+    }
+
+    function syncStoryPlayback(index) {
+        if (!storyVideo) return;
+        var storyIndex = -1;
+        for (var i = 0; i < scenes.length; i++) {
+            if (scenes[i].id === 'sStory') { storyIndex = i; break; }
+        }
+        if (index !== storyIndex) {
+            storyVideo.pause();
+        } else {
+            storyVideo.currentTime = 0;
+            updateStoryCaption();
+            try { storyVideo.play().catch(function () {}); } catch (e) {}
+        }
+    }
 
     // ============================ INIT ===============================
     goTo(0, true);
