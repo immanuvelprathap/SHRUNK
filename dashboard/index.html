@@ -247,7 +247,7 @@ footer { padding: 18px 30px; border-top: 1px solid var(--line); color: var(--tex
           <h3><span class="num">O</span>Clinic Overview</h3>
           <p>Patients onboard through the clinic app with verified identity and consent. Clinicians start secure, timed sessions and query the Apertus-powered longitudinal record with XAI and CEAI transparency. Every answer is source-linked and every data movement is consent-gated.</p>
           <div style="display:flex; gap:12px; margin-top:14px; flex-wrap:wrap; align-items:center;">
-            <button class="secondary" onclick="generateSyntheticData(5)">Generate Synthetic Data</button>
+            <button class="secondary" onclick="generateSyntheticData(100)">Generate Synthetic Patients</button>
             <span id="genStatusOverview" class="pill" style="display:none;"></span>
           </div>
         </div>
@@ -262,7 +262,7 @@ footer { padding: 18px 30px; border-top: 1px solid var(--line); color: var(--tex
           <h3><span class="num">G</span>Synthetic Data Generation</h3>
           <p>Generate realistic but entirely fake psychiatric EHR-style records for research and prototyping. No real patient data is used.</p>
           <div style="display:flex; gap:12px; margin-top:14px; flex-wrap:wrap; align-items:center;">
-            <button class="secondary" onclick="generateSyntheticData(5)">Generate 5 Synthetic Patients</button>
+            <button class="secondary" onclick="generateSyntheticData(100)">Generate 100 Synthetic Patients</button>
             <span id="genStatusPatients" class="pill" style="display:none;"></span>
           </div>
         </div>
@@ -659,7 +659,7 @@ function init() {
   loadPatient('lena');
   renderPatientsTable();
   updateOverviewStats();
-  generateSyntheticData(5);
+  generateSyntheticData(100);
   initMultiUserChat();
 }
 
@@ -759,7 +759,7 @@ function generateSyntheticData(count) {
     const gender = pick(genders);
     const institution = pick(institutions);
     const name = pick(firstNames) + ' ' + pick(lastNames);
-    const noteCount = Math.floor(Math.random() * 4) + 3;
+    const noteCount = Math.floor(Math.random() * 5) + 3;
     const createdAt = new Date(Date.now() - Math.floor(Math.random() * 365) * 86400000).toISOString().slice(0, 10);
 
     const noteIds = [];
