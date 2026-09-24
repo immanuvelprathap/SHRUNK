@@ -103,7 +103,7 @@ draw.text((mx, my), 'CLINICAL INTELLIGENCE DOCUMENT', font=font_kicker, fill=acc
 draw.text((mx, my+24), 'One question, one continuous answer', font=font_title, fill=text)
 
 # stats row
-stats = [('Patients','1'),('Clinical Notes','23'),('Queries','13'),('Responses','13'),('Clinics','3'),('Logs','147')]
+stats = [('Patients','7'),('Clinical Notes','39'),('Queries','18'),('Responses','18'),('Clinics','3'),('Logs','161')]
 stat_w = (mw - (len(stats)-1)*14) // len(stats)
 for i, (label, val) in enumerate(stats):
     sx = mx + i*(stat_w+14)
@@ -112,13 +112,47 @@ for i, (label, val) in enumerate(stats):
     draw.text((sx+12, sy+10), val, font=font_title, fill=primary)
     draw.text((sx+12, sy+42), label.upper(), font=font_tiny, fill=muted)
 
+def draw_wrapped_text(cx, cy, body, max_w, start_y, max_y):
+    ly = start_y
+    paragraphs = body.split('\n')
+    for para in paragraphs:
+        words = para.split(' ')
+        line = ''
+        for word in words:
+            test = line + ' ' + word if line else word
+            if text_length(test, font_small) > max_w:
+                if line:
+                    draw.text((cx, ly), line, font=font_small, fill=muted)
+                    ly += 18
+                line = word
+                if max_y > start_y and ly > max_y:
+                    return
+            else:
+                line = test
+        if line:
+            draw.text((cx, ly), line, font=font_small, fill=muted)
+            ly += 20
+        if max_y > start_y and ly > max_y:
+            return
+
+# overview card
+ov_y = my + 146
+draw.rounded_rectangle([mx, ov_y, mx+mw, ov_y+84], radius=16, fill=surface, outline=line)
+draw.text((mx+14, ov_y+12), 'O', font=font_small, fill=primary)
+draw.text((mx+38, ov_y+12), 'Clinic Overview', font=font_small, fill=text)
+overview_text = 'Patients onboard through the clinic app with verified identity and consent. Clinicians start secure, timed sessions and query the Apertus-powered longitudinal record with XAI and CEAI transparency.'
+draw_wrapped_text(mx+14, ov_y, overview_text, mw-200, ov_y+40, ov_y + 78)
+# generate button
+draw.rounded_rectangle([mx+mw-190, ov_y+24, mx+mw-24, ov_y+58], radius=10, outline=(45,212,191,90))
+draw.text((mx+mw-174, ov_y+33), 'Generate Synthetic Data', font=font_tiny, fill=accent)
+
 # grid of 10 mini cards
 cols = 2
 rows = 5
 card_w = (mw - 16) // cols
-card_h = (mh - 90 - 16 - 78) // rows
+card_h = (mh - 90 - 16 - 78 - 100) // rows
 x = mx
-y = my + 148
+y = ov_y + 96
 blocks = [
     ('Clinical Question', 'What is the overall clinical picture and what should I do next?'),
     ('Retrieved Evidence', '• NOTE_000092_002: passive SI, sleep 4.5h\n• NOTE_000092_007: stopped Sertraline\n• CHAT_000092_014: worse on Tuesdays'),
@@ -132,29 +166,6 @@ blocks = [
     ('Sources', 'NOTE_000092_002, NOTE_000092_007, CHAT_000092_014, EPD_SUMMARY_000092')
 ]
 
-def draw_wrapped_text(cx, cy, body, max_w, start_y):
-    ly = start_y
-    paragraphs = body.split('\n')
-    for para in paragraphs:
-        words = para.split(' ')
-        line = ''
-        for word in words:
-            test = line + ' ' + word if line else word
-            if text_length(test, font_small) > max_w:
-                if line:
-                    draw.text((cx, ly), line, font=font_small, fill=muted)
-                    ly += 18
-                line = word
-                if ly > cy + card_h - 18:
-                    return
-            else:
-                line = test
-        if line:
-            draw.text((cx, ly), line, font=font_small, fill=muted)
-            ly += 20
-        if ly > cy + card_h - 18:
-            return
-
 for i, (title, body) in enumerate(blocks):
     cx = x + (i % cols) * (card_w + 8)
     cy = y + (i // cols) * (card_h + 8)
@@ -162,7 +173,7 @@ for i, (title, body) in enumerate(blocks):
     draw.rounded_rectangle([cx+2, cy+3, cx+card_w, cy+card_h], radius=16, fill=(0,0,0,80))
     draw.rounded_rectangle([cx, cy, cx+card_w, cy+card_h], radius=16, fill=surface, outline=line)
     draw.text((cx+14, cy+12), title.upper(), font=font_tiny, fill=accent)
-    draw_wrapped_text(cx+14, cy, body, card_w - 32, cy + 36)
+    draw_wrapped_text(cx+14, cy, body, card_w - 32, cy + 36, cy + card_h - 18)
 
 # composite
 bg.paste(img, (0,0), img)

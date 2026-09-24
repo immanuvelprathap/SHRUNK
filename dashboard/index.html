@@ -243,6 +243,14 @@ footer { padding: 18px 30px; border-top: 1px solid var(--line); color: var(--tex
           <div class="stat-card"><div class="value" id="stClinics">0</div><div class="label">Federated Clinics</div></div>
           <div class="stat-card"><div class="value" id="stLogs">0</div><div class="label">System Logs</div></div>
         </div>
+        <div class="card">
+          <h3><span class="num">O</span>Clinic Overview</h3>
+          <p>Patients onboard through the clinic app with verified identity and consent. Clinicians start secure, timed sessions and query the Apertus-powered longitudinal record with XAI and CEAI transparency. Every answer is source-linked and every data movement is consent-gated.</p>
+          <div style="display:flex; gap:12px; margin-top:14px; flex-wrap:wrap; align-items:center;">
+            <button class="secondary" onclick="generateSyntheticData(5)">Generate Synthetic Data</button>
+            <span id="genStatusOverview" class="pill" style="display:none;"></span>
+          </div>
+        </div>
         <div class="document-grid" id="docGrid"></div>
       </section>
 
@@ -250,6 +258,14 @@ footer { padding: 18px 30px; border-top: 1px solid var(--line); color: var(--tex
       <section class="panel" id="patients">
         <div class="kicker">Local Clinic Registry</div>
         <h2>Patients</h2>
+        <div class="card">
+          <h3><span class="num">G</span>Synthetic Data Generation</h3>
+          <p>Generate realistic but entirely fake psychiatric EHR-style records for research and prototyping. No real patient data is used.</p>
+          <div style="display:flex; gap:12px; margin-top:14px; flex-wrap:wrap; align-items:center;">
+            <button class="secondary" onclick="generateSyntheticData(5)">Generate 5 Synthetic Patients</button>
+            <span id="genStatusPatients" class="pill" style="display:none;"></span>
+          </div>
+        </div>
         <div class="card">
           <table>
             <thead>
@@ -550,6 +566,7 @@ const patients = {
   'lena': {
     name: 'Lena M.', id: 'PATIENT_000092', institution: 'Bern Day Clinic', age: 34, gender: 'F', diagnosis: 'MDD recurrent',
     consent: false,
+    noteCount: 14,
     stats: { patients: 1, notes: 14, queries: 23, responses: 23, clinics: 3, logs: 147 },
     question: "What is the overall clinical picture and what should I do next?",
     evidence: [
@@ -574,6 +591,7 @@ const patients = {
   'marco': {
     name: 'Marco R.', id: 'PATIENT_000041', institution: 'Zurich Hospital', age: 45, gender: 'M', diagnosis: 'Bipolar II stable',
     consent: true,
+    noteCount: 9,
     stats: { patients: 1, notes: 9, queries: 11, responses: 11, clinics: 2, logs: 89 },
     question: "Are there drug interactions between current medications?",
     evidence: [
@@ -613,6 +631,8 @@ let doctorSessionActive = false;
 let doctorMode = 'clinical';
 let multiCurrentUser = null;
 let multiSessions = {};
+let globalStats = { queries: 13, responses: 13, clients: 3, logs: 147 };
+let nextPatientIndex = 100;
 
 function init() {
   const select = document.getElementById('patientSelect');
@@ -638,6 +658,8 @@ function init() {
 
   loadPatient('lena');
   renderPatientsTable();
+  updateOverviewStats();
+  generateSyntheticData(5);
   initMultiUserChat();
 }
 
@@ -654,14 +676,6 @@ function loadPatient(pid) {
   document.getElementById('queryPatient').value = pid;
   document.getElementById('doctorPatientSelect').value = pid;
   document.getElementById('subtitle').textContent = `Viewing longitudinal record for ${p.id} · ${p.name}`;
-
-  // stats
-  const s = p.stats;
-  ['stPatients','stNotes','stQueries','stResponses','stClinics','stLogs'].forEach((id, i) => {
-    const key = ['patients','notes','queries','responses','clinics','logs'][i];
-    const el = document.getElementById(id);
-    if (el) el.textContent = s[key];
-  });
 
   updateConsentUI();
 
@@ -684,6 +698,138 @@ function loadPatient(pid) {
   if (tl) tl.innerHTML = p.timeline.map(t => `<div class="tl-item ${t.tag}"><div class="time">${t.time}</div><div class="type">${t.type}</div><div class="body">${t.body}</div><span class="tag">${t.tag}</span></div>`).join('');
 }
 
+function updateOverviewStats() {
+  const totalPatients = Object.keys(patients).length;
+  const totalNotes = Object.values(patients).reduce((sum, p) => sum + (p.noteCount || 0), 0);
+  document.getElementById('stPatients').textContent = totalPatients;
+  document.getElementById('stNotes').textContent = totalNotes;
+  document.getElementById('stQueries').textContent = globalStats.queries;
+  document.getElementById('stResponses').textContent = globalStats.responses;
+  document.getElementById('stClinics').textContent = globalStats.clients;
+  document.getElementById('stLogs').textContent = globalStats.logs + totalPatients * 2;
+}
+
+function generateSyntheticData(count) {
+  const institutions = ['Bern Day Clinic', 'Zurich Hospital', 'Lausanne EPD', 'Geneva Clinic', 'Basel University Hospital'];
+  const genders = ['M', 'F', 'NB'];
+  const diagnoses = ['major_depressive_disorder', 'anxiety_disorder', 'bipolar_disorder', 'schizophrenia', 'suicidal_ideation', 'post_traumatic_stress_disorder', 'obsessive_compulsive_disorder', 'substance_use_disorder', 'generalized_anxiety_disorder'];
+  const diagnosisDisplay = {
+    'major_depressive_disorder': 'Major Depressive Disorder',
+    'anxiety_disorder': 'Anxiety Disorder',
+    'bipolar_disorder': 'Bipolar Disorder',
+    'schizophrenia': 'Schizophrenia',
+    'suicidal_ideation': 'Suicidal Ideation',
+    'post_traumatic_stress_disorder': 'PTSD',
+    'obsessive_compulsive_disorder': 'OCD',
+    'substance_use_disorder': 'Substance Use Disorder',
+    'generalized_anxiety_disorder': 'Generalized Anxiety Disorder'
+  };
+  const firstNames = ['Noah', 'Liam', 'Elias', 'Nina', 'Sophie', 'Emma', 'Lara', 'Mia', 'Leo', 'Lina', 'Anna', 'Ben'];
+  const lastNames = ['Müller', 'Schmidt', 'Weber', 'Fischer', 'Meyer', 'Schneider', 'Schmid', 'Keller', 'Huber', 'Meier'];
+  const medications = {
+    'major_depressive_disorder': ['Sertraline', 'Fluoxetine', 'Escitalopram', 'Bupropion'],
+    'anxiety_disorder': ['Alprazolam', 'Buspirone', 'Diazepam', 'Escitalopram'],
+    'bipolar_disorder': ['Lithium', 'Lamotrigine', 'Quetiapine', 'Valproate'],
+    'schizophrenia': ['Risperidone', 'Olanzapine', 'Aripiprazole', 'Clozapine'],
+    'suicidal_ideation': ['Sertraline', 'Fluoxetine', 'Quetiapine'],
+    'post_traumatic_stress_disorder': ['Sertraline', 'Paroxetine', 'Prazosin'],
+    'obsessive_compulsive_disorder': ['Fluoxetine', 'Sertraline', 'Clomipramine'],
+    'substance_use_disorder': ['Naltrexone', 'Acamprosate', 'Buprenorphine'],
+    'generalized_anxiety_disorder': ['Sertraline', 'Escitalopram', 'Buspirone']
+  };
+  const riskMap = {
+    'suicidal_ideation': ['high', 'critical'],
+    'major_depressive_disorder': ['moderate', 'high'],
+    'bipolar_disorder': ['moderate', 'high'],
+    'substance_use_disorder': ['moderate', 'high'],
+    'default': ['low', 'moderate']
+  };
+
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function pickN(arr, n) { const copy = [...arr]; const out = []; for (let i = 0; i < n && copy.length; i++) { const idx = Math.floor(Math.random() * copy.length); out.push(copy.splice(idx, 1)[0]); } return out; }
+
+  let generated = 0;
+  for (let i = 0; i < count; i++) {
+    const pid = 'PATIENT_' + String(nextPatientIndex++).padStart(6, '0');
+    const key = pid.toLowerCase();
+    const diag = pick(diagnoses);
+    const meds = pickN(medications[diag] || ['Sertraline'], Math.floor(Math.random() * 2) + 1);
+    const risk = pick(riskMap[diag] || riskMap['default']);
+    const age = Math.floor(Math.random() * 67) + 18;
+    const gender = pick(genders);
+    const institution = pick(institutions);
+    const name = pick(firstNames) + ' ' + pick(lastNames);
+    const noteCount = Math.floor(Math.random() * 4) + 3;
+    const createdAt = new Date(Date.now() - Math.floor(Math.random() * 365) * 86400000).toISOString().slice(0, 10);
+
+    const noteIds = [];
+    for (let n = 1; n <= noteCount; n++) noteIds.push(`NOTE_${pid}_${String(n).padStart(3, '0')}`);
+
+    const symptoms = {
+      'major_depressive_disorder': 'low mood, anhedonia, fatigue, sleep disturbance',
+      'anxiety_disorder': 'excessive worry, restlessness, irritability',
+      'bipolar_disorder': 'mood swings, increased energy, decreased need for sleep',
+      'schizophrenia': 'hallucinations, delusions, social withdrawal',
+      'suicidal_ideation': 'passive thoughts, hopelessness, isolation',
+      'post_traumatic_stress_disorder': 'intrusive memories, nightmares, hypervigilance',
+      'obsessive_compulsive_disorder': 'intrusive thoughts, compulsive behaviors',
+      'substance_use_disorder': 'cravings, withdrawal symptoms, loss of control',
+      'generalized_anxiety_disorder': 'persistent worry, tension, sleep disturbance'
+    }[diag];
+
+    patients[key] = {
+      name: name, id: pid, institution: institution, age: age, gender: gender,
+      diagnosis: diagnosisDisplay[diag],
+      consent: Math.random() > 0.7,
+      noteCount: noteCount,
+      createdAt: createdAt,
+      question: `What is the clinical picture for ${name}?`,
+      evidence: noteIds.slice(0, 2).map((nid, idx) => ({
+        source: nid,
+        date: new Date(Date.now() - idx * 14 * 86400000).toISOString().slice(0, 10),
+        section: idx === 0 ? 'Initial Evaluation' : 'Progress Note',
+        content: `${idx === 0 ? 'Initial' : 'Follow-up'} note for ${diagnosisDisplay[diag]}. Patient reports ${symptoms}. Medications: ${meds.join(', ')}. Risk: ${risk}.`
+      })),
+      summary: `${name} is a ${age}-year-old ${gender === 'M' ? 'male' : gender === 'F' ? 'female' : 'non-binary'} patient with ${diagnosisDisplay[diag]}. Symptoms include ${symptoms}. Currently on ${meds.join(', ')}. Risk level ${risk}.`,
+      interpretation: `Presentation consistent with ${diagnosisDisplay[diag]}. Medication adherence and symptom trajectory should be monitored.`,
+      evaluation: `Triage: ${risk === 'high' || risk === 'critical' ? 'high' : 'moderate'} · Diagnosis: ${diagnosisDisplay[diag]} · Plan: continue ${meds.join(', ')}, monitor side effects, schedule follow-up.`,
+      uncertainty: 'Full social history and recent labs are pending.',
+      safety: risk === 'critical' ? 'Critical risk: ensure safety planning and immediate clinician review.' : risk === 'high' ? 'High risk: passive suicidal ideation reported; safety planning recommended.' : 'No immediate safety concerns; routine monitoring.',
+      review: `1) Confirm medication adherence 2) Review ${meds[0]} response 3) Schedule follow-up within ${risk === 'high' ? '48 hours' : '2 weeks'}.`,
+      workflow: `Onboarded ${createdAt} · ${noteCount} notes · ${Math.floor(Math.random() * 10)} chat entries · consent ${Math.random() > 0.7 ? 'granted' : 'pending'}.`,
+      sources: noteIds,
+      timeline: [
+        { time: `${Math.floor(Math.random() * 7) + 1} days ago`, type: 'Home check-in', body: 'Patient logged symptoms and sleep quality.', tag: 'home' }
+      ]
+    };
+
+    const p = patients[key];
+    ['patientSelect','queryPatient','doctorPatientSelect'].forEach(selId => {
+      const sel = document.getElementById(selId);
+      if (sel) sel.add(new Option(p.id + (selId === 'patientSelect' ? ' — ' + p.name : ' — ' + p.diagnosis), key));
+    });
+    generated++;
+  }
+
+  globalStats.queries += generated;
+  globalStats.responses += generated;
+  globalStats.logs += generated * 2;
+  renderPatientsTable();
+  updateOverviewStats();
+
+  const statusText = `Generated ${generated} synthetic patient${generated === 1 ? '' : 's'}`;
+  ['genStatusOverview','genStatusPatients'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = statusText; el.style.display = 'inline-flex'; el.className = 'pill on'; }
+  });
+  setTimeout(() => {
+    ['genStatusOverview','genStatusPatients'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+  }, 4000);
+}
+
 function toggleConsent() {
   patients[currentPatient].consent = !patients[currentPatient].consent;
   updateConsentUI();
@@ -704,7 +850,7 @@ function renderPatientsTable() {
   tbody.innerHTML = Object.values(patients).map(p => {
     const cls = p.consent ? 'consent-granted' : 'consent-pending';
     const txt = p.consent ? 'granted' : 'pending';
-    return `<tr><td>${p.id}</td><td>${p.institution}</td><td>${p.age}</td><td>${p.gender}</td><td>${p.diagnosis}</td><td><span class="consent-pill ${cls}">${txt}</span></td><td>2025-11-14</td></tr>`;
+    return `<tr><td>${p.id}</td><td>${p.institution}</td><td>${p.age}</td><td>${p.gender}</td><td>${p.diagnosis}</td><td><span class="consent-pill ${cls}">${txt}</span></td><td>${p.createdAt || '2025-11-14'}</td></tr>`;
   }).join('');
 }
 
@@ -718,6 +864,9 @@ function runClinicalQuery() {
   document.getElementById('queryResponse').style.display = 'block';
   document.getElementById('queryModelBadge').className = 'model-badge apertus';
   document.getElementById('queryModelBadge').textContent = 'Apertus clinical assistant (template mode)';
+  globalStats.queries++;
+  globalStats.responses++;
+  updateOverviewStats();
 }
 
 function grantPatientChatConsent() {
