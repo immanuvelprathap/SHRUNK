@@ -102,13 +102,23 @@ mh = H - header_h - 56
 draw.text((mx, my), 'CLINICAL INTELLIGENCE DOCUMENT', font=font_kicker, fill=accent)
 draw.text((mx, my+24), 'One question, one continuous answer', font=font_title, fill=text)
 
+# stats row
+stats = [('Patients','1'),('Clinical Notes','23'),('Queries','13'),('Responses','13'),('Clinics','3'),('Logs','147')]
+stat_w = (mw - (len(stats)-1)*14) // len(stats)
+for i, (label, val) in enumerate(stats):
+    sx = mx + i*(stat_w+14)
+    sy = my + 72
+    draw.rounded_rectangle([sx, sy, sx+stat_w, sy+62], radius=14, fill=surface, outline=line)
+    draw.text((sx+12, sy+10), val, font=font_title, fill=primary)
+    draw.text((sx+12, sy+42), label.upper(), font=font_tiny, fill=muted)
+
 # grid of 10 mini cards
 cols = 2
 rows = 5
 card_w = (mw - 16) // cols
-card_h = (mh - 90 - 16) // rows
+card_h = (mh - 90 - 16 - 78) // rows
 x = mx
-y = my + 72
+y = my + 148
 blocks = [
     ('Clinical Question', 'What is the overall clinical picture and what should I do next?'),
     ('Retrieved Evidence', '• NOTE_000092_002: passive SI, sleep 4.5h\n• NOTE_000092_007: stopped Sertraline\n• CHAT_000092_014: worse on Tuesdays'),
