@@ -25,11 +25,11 @@ def get_font(size):
     except Exception:
         return ImageFont.load_default()
 
-font_title = get_font(26)
-font_kicker = get_font(16)
-font_body = get_font(18)
-font_small = get_font(14)
-font_tiny = get_font(12)
+font_title = get_font(24)
+font_kicker = get_font(15)
+font_body = get_font(16)
+font_small = get_font(13)
+font_tiny = get_font(11)
 
 def text_length(t, font):
     try:
@@ -37,53 +37,78 @@ def text_length(t, font):
     except Exception:
         return len(t) * font.size * 0.55
 
-# sidebar
-sb_w = 240
+# palette
 surface = '#0d1628'
+surface_soft = 'rgba(148,163,184,0.08)'
 text = '#f1f5f9'
 muted = '#93a4bc'
 primary = '#38bdf8'
 accent = '#2dd4bf'
+gold = '#f5b15c'
+risk = '#f87171'
+line = (148,163,184,46)
+
+# sidebar
+sb_w = 250
 draw.rectangle([0, 0, sb_w, H], fill=surface)
-draw.text((30, 30), 'SHRUNK', font=font_title, fill=text)
-draw.text((30, 66), 'SOVEREIGN CLINICAL INTELLIGENCE', font=font_tiny, fill=muted)
-nav = ['Overview', 'Clinical Intelligence', 'Patient Chat', 'XAI', 'CEAI', 'Federation']
-y = 130
-for item in nav:
-    if item == 'Clinical Intelligence':
-        draw.rounded_rectangle([20, y, sb_w-20, y+36], radius=10, fill=(148,163,184,18))
-    draw.text((34, y+8), item, font=font_small, fill=text if item=='Clinical Intelligence' else muted)
-    y += 46
-draw.rounded_rectangle([20, H-110, sb_w-20, H-30], radius=12, fill=(45,212,191,20), outline=(45,212,191,64))
-draw.text((30, H-90), 'PHI-sealed on-premise node.', font=font_tiny, fill=accent)
-draw.text((30, H-68), 'Patient data never leaves', font=font_tiny, fill=accent)
-draw.text((30, H-46), 'this clinic.', font=font_tiny, fill=accent)
+draw.text((28, 28), 'SHRUNK', font=font_title, fill=text)
+draw.text((28, 62), 'SOVEREIGN CLINICAL INTELLIGENCE', font=font_tiny, fill=muted)
+
+nav_items = [
+    ('Dashboard', True),
+    ('Patients', False),
+    ('Clinical Query', False),
+    ('Patient Chat Bot', False),
+    ('Doctor Chat Bot', False),
+    ('Sovereign LLM', False),
+    ('Teacher & Student', False),
+    ('XAI', False),
+    ('CEAI', False),
+    ('Federated Metrics', False),
+    ('Multi-User Chat', False),
+    ('Architecture', False),
+    ('Settings', False),
+    ('Clear Database', False)
+]
+y = 115
+for item, active in nav_items:
+    if active:
+        draw.rounded_rectangle([16, y, sb_w-16, y+32], radius=10, fill=(148,163,184,18))
+        draw.text((34, y+7), item, font=font_small, fill=text)
+    else:
+        draw.text((34, y+7), item, font=font_small, fill=muted)
+    y += 38
+
+draw.rounded_rectangle([16, H-100, sb_w-16, H-30], radius=12, fill=(45,212,191,20), outline=(45,212,191,64))
+draw.text((26, H-82), 'PHI-sealed on-premise node.', font=font_tiny, fill=accent)
+draw.text((26, H-62), 'Patient data never leaves', font=font_tiny, fill=accent)
+draw.text((26, H-42), 'this clinic.', font=font_tiny, fill=accent)
 
 # header
-header_h = 80
+header_h = 78
 draw.rectangle([sb_w, 0, W, header_h], fill=(4,7,15,230))
-draw.text((sb_w+30, 22), 'Clinical Intelligence Dashboard', font=font_title, fill=text)
-draw.text((sb_w+30, 54), 'Lena M. · PATIENT_000092', font=font_small, fill=muted)
-draw.rounded_rectangle([W-260, 22, W-40, 58], radius=8, fill=primary)
-draw.text((W-240, 30), 'Run Clinical Query', font=font_small, fill='#04121a')
-draw.rounded_rectangle([W-430, 22, W-280, 58], radius=8, outline=(45,212,191,90))
-draw.text((W-410, 30), 'Consent: granted', font=font_small, fill=accent)
+draw.text((sb_w+28, 20), 'Clinical Intelligence Dashboard', font=font_title, fill=text)
+draw.text((sb_w+28, 50), 'Lena M. · PATIENT_000092', font=font_small, fill=muted)
+draw.rounded_rectangle([W-270, 20, W-40, 56], radius=8, fill=primary)
+draw.text((W-250, 29), 'Run Clinical Query', font=font_small, fill='#04121a')
+draw.rounded_rectangle([W-440, 20, W-290, 56], radius=8, outline=(45,212,191,90))
+draw.text((W-420, 29), 'Consent: granted', font=font_small, fill=accent)
 
 # main content
-mx, my = sb_w + 30, header_h + 30
-mw = W - sb_w - 60
-mh = H - header_h - 60
+mx, my = sb_w + 28, header_h + 28
+mw = W - sb_w - 56
+mh = H - header_h - 56
 
 draw.text((mx, my), 'CLINICAL INTELLIGENCE DOCUMENT', font=font_kicker, fill=accent)
-draw.text((mx, my+26), 'One question, one continuous answer', font=font_title, fill=text)
+draw.text((mx, my+24), 'One question, one continuous answer', font=font_title, fill=text)
 
 # grid of 10 mini cards
 cols = 2
 rows = 5
-card_w = (mw - 20) // cols
-card_h = (mh - 100 - 20) // rows
+card_w = (mw - 16) // cols
+card_h = (mh - 90 - 16) // rows
 x = mx
-y = my + 80
+y = my + 72
 blocks = [
     ('Clinical Question', 'What is the overall clinical picture and what should I do next?'),
     ('Retrieved Evidence', '• NOTE_000092_002: passive SI, sleep 4.5h\n• NOTE_000092_007: stopped Sertraline\n• CHAT_000092_014: worse on Tuesdays'),
@@ -96,6 +121,7 @@ blocks = [
     ('Clinical Workflow', 'Onboarded 2025-11 · 14 notes · 23 chat entries · 1 pending consent.'),
     ('Sources', 'NOTE_000092_002, NOTE_000092_007, CHAT_000092_014, EPD_SUMMARY_000092')
 ]
+
 def draw_wrapped_text(cx, cy, body, max_w, start_y):
     ly = start_y
     paragraphs = body.split('\n')
@@ -107,26 +133,26 @@ def draw_wrapped_text(cx, cy, body, max_w, start_y):
             if text_length(test, font_small) > max_w:
                 if line:
                     draw.text((cx, ly), line, font=font_small, fill=muted)
-                    ly += 20
+                    ly += 18
                 line = word
-                if ly > cy + card_h - 20:
+                if ly > cy + card_h - 18:
                     return
             else:
                 line = test
         if line:
             draw.text((cx, ly), line, font=font_small, fill=muted)
-            ly += 22
-        if ly > cy + card_h - 20:
+            ly += 20
+        if ly > cy + card_h - 18:
             return
 
 for i, (title, body) in enumerate(blocks):
-    cx = x + (i % cols) * (card_w + 10)
-    cy = y + (i // cols) * (card_h + 10)
+    cx = x + (i % cols) * (card_w + 8)
+    cy = y + (i // cols) * (card_h + 8)
     # card surface with subtle shadow
-    draw.rounded_rectangle([cx+2, cy+3, cx+card_w, cy+card_h], radius=18, fill=(0,0,0,80))
-    draw.rounded_rectangle([cx, cy, cx+card_w, cy+card_h], radius=18, fill=surface, outline=(148,163,184,46))
-    draw.text((cx+16, cy+14), title.upper(), font=font_tiny, fill=accent)
-    draw_wrapped_text(cx+16, cy, body, card_w - 36, cy + 40)
+    draw.rounded_rectangle([cx+2, cy+3, cx+card_w, cy+card_h], radius=16, fill=(0,0,0,80))
+    draw.rounded_rectangle([cx, cy, cx+card_w, cy+card_h], radius=16, fill=surface, outline=line)
+    draw.text((cx+14, cy+12), title.upper(), font=font_tiny, fill=accent)
+    draw_wrapped_text(cx+14, cy, body, card_w - 32, cy + 36)
 
 # composite
 bg.paste(img, (0,0), img)

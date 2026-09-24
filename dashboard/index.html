@@ -11,9 +11,9 @@
 :root {
   --bg: #04070f;
   --bg-2: #0a1120;
-  --surface: rgba(13,22,40,0.9);
+  --surface: rgba(13,22,40,0.92);
   --surface-solid: #0d1628;
-  --surface-soft: rgba(148,163,184,0.07);
+  --surface-soft: rgba(148,163,184,0.08);
   --text: #f1f5f9;
   --text-muted: #93a4bc;
   --primary: #38bdf8;
@@ -26,118 +26,165 @@
   --shadow: 0 40px 90px -20px rgba(0,0,0,0.65);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; font-family: Inter, sans-serif; color: var(--text);
+html, body { height: 100%; font-family: Inter, sans-serif; color: var(--text); background-color: var(--bg); }
+body {
   background:
-    radial-gradient(circle at 30% 25%, rgba(56,189,248,0.09) 0%, transparent 42%),
-    radial-gradient(circle at 72% 78%, rgba(45,212,191,0.08) 0%, transparent 42%),
+    radial-gradient(circle at 30% 25%, rgba(56,189,248,0.10) 0%, transparent 42%),
+    radial-gradient(circle at 72% 78%, rgba(45,212,191,0.09) 0%, transparent 42%),
     radial-gradient(circle at 50% 50%, var(--bg-2) 0%, var(--bg) 75%);
 }
 .app { display: flex; min-height: 100vh; }
 .sidebar {
-  width: 260px; background: var(--surface-solid); border-right: 1px solid var(--line);
+  width: 270px; background: var(--surface-solid); border-right: 1px solid var(--line);
   display: flex; flex-direction: column; position: fixed; inset: 0 auto 0 0; z-index: 50;
 }
-.brand { padding: 26px 24px; border-bottom: 1px solid var(--line); }
-.brand .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: 0.04em; color: var(--text); }
-.brand .tag { font-size: 0.66rem; color: var(--text-muted); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 4px; }
-.nav { flex: 1; padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; }
-.nav a, .nav button {
-  display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px;
-  color: var(--text-muted); text-decoration: none; font-size: 0.92rem; font-weight: 600;
-  background: transparent; border: none; cursor: pointer; transition: 0.2s;
+.brand { padding: 24px 22px; border-bottom: 1px solid var(--line); }
+.brand .logo { font-size: 1.45rem; font-weight: 800; letter-spacing: 0.04em; color: var(--text); }
+.brand .tag { font-size: 0.64rem; color: var(--text-muted); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 4px; }
+.nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 3px; overflow-y: auto; }
+.nav button {
+  display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px;
+  color: var(--text-muted); text-decoration: none; font-size: 0.86rem; font-weight: 600;
+  background: transparent; border: none; cursor: pointer; transition: 0.2s; text-align: left;
 }
-.nav a:hover, .nav a.active, .nav button:hover, .nav button.active { background: var(--surface-soft); color: var(--text); }
+.nav button:hover, .nav button.active { background: var(--surface-soft); color: var(--text); }
 .nav .icon { width: 22px; text-align: center; font-size: 1.05rem; }
-.on-prem { margin: 16px; padding: 14px; border-radius: 14px; background: rgba(45,212,191,0.08); border: 1px solid rgba(45,212,191,0.25); color: var(--accent); font-size: 0.78rem; line-height: 1.45; }
-.main { margin-left: 260px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
+.nav .danger { color: var(--risk); }
+.nav .danger:hover { background: rgba(248,113,113,0.10); }
+.on-prem { margin: 14px; padding: 13px; border-radius: 14px; background: rgba(45,212,191,0.08); border: 1px solid rgba(45,212,191,0.25); color: var(--accent); font-size: 0.76rem; line-height: 1.45; }
+.main { margin-left: 270px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
 header {
-  position: sticky; top: 0; z-index: 40; background: rgba(4,7,15,0.92); backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--line); padding: 18px 32px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;
+  position: sticky; top: 0; z-index: 40; background: rgba(4,7,15,0.94); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line); padding: 18px 30px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;
 }
 header h1 { font-size: 1.25rem; font-weight: 700; color: var(--text); }
 header .sub { font-size: 0.78rem; color: var(--text-muted); }
-.controls { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-select, button, .pill {
-  font-family: inherit; font-size: 0.88rem; font-weight: 600; border-radius: 10px; padding: 10px 16px;
+.controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+select, input, button, .pill, textarea {
+  font-family: inherit; font-size: 0.86rem; font-weight: 600; border-radius: 10px; padding: 10px 14px;
   background: var(--surface-soft); color: var(--text); border: 1px solid var(--line);
 }
+select, input, textarea { outline: none; }
+select:focus, input:focus, textarea:focus { border-color: var(--primary); }
 button { cursor: pointer; background: linear-gradient(120deg, var(--primary), var(--accent)); color: #04121a; border: none; transition: 0.2s; }
 button:hover { filter: brightness(1.1); transform: translateY(-1px); }
 button.secondary { background: transparent; color: var(--text); border: 2px solid var(--line-strong); }
-button.secondary:hover { border-color: var(--accent); color: var(--accent); }
-.pill { display: inline-flex; align-items: center; gap: 8px; }
+button.secondary:hover { border-color: var(--accent); color: var(--accent); background: rgba(45,212,191,0.06); }
+button.danger { background: transparent; color: var(--risk); border: 2px solid rgba(248,113,113,0.4); }
+button.danger:hover { background: rgba(248,113,113,0.10); }
+button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; filter: none; }
+.pill { display: inline-flex; align-items: center; gap: 8px; font-size: 0.82rem; }
 .pill.on { background: rgba(45,212,191,0.12); color: var(--accent); border-color: rgba(45,212,191,0.35); }
 .pill.off { background: rgba(248,113,113,0.08); color: var(--risk); border-color: rgba(248,113,113,0.25); }
-.content { padding: 32px; flex: 1; }
-.panel { display: none; }
-.panel.active { display: block; animation: fadeIn 0.35s ease; }
+.content { padding: 28px 30px; flex: 1; }
+.panel { display: none; animation: fadeIn 0.35s ease; }
+.panel.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-.kicker { display: inline-flex; align-items: center; gap: 10px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+.kicker { display: inline-flex; align-items: center; gap: 10px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
 .kicker::before { content: ''; width: 28px; height: 2px; background: var(--accent); border-radius: 2px; }
-h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 20px; }
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px,1fr)); gap: 18px; margin-bottom: 32px; }
+h2 { font-size: 1.45rem; font-weight: 800; margin-bottom: 18px; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 16px; margin-bottom: 26px; }
 .stat-card {
-  background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px;
-  box-shadow: var(--shadow); border-top: 3px solid var(--primary);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px;
+  box-shadow: var(--shadow); border-top: 3px solid var(--primary); text-align: center;
 }
-.stat-card .value { font-size: 2.2rem; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
-.stat-card .label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.stat-card .value { font-size: 2rem; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+.stat-card .label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
 .card {
-  background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px; margin-bottom: 18px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px; margin-bottom: 16px;
   box-shadow: var(--shadow);
 }
-.card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: var(--text); display: flex; align-items: center; gap: 10px; }
+.card h3 { font-size: 0.98rem; font-weight: 700; margin-bottom: 12px; color: var(--text); display: flex; align-items: center; gap: 10px; }
 .card h3 .num { width: 26px; height: 26px; border-radius: 50%; background: var(--surface-soft); color: var(--primary); font-size: 0.72rem; display: flex; align-items: center; justify-content: center; }
-.card p, .card li { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+.card p, .card li { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
 .card ul { list-style: none; padding-left: 0; }
 .card li { padding: 6px 0; border-bottom: 1px solid var(--line); }
 .card li:last-child { border: none; }
-.document-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 18px;
-}
-.document-card {
-  background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
-  box-shadow: var(--shadow); transition: 0.2s;
-}
+.document-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px,1fr)); gap: 16px; }
+.document-card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); transition: 0.2s; }
 .document-card:hover { border-color: var(--line-strong); }
-.doc-header {
-  padding: 16px 20px; background: var(--surface-soft); border-bottom: 1px solid var(--line);
-  display: flex; justify-content: space-between; align-items: center; cursor: pointer;
-}
-.doc-header h4 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); }
+.doc-header { padding: 15px 18px; background: var(--surface-soft); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.doc-header h4 { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); }
 .doc-header .chevron { color: var(--text-muted); transition: 0.2s; }
 .document-card.open .chevron { transform: rotate(180deg); }
 .doc-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
 .document-card.open .doc-body { max-height: 600px; }
-.doc-body .inner { padding: 20px; font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; }
+.doc-body .inner { padding: 18px; font-size: 0.86rem; color: var(--text-muted); line-height: 1.65; }
 .doc-body .inner strong { color: var(--text); }
+table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+th { background: var(--surface-soft); color: var(--accent); font-weight: 700; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.04em; }
+tr:hover td { background: var(--surface-soft); }
+.consent-pill { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.74rem; font-weight: 700; }
+.consent-granted { background: rgba(45,212,191,0.14); color: var(--accent); }
+.consent-pending { background: rgba(245,177,92,0.14); color: var(--gold); }
 .timeline { position: relative; padding-left: 28px; }
 .timeline::before { content: ''; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 2px; background: var(--line-strong); }
-.tl-item { position: relative; padding-bottom: 22px; }
+.tl-item { position: relative; padding-bottom: 20px; }
 .tl-item::before { content: ''; position: absolute; left: -24px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--primary); border: 2px solid var(--bg); }
-.tl-item .time { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.tl-item .time { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
 .tl-item .type { font-size: 0.78rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-.tl-item .body { font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; }
-.tl-item .tag { display: inline-block; margin-top: 6px; padding: 3px 8px; border-radius: 10px; font-size: 0.68rem; font-weight: 700; background: var(--surface-soft); color: var(--primary); }
+.tl-item .body { font-size: 0.83rem; color: var(--text-muted); line-height: 1.5; }
+.tl-item .tag { display: inline-block; margin-top: 6px; padding: 3px 8px; border-radius: 10px; font-size: 0.66rem; font-weight: 700; background: var(--surface-soft); color: var(--primary); }
 .tl-item.home .tag { color: var(--accent); background: rgba(45,212,191,0.08); }
 .tl-item.between .tag { color: var(--gold); background: rgba(245,177,92,0.08); }
 .tl-item.after .tag { color: var(--primary-2); background: rgba(129,140,248,0.08); }
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-.federation-map { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; padding: 24px; background: var(--surface-soft); border-radius: 16px; }
-.node {
-  width: 140px; padding: 16px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line);
-  text-align: center; font-size: 0.8rem; color: var(--text-muted);
-}
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.federation-map { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; padding: 22px; background: var(--surface-soft); border-radius: 16px; }
+.node { width: 150px; padding: 16px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); text-align: center; font-size: 0.8rem; color: var(--text-muted); }
 .node .name { font-weight: 700; color: var(--text); margin-bottom: 6px; }
 .node .status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); margin-right: 4px; }
-.node .lock { font-size: 0.9rem; color: var(--primary); margin-top: 8px; }
 .arrow { color: var(--line-strong); font-size: 1.4rem; }
-.xai-highlight { background: rgba(45,212,191,0.1); border-left: 3px solid var(--accent); padding: 10px 14px; border-radius: 0 10px 10px 0; margin: 10px 0; }
+.xai-highlight { background: rgba(45,212,191,0.08); border-left: 3px solid var(--accent); padding: 10px 14px; border-radius: 0 10px 10px 0; margin: 10px 0; }
 .ceai-score { display: flex; align-items: center; gap: 14px; }
 .score-ring { width: 80px; height: 80px; border-radius: 50%; background: conic-gradient(var(--primary) 0% 82%, var(--line) 82% 100%); display: flex; align-items: center; justify-content: center; }
 .score-ring span { width: 64px; height: 64px; border-radius: 50%; background: var(--surface-solid); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--text); }
-footer { padding: 20px 32px; border-top: 1px solid var(--line); color: var(--text-muted); font-size: 0.75rem; text-align: center; }
-@media (max-width: 900px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; } .document-grid, .two-col { grid-template-columns: 1fr; } }
+.chat-box { display: flex; flex-direction: column; gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px; min-height: 360px; }
+.messages { flex: 1; overflow-y: auto; max-height: 360px; display: flex; flex-direction: column; gap: 12px; }
+.chat-msg { max-width: 80%; padding: 12px 16px; border-radius: 14px; line-height: 1.5; font-size: 0.88rem; }
+.chat-msg.user { align-self: flex-end; background: linear-gradient(120deg, var(--primary), var(--accent)); color: #04121a; border-bottom-right-radius: 4px; }
+.chat-msg.bot { align-self: flex-start; background: var(--surface-soft); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+.chat-msg .meta { font-size: 0.7rem; opacity: 0.8; margin-top: 8px; }
+.chat-input-row { display: flex; gap: 10px; }
+.chat-input-row input, .chat-input-row textarea { flex: 1; }
+.onboarding { background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.25); border-radius: 14px; padding: 18px; margin-bottom: 18px; color: var(--text-muted); }
+.onboarding h3 { color: var(--primary); margin-bottom: 10px; font-size: 1rem; }
+.onboarding ol { margin-left: 18px; line-height: 1.7; }
+.onboarding li { margin-bottom: 6px; }
+.form-group { margin-bottom: 16px; }
+label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.85rem; color: var(--text); }
+textarea { width: 100%; min-height: 120px; resize: vertical; }
+.response-content { background: var(--surface-solid); border-left: 4px solid var(--primary); padding: 18px; border-radius: 0 12px 12px 0; white-space: pre-wrap; font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+.model-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 700; margin-bottom: 14px; }
+.model-badge.apertus { background: rgba(45,212,191,0.12); color: var(--accent); border: 1px solid rgba(45,212,191,0.3); }
+.model-badge.fallback { background: rgba(245,177,92,0.12); color: var(--gold); border: 1px solid rgba(245,177,92,0.3); }
+.info-banner { background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.25); border-radius: 12px; padding: 14px 18px; margin-bottom: 18px; color: var(--text-muted); }
+.warning-banner { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); border-radius: 12px; padding: 14px 18px; margin-bottom: 18px; color: var(--risk); }
+.layer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 16px; }
+.layer-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; border-left: 4px solid var(--primary); }
+.layer-card h3 { margin-bottom: 8px; font-size: 1rem; color: var(--text); }
+.settings-section { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px; margin-bottom: 18px; }
+.settings-section h3 { margin-bottom: 16px; font-size: 1.05rem; color: var(--primary); }
+.setting-item { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.setting-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.setting-label { font-weight: 600; color: var(--text); margin-bottom: 6px; display: block; font-size: 0.9rem; }
+.setting-desc { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px; }
+.model-row { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 14px; align-items: center; margin-bottom: 24px; }
+.model-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; text-align: center; }
+.model-card .icon { font-size: 2rem; margin-bottom: 8px; }
+.model-card h4 { font-size: 1rem; margin-bottom: 6px; color: var(--text); }
+.model-card p { font-size: 0.8rem; color: var(--text-muted); }
+.arrow-box { text-align: center; color: var(--accent); font-size: 1.4rem; font-weight: 700; }
+.arrow-box .label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 16px; margin-bottom: 18px; }
+.status-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; border-left: 4px solid var(--primary); }
+.status-card h4 { font-size: 0.95rem; margin-bottom: 8px; color: var(--text); }
+.status-card .value { font-weight: 700; color: var(--primary); word-break: break-word; font-size: 0.9rem; }
+.status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-top: 8px; }
+.badge-ok { background: rgba(45,212,191,0.14); color: var(--accent); border: 1px solid rgba(45,212,191,0.3); }
+.badge-warn { background: rgba(245,177,92,0.14); color: var(--gold); border: 1px solid rgba(245,177,92,0.3); }
+footer { padding: 18px 30px; border-top: 1px solid var(--line); color: var(--text-muted); font-size: 0.74rem; text-align: center; }
+@media (max-width: 900px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; } .document-grid, .two-col, .model-row { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -147,13 +194,21 @@ footer { padding: 20px 32px; border-top: 1px solid var(--line); color: var(--tex
       <div class="logo">SHRUNK</div>
       <div class="tag">Sovereign Clinical Intelligence</div>
     </div>
-    <nav class="nav">
-      <button class="nav-item" data-tab="overview"><span class="icon">&#x25A6;</span> Overview</button>
-      <button class="nav-item active" data-tab="intelligence"><span class="icon">&#x1F4CB;</span> Clinical Intelligence</button>
-      <button class="nav-item" data-tab="chat"><span class="icon">&#x1F4AC;</span> Patient Chat</button>
+    <nav class="nav" id="nav">
+      <button class="nav-item active" data-tab="intelligence"><span class="icon">&#x25A6;</span> Dashboard</button>
+      <button class="nav-item" data-tab="patients"><span class="icon">&#x1F465;</span> Patients</button>
+      <button class="nav-item" data-tab="query"><span class="icon">&#x2753;</span> Clinical Query</button>
+      <button class="nav-item" data-tab="patient-chat"><span class="icon">&#x1F9E0;</span> Patient Chat Bot</button>
+      <button class="nav-item" data-tab="doctor-chat"><span class="icon">&#x1F48A;</span> Doctor Chat Bot</button>
+      <button class="nav-item" data-tab="sovereign"><span class="icon">&#x2699;</span> Sovereign LLM</button>
+      <button class="nav-item" data-tab="teacher-student"><span class="icon">&#x1F4DA;</span> Teacher &amp; Student</button>
       <button class="nav-item" data-tab="xai"><span class="icon">&#x1F50D;</span> XAI</button>
       <button class="nav-item" data-tab="ceai"><span class="icon">&#x1F4C8;</span> CEAI</button>
-      <button class="nav-item" data-tab="federation"><span class="icon">&#x1F91D;</span> Federation</button>
+      <button class="nav-item" data-tab="federated"><span class="icon">&#x1F91D;</span> Federated Metrics</button>
+      <button class="nav-item" data-tab="multi-user-chat"><span class="icon">&#x1F5E3;</span> Multi-User Chat</button>
+      <button class="nav-item" data-tab="architecture"><span class="icon">&#x1F3DB;</span> Architecture</button>
+      <button class="nav-item" data-tab="settings"><span class="icon">&#x2696;</span> Settings</button>
+      <button class="nav-item danger" data-tab="clear"><span class="icon">&#x1F5D1;</span> Clear Database</button>
     </nav>
     <div class="on-prem">
       <strong>PHI-sealed on-premise node.</strong><br>
@@ -165,7 +220,7 @@ footer { padding: 20px 32px; border-top: 1px solid var(--line); color: var(--tex
     <header>
       <div>
         <h1>Clinical Intelligence Dashboard</h1>
-        <div class="sub" id="subtitle">Select a patient to view the longitudinal clinical story.</div>
+        <div class="sub" id="subtitle">Viewing longitudinal record for PATIENT_000092 · Lena M.</div>
       </div>
       <div class="controls">
         <select id="patientSelect"></select>
@@ -176,37 +231,154 @@ footer { padding: 20px 32px; border-top: 1px solid var(--line); color: var(--tex
     </header>
 
     <div class="content">
-      <!-- OVERVIEW -->
-      <section class="panel" id="overview">
-        <div class="kicker">Clinic Overview</div>
-        <h2>At-a-glance sovereign intelligence</h2>
-        <div class="stats-grid">
-          <div class="stat-card"><div class="value" id="stPatients">0</div><div class="label">Patients</div></div>
-          <div class="stat-card"><div class="value" id="stNotes">0</div><div class="label">Clinical Notes</div></div>
-          <div class="stat-card"><div class="value" id="stQueries">0</div><div class="label">Queries</div></div>
-          <div class="stat-card"><div class="value" id="stResponses">0</div><div class="label">Responses</div></div>
-          <div class="stat-card"><div class="value" id="stClinics">0</div><div class="label">Federated Clinics</div></div>
-          <div class="stat-card"><div class="value" id="stLogs">0</div><div class="label">System Logs</div></div>
-        </div>
-        <div class="card">
-          <h3><span class="num">1</span>Clinical Workflow</h3>
-          <p>Patients onboard through the clinic app with verified identity and consent. Clinicians start secure, timed sessions and query the Apertus-powered longitudinal record with XAI and CEAI transparency. Every answer is source-linked and every data movement is consent-gated.</p>
-        </div>
-      </section>
-
-      <!-- CLINICAL INTELLIGENCE -->
+      <!-- DASHBOARD / CLINICAL INTELLIGENCE -->
       <section class="panel active" id="intelligence">
         <div class="kicker">Clinical Intelligence Document</div>
         <h2>One question, one continuous answer</h2>
         <div class="document-grid" id="docGrid"></div>
       </section>
 
-      <!-- PATIENT CHAT -->
-      <section class="panel" id="chat">
-        <div class="kicker">Longitudinal Patient Tracking</div>
-        <h2>Between sessions, after sessions, at home</h2>
+      <!-- PATIENTS -->
+      <section class="panel" id="patients">
+        <div class="kicker">Local Clinic Registry</div>
+        <h2>Patients</h2>
         <div class="card">
-          <div class="timeline" id="chatTimeline"></div>
+          <table>
+            <thead>
+              <tr><th>Patient ID</th><th>Institution</th><th>Age</th><th>Gender</th><th>Primary Diagnosis</th><th>Consent</th><th>Created</th></tr>
+            </thead>
+            <tbody id="patientsTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- CLINICAL QUERY -->
+      <section class="panel" id="query">
+        <div class="kicker">Evidence-Based Clinical Query</div>
+        <h2>Ask a patient-specific question</h2>
+        <div class="card">
+          <div class="form-group">
+            <label for="queryPatient">Select Patient</label>
+            <select id="queryPatient"></select>
+          </div>
+          <div class="form-group">
+            <label for="queryText">Clinical Question</label>
+            <textarea id="queryText" placeholder="Enter your clinical question (e.g., 'What is the overall clinical picture and what should I do next?')">What is the overall clinical picture and what should I do next?</textarea>
+          </div>
+          <button onclick="runClinicalQuery()" id="querySubmitBtn">Submit Query</button>
+        </div>
+        <div id="queryResponse" style="display:none;">
+          <div class="card">
+            <div class="model-badge apertus" id="queryModelBadge">Apertus clinical assistant</div>
+            <div class="response-content" id="queryResponseContent"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PATIENT CHAT BOT -->
+      <section class="panel" id="patient-chat">
+        <div class="kicker">Patient Companion</div>
+        <h2>On-premise, consent-gated support</h2>
+        <div class="onboarding">
+          <h3>How to use the Patient Chat</h3>
+          <ol>
+            <li>Your records stay local. SHRUNK runs on the clinic's controlled on-premise system.</li>
+            <li>Provide or update consent before your visit. The application records your preference.</li>
+            <li>This chat is for general support and non-urgent questions. It is not a diagnosis.</li>
+            <li>Your clinician sees the conversation only with consent and an active secure session.</li>
+          </ol>
+        </div>
+        <div class="card">
+          <div style="margin-bottom:12px;"><strong>Consent status:</strong> <span id="patientChatConsentText">Pending</span></div>
+          <button class="secondary" onclick="grantPatientChatConsent()" style="margin-bottom:16px;">Grant digital consent</button>
+          <div class="chat-box">
+            <div class="messages" id="patientChatMessages">
+              <div class="chat-msg bot">Hello. I'm SHRUNK AI, your on-premise clinical assistant. For urgent concerns, contact your clinician or emergency services.</div>
+            </div>
+            <div class="chat-input-row">
+              <input type="text" id="patientChatInput" placeholder="How are you feeling?" onkeypress="if(event.key==='Enter') sendPatientChat()">
+              <button onclick="sendPatientChat()">Send</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DOCTOR CHAT BOT -->
+      <section class="panel" id="doctor-chat">
+        <div class="kicker">Doctor Workspace</div>
+        <h2>Secure clinician session with XAI + CEAI</h2>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:16px;">
+            <div><strong>Secure session:</strong> <span id="doctorSessionStatus">not started</span></div>
+            <div style="display:flex; gap:10px;">
+              <input type="text" id="doctorId" value="dr.clinic" placeholder="Clinician ID" style="width:130px;">
+              <input type="password" id="doctorPin" value="0000" placeholder="PIN" style="width:80px;">
+              <button onclick="startDoctorSession()">Start Session</button>
+            </div>
+          </div>
+          <div class="warning-banner" id="doctorSessionWarning" style="display:none;">A secure session is required to query patient data.</div>
+          <div class="form-group">
+            <label>Patient</label>
+            <select id="doctorPatientSelect" onchange="loadDoctorPatient(this.value)"></select>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+            <button class="secondary" data-mode="clinical" onclick="setDoctorMode('clinical')" style="border-radius:20px; font-size:0.78rem;">Clinical</button>
+            <button class="secondary" data-mode="clinical_intelligence" onclick="setDoctorMode('clinical_intelligence')" style="border-radius:20px; font-size:0.78rem;">Clinical Intelligence</button>
+            <button class="secondary" data-mode="xai" onclick="setDoctorMode('xai')" style="border-radius:20px; font-size:0.78rem;">XAI</button>
+            <button class="secondary" data-mode="ceai" onclick="setDoctorMode('ceai')" style="border-radius:20px; font-size:0.78rem;">CEAI</button>
+          </div>
+          <div class="chat-box">
+            <div class="messages" id="doctorChatMessages"></div>
+            <div class="chat-input-row">
+              <input type="text" id="doctorChatInput" placeholder="Select a patient and start a session to chat..." disabled onkeypress="if(event.key==='Enter') sendDoctorChat()">
+              <button onclick="sendDoctorChat()" id="doctorChatSend" disabled>Ask</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SOVEREIGN LLM -->
+      <section class="panel" id="sovereign">
+        <div class="kicker">Swiss Sovereign Apertus Stack</div>
+        <h2>Sovereign LLM pipeline status</h2>
+        <div class="status-grid" id="sovereignGrid">
+          <div class="status-card"><h4>Teacher (Base)</h4><div class="value">swiss-ai/Apertus-8B-2509</div></div>
+          <div class="status-card"><h4>Teacher (Instruct)</h4><div class="value">swiss-ai/Apertus-8B-Instruct-2509</div></div>
+          <div class="status-card"><h4>Mental-Health LoRA</h4><div class="value">models/apertus_mental_health_lora</div><span class="status-badge badge-ok">EXISTS</span></div>
+          <div class="status-card"><h4>Current Apertus LLM</h4><div class="value">Apertus clinical assistant (template mode)</div><span class="status-badge badge-warn">NOT LOADED</span></div>
+          <div class="status-card"><h4>Kaggle Apertus 70B</h4><div class="value">Set USE_KAGGLE_APERTUS in .env</div><span class="status-badge badge-warn">NOT CONFIGURED</span></div>
+          <div class="status-card"><h4>Distilled Student</h4><div class="value">models/apertus_mental_health_student</div><span class="status-badge badge-warn">NOT DISTILLED</span></div>
+        </div>
+        <div class="card">
+          <h3><span class="num">S</span>Sovereign Actions</h3>
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="secondary" onclick="alert('Status refreshed (demo)')">Refresh Status</button>
+            <button class="secondary" onclick="runSovereignDemo()">Run SHRUNK Demo</button>
+            <button class="secondary" onclick="alert('Student distillation started (demo)')">Distill Student</button>
+          </div>
+        </div>
+        <div class="card" id="sovereignDemoOutput" style="display:none;">
+          <h3><span class="num">D</span>Demo Output</h3>
+          <div class="response-content" id="sovereignDemoContent"></div>
+        </div>
+      </section>
+
+      <!-- TEACHER & STUDENT -->
+      <section class="panel" id="teacher-student">
+        <div class="kicker">Compression Pipeline</div>
+        <h2>Teacher &amp; Student Models</h2>
+        <div class="card">
+          <div class="model-row">
+            <div class="model-card"><div class="icon">&#x1F4DA;</div><h4>Teacher (Apertus 8B / 70B)</h4><p>swiss-ai/Apertus-8B-2509 or unsloth/Apertus-70B-Instruct-2509-GGUF</p></div>
+            <div class="arrow-box"><span>&#x2192;</span><div class="label">LoRA fine-tune</div></div>
+            <div class="model-card"><div class="icon">&#x1F58C;</div><h4>Mental-Health Adapter</h4><p>Low-rank adapter on synthetic psychiatric EHR notes</p></div>
+            <div class="arrow-box"><span>&#x2192;</span><div class="label">Distill</div></div>
+            <div class="model-card"><div class="icon">&#x1F9E0;</div><h4>Student (SmolLM)</h4><p>HuggingFaceTB/SmolLM-135M-Instruct for edge / 4 GB GPUs</p></div>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="card"><h3><span class="num">T</span>Teacher Model</h3><ul><li><strong>Base:</strong> swiss-ai/Apertus-8B-2509</li><li><strong>Instruct:</strong> swiss-ai/Apertus-8B-Instruct-2509</li><li><strong>Role:</strong> Generates high-quality clinical interpretation with safety guardrails.</li><li><strong>Deployment:</strong> Runs on Kaggle for 70B demos; local CPU mode for 8B requires &ge;16 GB RAM.</li></ul></div>
+          <div class="card"><h3><span class="num">S</span>Student Model</h3><ul><li><strong>Base:</strong> HuggingFaceTB/SmolLM-135M-Instruct</li><li><strong>Role:</strong> A small, efficient model that can run on the local 4 GB GPU for edge inference.</li><li><strong>Training:</strong> Distilled from the adapter-tuned teacher using synthetic psychiatric instruction data.</li></ul></div>
         </div>
       </section>
 
@@ -214,19 +386,20 @@ footer { padding: 20px 32px; border-top: 1px solid var(--line); color: var(--tex
       <section class="panel" id="xai">
         <div class="kicker">Explainable AI</div>
         <h2>Why the model said what it said</h2>
-        <div class="card">
-          <h3><span class="num">X</span>Evidence Highlights</h3>
-          <div class="xai-highlight">"Patient stopped Sertraline 3 days ago and sleep dropped below 5 hours — both features strongly influence the elevated risk signal."</div>
-          <div class="xai-highlight">"Previous medication response to Bupropion is a protective factor in the longitudinal timeline."</div>
+        <div class="two-col">
+          <div class="card"><h3><span class="num">A</span>Attention Weights</h3><p>Visualize which note segments, symptoms, risk terms, and medication names the model attended to during generation.</p></div>
+          <div class="card"><h3><span class="num">F</span>Feature Importance</h3><p>Gradient-based importance scores note count, diagnosis variety, medication burden, risk level, and query complexity.</p></div>
+          <div class="card"><h3><span class="num">R</span>Rationale Generation</h3><p>Produces a chain-of-thought, clinician-readable explanation that traces the path from retrieved evidence to interpretation.</p></div>
+          <div class="card"><h3><span class="num">C</span>Confidence Scoring</h3><p>Uncertainty quantification reports model certainty and flags low-confidence regions requiring verification.</p></div>
         </div>
         <div class="card">
-          <h3><span class="num">F</span>Feature Importance</h3>
-          <ul>
-            <li>Sleep < 5 hours — <strong>high</strong></li>
-            <li>Medication discontinuation — <strong>high</strong></li>
-            <li>Tuesday work stress pattern — <strong>moderate</strong></li>
-            <li>Prior Bupropion response — <strong>protective</strong></li>
-          </ul>
+          <h3><span class="num">X</span>Try XAI</h3>
+          <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:14px;">
+            <button class="secondary" onclick="generateXAIExplanation()">Generate Explanation</button>
+            <button class="secondary" onclick="showXAIAttention()">View Attention Weights</button>
+            <button class="secondary" onclick="showXAIFeatures()">Feature Importance</button>
+          </div>
+          <div class="response-content" id="xaiResult" style="display:none;"></div>
         </div>
       </section>
 
@@ -234,44 +407,126 @@ footer { padding: 20px 32px; border-top: 1px solid var(--line); color: var(--tex
       <section class="panel" id="ceai">
         <div class="kicker">Clinical Evidence Alignment Index</div>
         <h2>Evidence alignment, not blind confidence</h2>
-        <div class="two-col">
-          <div class="card">
-            <h3><span class="num">C</span>CEAI Score</h3>
-            <div class="ceai-score">
-              <div class="score-ring"><span>82</span></div>
-              <div>
-                <p><strong>Strong alignment</strong> between retrieved evidence and clinical interpretation.</p>
-                <p style="margin-top:8px;">Tier: <strong>Green · Actionable</strong></p>
-              </div>
+        <div class="card">
+          <div class="ceai-score">
+            <div class="score-ring"><span>82</span></div>
+            <div>
+              <p><strong>Strong alignment</strong> between retrieved evidence and clinical interpretation.</p>
+              <p style="margin-top:8px;">Tier: <strong>Green · Actionable</strong></p>
             </div>
           </div>
-          <div class="card">
-            <h3><span class="num">R</span>Reasoning Trace</h3>
-            <ol style="padding-left: 18px; font-size: 0.88rem; color: var(--text-muted); line-height: 1.7;">
-              <li>Retrieve longitudinal notes and patient-chat context.</li>
-              <li>Rank evidence by recency, source type, and risk relevance.</li>
-              <li>Compare interpretation against retrieved evidence.</li>
-              <li>Flag missing data and safety thresholds.</li>
-              <li>Generate clinician review recommendations.</li>
-            </ol>
-          </div>
+        </div>
+        <div class="card">
+          <h3><span class="num">R</span>Reasoning Trace</h3>
+          <ol style="padding-left:18px; font-size:0.86rem; color:var(--text-muted); line-height:1.7;">
+            <li>Retrieve longitudinal notes and patient-chat context.</li>
+            <li>Rank evidence by recency, source type, and risk relevance.</li>
+            <li>Compare interpretation against retrieved evidence.</li>
+            <li>Flag missing data and safety thresholds.</li>
+            <li>Generate clinician review recommendations.</li>
+          </ol>
         </div>
       </section>
 
-      <!-- FEDERATION -->
-      <section class="panel" id="federation">
+      <!-- FEDERATED METRICS -->
+      <section class="panel" id="federated">
         <div class="kicker">Federated Control</div>
         <h2>Intelligence moves, PHI stays sealed</h2>
         <div class="card">
           <h3><span class="num">N</span>Node Network</h3>
           <div class="federation-map">
-            <div class="node"><div class="name">Bern Day Clinic</div><span class="status"></span> Active<div class="lock">&#x1F510; PHI sealed</div></div>
+            <div class="node"><div class="name">Bern Day Clinic</div><span class="status"></span> Active<div style="margin-top:8px; color:var(--primary);">&#x1F510; PHI sealed</div></div>
             <div class="arrow">&#x2194;</div>
-            <div class="node"><div class="name">Zurich Hospital</div><span class="status" style="background:var(--gold)"></span> Peer<div class="lock">&#x1F510; Consent required</div></div>
+            <div class="node"><div class="name">Zurich Hospital</div><span class="status" style="background:var(--gold)"></span> Peer<div style="margin-top:8px; color:var(--gold);">&#x1F510; Consent required</div></div>
             <div class="arrow">&#x2194;</div>
-            <div class="node"><div class="name">Lausanne EPD</div><span class="status" style="background:var(--primary-2)"></span> Read-only<div class="lock">&#x1F510; Summary only</div></div>
+            <div class="node"><div class="name">Lausanne EPD</div><span class="status" style="background:var(--primary-2)"></span> Read-only<div style="margin-top:8px; color:var(--primary-2);">&#x1F510; Summary only</div></div>
           </div>
           <p style="margin-top:16px;">Only de-identified, consent-gated clinical insights cross the airlock. Raw notes, identifiers, and free-text patient context never leave the originating clinic.</p>
+        </div>
+        <div class="card">
+          <h3><span class="num">M</span>Metrics</h3>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="value">13</div><div class="label">Queries Processed</div></div>
+            <div class="stat-card"><div class="value">2</div><div class="label">Patients</div></div>
+            <div class="stat-card"><div class="value">23</div><div class="label">Clinical Notes</div></div>
+            <div class="stat-card"><div class="value">3</div><div class="label">Federated Rounds</div></div>
+            <div class="stat-card"><div class="value">3</div><div class="label">Active Hospitals</div></div>
+            <div class="stat-card"><div class="value">1.6000</div><div class="label">Final Loss</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MULTI-USER CHAT -->
+      <section class="panel" id="multi-user-chat">
+        <div class="kicker">Concurrent Users</div>
+        <h2>Multi-User Chatbot Simulation</h2>
+        <div class="card">
+          <div style="display:grid; grid-template-columns:260px 1fr; gap:20px;">
+            <div>
+              <h3 style="margin-bottom:12px;">Available Users</h3>
+              <div id="multiUserList" style="display:flex; flex-direction:column; gap:8px; margin-bottom:14px;"></div>
+              <button class="secondary" onclick="simulateAllUsers()">Simulate All</button>
+            </div>
+            <div>
+              <div class="chat-box">
+                <div id="multiChatHeader" style="margin-bottom:10px; font-weight:700;">Select a user</div>
+                <div class="messages" id="multiChatMessages"><div class="chat-msg bot">Select a user from the left panel.</div></div>
+                <div class="chat-input-row">
+                  <input type="text" id="multiChatInput" placeholder="Type your message..." onkeypress="if(event.key==='Enter') sendMultiChat()">
+                  <button onclick="sendMultiChat()">Send</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ARCHITECTURE -->
+      <section class="panel" id="architecture">
+        <div class="kicker">On-Premise Multi-Layer Architecture</div>
+        <h2>How SHRUNK keeps PHI inside the clinic</h2>
+        <div class="info-banner"><strong>&#x1F510; On-premise by design.</strong> Each layer runs on clinic edge hardware. Patient data is encrypted at rest, retrieved locally, and never pooled in a central cloud.</div>
+        <div class="layer-grid">
+          <div class="layer-card"><h3>1. Privacy &amp; Compliance <span class="pill on">Active</span></h3><p>Consent gating, audit logging, de-identification, and institutional access controls. PHI stays sealed inside the clinic.</p></div>
+          <div class="layer-card"><h3>2. Federated Retrieval <span class="pill on">Active</span></h3><p>Local FAISS + sentence-transformers retrieve patient, similar-patient, and guideline notes. Cross-clinic sharing only transfers model updates.</p></div>
+          <div class="layer-card"><h3>3. Clinical Routing <span class="pill on">Active</span></h3><p>Classifies queries and escalates high-risk cases to the clinician.</p></div>
+          <div class="layer-card"><h3>4. Decision Support <span class="pill on">Active</span></h3><p>Evidence-based recommendations from Apertus, grounded in retrieved notes and clinical guidelines.</p></div>
+          <div class="layer-card"><h3>5. Knowledge Distillation <span class="pill on">Active</span></h3><p>Teacher (Apertus 8B/70B) fine-tunes a small student (SmolLM) for safe, edge-deployable inference.</p></div>
+          <div class="layer-card"><h3>6. Edge Deployment <span class="pill on">Active</span></h3><p>Resource-aware model selection: local Apertus, GGUF, or secure Kaggle 70B offloading — retrieval and routing remain local.</p></div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="panel" id="settings">
+        <div class="kicker">Node Configuration</div>
+        <h2>Settings</h2>
+        <div class="settings-section">
+          <h3>System Configuration</h3>
+          <div class="setting-item"><span class="setting-label">Database Path</span><span class="setting-desc">Local SQLite database file containing all PHI.</span><input type="text" value="data/frag_patient.db" readonly></div>
+          <div class="setting-item"><span class="setting-label">Server Port</span><span class="setting-desc">Port for the on-premise Flask server.</span><input type="number" value="5000"></div>
+          <button class="secondary" onclick="alert('Settings saved (demo)')">Save Settings</button>
+        </div>
+        <div class="settings-section">
+          <h3>Consent &amp; Access</h3>
+          <div class="setting-item"><span class="setting-label">Default Consent Mode</span><span class="setting-desc">When a patient record is created, start as pending until the patient actively consents.</span><select><option value="pending">Pending (recommended)</option><option value="granted">Granted (demo only)</option></select></div>
+          <div class="setting-item"><span class="setting-label">Clinician Session PIN</span><span class="setting-desc">PIN used to start a secure clinician session. Default is 0000.</span><input type="text" value="0000"></div>
+          <button class="secondary" onclick="alert('Consent settings saved (demo)')">Save Consent Settings</button>
+        </div>
+        <div class="settings-section">
+          <h3>Danger Zone</h3>
+          <div class="warning-banner"><strong>Warning:</strong> Actions in this section are irreversible and will delete local data.</div>
+          <div class="setting-item"><span class="setting-label">Clear Database</span><span class="setting-desc">Delete all patients, notes, queries, and responses from this clinic node.</span><button class="danger" onclick="clearDatabasePanel()">Clear Database</button></div>
+        </div>
+      </section>
+
+      <!-- CLEAR DATABASE -->
+      <section class="panel" id="clear">
+        <div class="kicker">Danger Zone</div>
+        <h2>Clear Database</h2>
+        <div class="warning-banner">This will delete all patients, notes, queries, and responses from this clinic node. This action is for testing only.</div>
+        <div class="card">
+          <p style="margin-bottom:18px;">In the live Flask app this calls <code>/api/clear_database</code>. In this static demo it resets the local patient data to defaults.</p>
+          <button class="danger" onclick="resetStaticDemo()">Reset Static Demo Data</button>
         </div>
       </section>
     </div>
@@ -285,9 +540,9 @@ footer { padding: 20px 32px; border-top: 1px solid var(--line); color: var(--tex
 <script>
 const patients = {
   'lena': {
-    name: 'Lena M.', id: 'PATIENT_000092',
-    stats: { patients: 1, notes: 14, queries: 23, responses: 23, clinics: 3, logs: 147 },
+    name: 'Lena M.', id: 'PATIENT_000092', institution: 'Bern Day Clinic', age: 34, gender: 'F', diagnosis: 'MDD recurrent',
     consent: false,
+    stats: { patients: 1, notes: 14, queries: 23, responses: 23, clinics: 3, logs: 147 },
     question: "What is the overall clinical picture and what should I do next?",
     evidence: [
       { source: 'NOTE_000092_002', date: '2026-04-06', section: 'Risk Assessment', content: 'Patient reports passive suicidal thoughts without plan; sleep 4.5h.' },
@@ -309,9 +564,9 @@ const patients = {
     ]
   },
   'marco': {
-    name: 'Marco R.', id: 'PATIENT_000041',
-    stats: { patients: 1, notes: 9, queries: 11, responses: 11, clinics: 2, logs: 89 },
+    name: 'Marco R.', id: 'PATIENT_000041', institution: 'Zurich Hospital', age: 45, gender: 'M', diagnosis: 'Bipolar II stable',
     consent: true,
+    stats: { patients: 1, notes: 9, queries: 11, responses: 11, clinics: 2, logs: 89 },
     question: "Are there drug interactions between current medications?",
     evidence: [
       { source: 'NOTE_000041_003', date: '2026-03-15', section: 'Medication', content: 'Lithium 900mg daily, Quetiapine 100mg nightly.' },
@@ -346,14 +601,23 @@ const sections = [
 ];
 
 let currentPatient = 'lena';
+let doctorSessionActive = false;
+let doctorMode = 'clinical';
+let multiCurrentUser = null;
+let multiSessions = {};
 
 function init() {
   const select = document.getElementById('patientSelect');
+  const queryPatient = document.getElementById('queryPatient');
+  const doctorPatient = document.getElementById('doctorPatientSelect');
   Object.keys(patients).forEach(pid => {
-    const opt = document.createElement('option');
-    opt.value = pid;
-    opt.textContent = patients[pid].id + ' — ' + patients[pid].name;
-    select.appendChild(opt);
+    const p = patients[pid];
+    const opt = new Option(p.id + ' — ' + p.name, pid);
+    const opt2 = new Option(p.id + ' — ' + p.diagnosis, pid);
+    const opt3 = new Option(p.id + ' — ' + p.diagnosis, pid);
+    select.add(opt);
+    queryPatient.add(opt2);
+    doctorPatient.add(opt3);
   });
   select.addEventListener('change', e => loadPatient(e.target.value));
 
@@ -362,34 +626,35 @@ function init() {
   });
 
   document.getElementById('consentBtn').addEventListener('click', toggleConsent);
-  document.getElementById('queryBtn').addEventListener('click', () => {
-    switchTab('intelligence');
-    document.querySelectorAll('.document-card').forEach((c, i) => { if (i < 3) c.classList.add('open'); });
-  });
+  document.getElementById('queryBtn').addEventListener('click', () => { switchTab('intelligence'); document.querySelectorAll('.document-card').forEach((c, i) => { if (i < 3) c.classList.add('open'); }); });
 
   loadPatient('lena');
+  renderPatientsTable();
+  initMultiUserChat();
 }
 
 function switchTab(tab) {
   document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
   document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === tab));
+  if (tab === 'intelligence') document.getElementById('subtitle').style.display = 'block';
 }
 
 function loadPatient(pid) {
   currentPatient = pid;
   const p = patients[pid];
+  document.getElementById('patientSelect').value = pid;
+  document.getElementById('queryPatient').value = pid;
+  document.getElementById('doctorPatientSelect').value = pid;
   document.getElementById('subtitle').textContent = `Viewing longitudinal record for ${p.id} · ${p.name}`;
 
   // stats
   const s = p.stats;
-  document.getElementById('stPatients').textContent = s.patients;
-  document.getElementById('stNotes').textContent = s.notes;
-  document.getElementById('stQueries').textContent = s.queries;
-  document.getElementById('stResponses').textContent = s.responses;
-  document.getElementById('stClinics').textContent = s.clinics;
-  document.getElementById('stLogs').textContent = s.logs;
+  ['stPatients','stNotes','stQueries','stResponses','stClinics','stLogs'].forEach((id, i) => {
+    const key = ['patients','notes','queries','responses','clinics','logs'][i];
+    const el = document.getElementById(id);
+    if (el) el.textContent = s[key];
+  });
 
-  // consent
   updateConsentUI();
 
   // document cards
@@ -403,31 +668,18 @@ function loadPatient(pid) {
     } else {
       body = `<p>${p[sec.key]}</p>`;
     }
-    return `
-      <div class="document-card ${i < 3 ? 'open' : ''}">
-        <div class="doc-header" onclick="this.parentElement.classList.toggle('open')">
-          <h4>${sec.title}</h4>
-          <span class="chevron">&#9662;</span>
-        </div>
-        <div class="doc-body"><div class="inner">${body}</div></div>
-      </div>`;
+    return `<div class="document-card ${i < 3 ? 'open' : ''}"><div class="doc-header" onclick="this.parentElement.classList.toggle('open')"><h4>${sec.title}</h4><span class="chevron">&#9662;</span></div><div class="doc-body"><div class="inner">${body}</div></div></div>`;
   }).join('');
 
-  // chat timeline
+  // update chat timelines if present
   const tl = document.getElementById('chatTimeline');
-  tl.innerHTML = p.timeline.map(t => `
-    <div class="tl-item ${t.tag}">
-      <div class="time">${t.time}</div>
-      <div class="type">${t.type}</div>
-      <div class="body">${t.body}</div>
-      <span class="tag">${t.tag}</span>
-    </div>
-  `).join('');
+  if (tl) tl.innerHTML = p.timeline.map(t => `<div class="tl-item ${t.tag}"><div class="time">${t.time}</div><div class="type">${t.type}</div><div class="body">${t.body}</div><span class="tag">${t.tag}</span></div>`).join('');
 }
 
 function toggleConsent() {
   patients[currentPatient].consent = !patients[currentPatient].consent;
   updateConsentUI();
+  renderPatientsTable();
 }
 
 function updateConsentUI() {
@@ -437,6 +689,208 @@ function updateConsentUI() {
   btn.textContent = granted ? 'Revoke Consent' : 'Grant Consent';
   pill.className = 'pill ' + (granted ? 'on' : 'off');
   pill.textContent = granted ? 'Consent: granted' : 'Consent: pending';
+}
+
+function renderPatientsTable() {
+  const tbody = document.getElementById('patientsTable');
+  tbody.innerHTML = Object.values(patients).map(p => {
+    const cls = p.consent ? 'consent-granted' : 'consent-pending';
+    const txt = p.consent ? 'granted' : 'pending';
+    return `<tr><td>${p.id}</td><td>${p.institution}</td><td>${p.age}</td><td>${p.gender}</td><td>${p.diagnosis}</td><td><span class="consent-pill ${cls}">${txt}</span></td><td>2025-11-14</td></tr>`;
+  }).join('');
+}
+
+function runClinicalQuery() {
+  const pid = document.getElementById('queryPatient').value;
+  const q = document.getElementById('queryText').value.trim();
+  if (!pid || !q) return alert('Select a patient and enter a question.');
+  const p = patients[pid];
+  const response = `SHRUNK AI Clinical Response\n\n${p.summary}\n\n${p.interpretation}\n\n${p.evaluation}\n\nSafety: ${p.safety}\n\nReview: ${p.review}`;
+  document.getElementById('queryResponseContent').textContent = response;
+  document.getElementById('queryResponse').style.display = 'block';
+  document.getElementById('queryModelBadge').className = 'model-badge apertus';
+  document.getElementById('queryModelBadge').textContent = 'Apertus clinical assistant (template mode)';
+}
+
+function grantPatientChatConsent() {
+  patients[currentPatient].consent = true;
+  updateConsentUI();
+  renderPatientsTable();
+  document.getElementById('patientChatConsentText').textContent = 'GRANTED (digital)';
+  addPatientChatMessage('Consent granted. Your recent notes can now be used to make replies more relevant.', 'bot');
+}
+
+function sendPatientChat() {
+  const input = document.getElementById('patientChatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  addPatientChatMessage(text, 'user');
+  input.value = '';
+  setTimeout(() => {
+    const reply = 'Thank you for sharing how you feel. If you are in crisis, please reach out to a trusted person or emergency service. For everyday concerns, talking to your clinician is the best next step.';
+    addPatientChatMessage(reply, 'bot', 'Apertus sovereign model');
+  }, 600);
+}
+
+function addPatientChatMessage(text, who, model) {
+  const box = document.getElementById('patientChatMessages');
+  const d = document.createElement('div');
+  d.className = 'chat-msg ' + who;
+  d.innerHTML = `<div>${text}</div>` + (model ? `<div class="meta">${model}</div>` : '');
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+}
+
+function startDoctorSession() {
+  const id = document.getElementById('doctorId').value;
+  const pin = document.getElementById('doctorPin').value;
+  if (!id || pin !== '0000') { alert('Invalid clinician PIN (use 0000).'); return; }
+  doctorSessionActive = true;
+  document.getElementById('doctorSessionStatus').textContent = 'active (' + id + ')';
+  document.getElementById('doctorSessionWarning').style.display = 'none';
+  document.getElementById('doctorChatInput').disabled = false;
+  document.getElementById('doctorChatSend').disabled = false;
+  document.getElementById('doctorChatInput').placeholder = 'Ask SHRUNK...';
+}
+
+function loadDoctorPatient(pid) {
+  currentPatient = pid;
+  updateConsentUI();
+}
+
+function setDoctorMode(mode) {
+  doctorMode = mode;
+  document.querySelectorAll('#doctor-chat .secondary').forEach(b => b.style.borderColor = '');
+  const activeBtn = document.querySelector(`#doctor-chat .secondary[data-mode="${mode}"]`);
+  if (activeBtn) activeBtn.style.borderColor = 'var(--accent)';
+}
+
+function sendDoctorChat() {
+  if (!doctorSessionActive) { document.getElementById('doctorSessionWarning').style.display = 'block'; return; }
+  const input = document.getElementById('doctorChatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  addDoctorChatMessage(text, 'user');
+  input.value = '';
+  setTimeout(() => {
+    const p = patients[currentPatient];
+    let reply = '';
+    if (doctorMode === 'clinical_intelligence') reply = `${p.summary}\n\n${p.interpretation}\n\n${p.evaluation}\n\nSafety: ${p.safety}\n\nReview: ${p.review}`;
+    else if (doctorMode === 'xai') reply = 'XAI: The model weighted medication non-adherence, sleep <5h, and Tuesday work stress as the strongest signals. Prior Bupropion response is protective.';
+    else if (doctorMode === 'ceai') reply = 'CEAI Score: 82/100 — Strong alignment between retrieved evidence and interpretation. Tier Green · Actionable.';
+    else reply = `Routing: clinical · Handler: mental_health · Escalation: ${p.diagnosis.includes('MDD') ? 'moderate' : 'none'}\n\n${p.summary}`;
+    addDoctorChatMessage(reply, 'bot', 'Apertus clinical assistant');
+  }, 700);
+}
+
+function addDoctorChatMessage(text, who, model) {
+  const box = document.getElementById('doctorChatMessages');
+  const d = document.createElement('div');
+  d.className = 'chat-msg ' + who;
+  d.innerHTML = `<div style="white-space:pre-wrap">${text}</div>` + (model ? `<div class="meta">${model}</div>` : '');
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+}
+
+function runSovereignDemo() {
+  const p = patients[currentPatient];
+  const out = `Query: ${p.question}\nRouting: clinical · mental_health\nRisk: moderate\nEscalate: no\n\n${p.interpretation}\n\n${p.safety}`;
+  document.getElementById('sovereignDemoContent').textContent = out;
+  document.getElementById('sovereignDemoOutput').style.display = 'block';
+}
+
+function generateXAIExplanation() {
+  const el = document.getElementById('xaiResult');
+  el.textContent = 'Method: feature_importance\nConfidence: 82.40%\nRationale: The model focuses on medication non-adherence, sleep <5 hours, and work-stress pattern. Prior Bupropion response is protective.';
+  el.style.display = 'block';
+}
+function showXAIAttention() { const el = document.getElementById('xaiResult'); el.textContent = 'Tokens: stopped, Sertraline, sleep, Tuesday, work, Bupropion\nMax attention: 34.2% on "stopped Sertraline"'; el.style.display = 'block'; }
+function showXAIFeatures() { const el = document.getElementById('xaiResult'); el.textContent = 'Top feature: medication_discontinuation\nFeatures: sleep <5h, medication_discontinuation, tuesday_work_stress, prior_bupropion_response, note_count'; el.style.display = 'block'; }
+
+function initMultiUserChat() {
+  const list = document.getElementById('multiUserList');
+  const users = [
+    { id: 'PATIENT_000091', name: 'Sarah Johnson', diagnosis: 'MDD with GAD' },
+    { id: 'PATIENT_000092', name: 'Michael Chen', diagnosis: 'Generalized Anxiety Disorder' },
+    { id: 'PATIENT_000093', name: 'Emily Rodriguez', diagnosis: 'Bipolar Disorder Type II' },
+    { id: 'PATIENT_000094', name: 'James Wilson', diagnosis: 'PTSD with depression' },
+    { id: 'PATIENT_000095', name: 'Lisa Thompson', diagnosis: 'Social Anxiety Disorder' }
+  ];
+  users.forEach(u => {
+    const d = document.createElement('div');
+    d.className = 'card';
+    d.style = 'padding:12px; cursor:pointer; margin-bottom:0;';
+    d.innerHTML = `<strong>${u.name}</strong><br><span style="font-size:0.78rem; color:var(--text-muted);">${u.diagnosis}</span>`;
+    d.onclick = () => selectMultiUser(u);
+    list.appendChild(d);
+  });
+  selectMultiUser(users[0]);
+}
+
+function selectMultiUser(user) {
+  multiCurrentUser = user;
+  document.getElementById('multiChatHeader').textContent = `${user.name} · ${user.diagnosis}`;
+  if (!multiSessions[user.id]) multiSessions[user.id] = [];
+  renderMultiChat();
+}
+
+function renderMultiChat() {
+  const box = document.getElementById('multiChatMessages');
+  const msgs = multiSessions[multiCurrentUser.id];
+  if (msgs.length === 0) { box.innerHTML = '<div class="chat-msg bot">Start a conversation.</div>'; return; }
+  box.innerHTML = msgs.map(m => `<div class="chat-msg ${m.type}"><div>${m.text}</div><div class="meta">${m.time}</div></div>`).join('');
+  box.scrollTop = box.scrollHeight;
+}
+
+function sendMultiChat() {
+  if (!multiCurrentUser) return;
+  const input = document.getElementById('multiChatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  multiSessions[multiCurrentUser.id].push({ type: 'user', text, time: new Date().toLocaleTimeString() });
+  input.value = '';
+  renderMultiChat();
+  setTimeout(() => {
+    multiSessions[multiCurrentUser.id].push({ type: 'bot', text: 'Thank you for sharing. If this is urgent, please contact your clinician or emergency services.', time: new Date().toLocaleTimeString() });
+    renderMultiChat();
+  }, 600);
+}
+
+function simulateAllUsers() {
+  const sampleMessages = ["I'm feeling really anxious today", "Can you help me with some coping strategies?", "My work presentation is tomorrow", "I haven't been sleeping well", "Thank you for the help"];
+  const users = [
+    { id: 'PATIENT_000091', name: 'Sarah Johnson' },
+    { id: 'PATIENT_000092', name: 'Michael Chen' },
+    { id: 'PATIENT_000093', name: 'Emily Rodriguez' },
+    { id: 'PATIENT_000094', name: 'James Wilson' },
+    { id: 'PATIENT_000095', name: 'Lisa Thompson' }
+  ];
+  users.forEach((u, i) => {
+    setTimeout(() => {
+      selectMultiUser(u);
+      document.getElementById('multiChatInput').value = sampleMessages[i % sampleMessages.length];
+      sendMultiChat();
+    }, i * 1200);
+  });
+}
+
+function clearDatabasePanel() {
+  if (confirm('Clear all static demo data? This will reset consent to default.')) {
+    Object.values(patients).forEach(p => p.consent = false);
+    loadPatient('lena');
+    renderPatientsTable();
+    alert('Database cleared (demo).');
+  }
+}
+
+function resetStaticDemo() {
+  if (confirm('Reset static demo data to defaults?')) {
+    patients.lena.consent = false;
+    patients.marco.consent = true;
+    loadPatient('lena');
+    renderPatientsTable();
+    alert('Static demo reset.');
+  }
 }
 
 init();
