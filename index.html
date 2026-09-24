@@ -18,7 +18,7 @@ a virtual camera pans / zooms / rotates between them.
 
 STORY ORDER (data-order):
    1 Prologue       : sovereign intelligence enters the corridor
-   2 60-Second Story : the patient, the shadow record, and SHRUNK
+   2 SHRUNK Story    : the patient, the shadow record, and SHRUNK
    3 Title          : Federated RAG edge clinical intelligence for mental health
    4 Team           : founder & inventor + team members
    5 Problem → Solution : fragmented context becomes continuous clinical story
@@ -1222,30 +1222,24 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
                 </div>
             </section>
 
-            <!-- ============ SCENE 2 · 60-SECOND STORY ============ -->
-            <section class="scene story-scene" id="sStory" data-title="60-Second Story" data-tilt="-1.5" data-order="2"
-                     style="left:2000px; top:1130px;" aria-label="60-second SHRUNK story">
+            <!-- ============ SCENE 2 · SHRUNK STORY ============ -->
+            <section class="scene story-scene" id="sStory" data-title="SHRUNK Story" data-tilt="-1.5" data-order="2"
+                     style="left:2000px; top:1130px;" aria-label="SHRUNK story video">
                 <div class="scene-num">01</div>
                 <div class="kicker a" style="--i:0">The invisible problem</div>
                 <h2 class="a" style="--i:1; font-size:54px;">Every patient has two stories.</h2>
 
                 <div class="story-video-wrap a" style="--i:2">
-                    <video id="storyVideo" poster="assets/scene_01.png" playsinline controls preload="auto">
+                    <video id="storyVideo" poster="assets/story_poster.png" playsinline controls preload="metadata">
                         <source src="assets/story.mp4" type="video/mp4" />
                         <p style="color:var(--text-muted); padding:20px;">Your browser does not support the video. <a href="assets/story.mp4" style="color:var(--accent);">Download the MP4</a>.</p>
                     </video>
-                    <div id="storyCaption" class="story-caption">In the corridor, a story is about to be lost.</div>
-                    <div id="storyTranscript" class="story-transcript hidden">
-                        <h3>60-second story transcript</h3>
-                        <button id="storyCloseTranscript" class="story-close-transcript" aria-label="Close transcript">&times;</button>
-                        <ol id="storyTranscriptList"></ol>
-                    </div>
+                    <div id="storyCaption" class="story-caption">Press Play to watch the SHRUNK story.</div>
                 </div>
 
                 <div class="story-controls a" style="--i:3">
                     <button id="storyPlayBtn" class="btn btn-primary">Play story</button>
                     <button id="storyReplayBtn" class="btn btn-ghost">Replay</button>
-                    <button id="storyTranscriptBtn" class="btn btn-ghost">Show transcript</button>
                 </div>
             </section>
 
@@ -2459,51 +2453,13 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
         if (!hinted) { hinted = true; hintEl.style.opacity = '0'; }
     });
 
-    // ===================== 60-SECOND STORY PLAYER =====================
+    // ===================== SHRUNK STORY PLAYER =====================
     var storyVideo = document.getElementById('storyVideo');
     var storyCaption = document.getElementById('storyCaption');
     var storyPlayBtn = document.getElementById('storyPlayBtn');
     var storyReplayBtn = document.getElementById('storyReplayBtn');
-    var storyTranscriptBtn = document.getElementById('storyTranscriptBtn');
-    var storyTranscript = document.getElementById('storyTranscript');
-    var storyTranscriptList = document.getElementById('storyTranscriptList');
-    var storyCaptions = [
-        { start: 0, end: 6, text: "In the corridor, a story is about to be lost." },
-        { start: 6, end: 12, text: "At 2 a.m., she tells the truth to her phone and therapy journal." },
-        { start: 12, end: 18, text: "In the clinic, fear edits the story." },
-        { start: 18, end: 24, text: "The doctor has no visibility into her journal, chat, or sleep." },
-        { start: 24, end: 30, text: "When doctors share, only fragments travel." },
-        { start: 30, end: 36, text: "Treatment misses the real person." },
-        { start: 36, end: 42, text: "SHRUNK makes the invisible visible — a Swiss Apertus brain inside the clinic." },
-        { start: 42, end: 48, text: "One continuous story, controlled by the patient." },
-        { start: 48, end: 54, text: "The intelligence flows safely, with her consent." },
-        { start: 54, end: 60, text: "SHRUNK AI — the model comes to the data." }
-    ];
 
     if (storyVideo) {
-        function updateStoryCaption() {
-            var t = storyVideo.currentTime;
-            var s = storyCaptions[storyCaptions.length - 1];
-            for (var i = 0; i < storyCaptions.length; i++) {
-                if (t >= storyCaptions[i].start && t < storyCaptions[i].end) { s = storyCaptions[i]; break; }
-            }
-            if (storyCaption) storyCaption.textContent = s.text;
-            highlightStoryTranscript(s.start);
-        }
-        function highlightStoryTranscript(start) {
-            if (!storyTranscriptList) return;
-            var items = storyTranscriptList.querySelectorAll('li');
-            for (var i = 0; i < items.length; i++) items[i].classList.remove('active');
-            for (var i = 0; i < storyCaptions.length; i++) {
-                if (storyCaptions[i].start === start && items[i]) { items[i].classList.add('active'); break; }
-            }
-        }
-        function buildStoryTranscript() {
-            if (!storyTranscriptList) return;
-            storyTranscriptList.innerHTML = storyCaptions.map(function (s) {
-                return '<li>' + String(s.start).padStart(2, '0') + 's — ' + s.text + '</li>';
-            }).join('');
-        }
         function setStoryPlayLabel(paused) {
             if (!storyPlayBtn) return;
             storyPlayBtn.textContent = paused ? 'Play story' : 'Pause';
@@ -2512,7 +2468,6 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
         storyVideo.addEventListener('play', function () { setStoryPlayLabel(false); });
         storyVideo.addEventListener('pause', function () { setStoryPlayLabel(true); });
         storyVideo.addEventListener('ended', function () { setStoryPlayLabel(true); });
-        storyVideo.addEventListener('timeupdate', updateStoryCaption);
 
         if (storyPlayBtn) {
             storyPlayBtn.addEventListener('click', function () {
@@ -2525,21 +2480,6 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
                 storyVideo.play();
             });
         }
-        if (storyTranscriptBtn && storyTranscript) {
-            storyTranscriptBtn.addEventListener('click', function () {
-                storyTranscript.classList.toggle('hidden');
-                storyTranscriptBtn.textContent = storyTranscript.classList.contains('hidden') ? 'Show transcript' : 'Hide transcript';
-            });
-        }
-        var storyCloseTranscript = document.getElementById('storyCloseTranscript');
-        if (storyCloseTranscript && storyTranscript && storyTranscriptBtn) {
-            storyCloseTranscript.addEventListener('click', function () {
-                storyTranscript.classList.add('hidden');
-                storyTranscriptBtn.textContent = 'Show transcript';
-            });
-        }
-        buildStoryTranscript();
-        updateStoryCaption();
     }
 
     function syncStoryPlayback(index) {
@@ -2552,7 +2492,6 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
             storyVideo.pause();
         } else {
             storyVideo.currentTime = 0;
-            updateStoryCaption();
             try { storyVideo.play().catch(function () {}); } catch (e) {}
         }
     }
