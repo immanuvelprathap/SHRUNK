@@ -1230,9 +1230,9 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
                 <h2 class="a" style="--i:1; font-size:54px;">Every patient has two stories.</h2>
 
                 <div class="story-video-wrap a" style="--i:2">
-                    <video id="storyVideo" poster="assets/story_poster.png?v=11" playsinline controls preload="metadata">
-                        <source src="assets/story.mp4?v=11" type="video/mp4" />
-                        <p style="color:var(--text-muted); padding:20px;">Your browser does not support the video. <a href="assets/story.mp4?v=11" style="color:var(--accent);">Download the MP4</a>.</p>
+                    <video id="storyVideo" poster="assets/story_poster.png?v=12" playsinline controls preload="metadata">
+                        <source src="https://github.com/immanuvelprathap/SHRUNK/releases/download/v1.0/story.mp4" type="video/mp4" />
+                        <p style="color:var(--text-muted); padding:20px;">Your browser does not support the video. <a href="https://github.com/immanuvelprathap/SHRUNK/releases/download/v1.0/story.mp4" style="color:var(--accent);">Download the MP4</a>.</p>
                     </video>
                     <div id="storyCaption" class="story-caption">Press Play to watch the SHRUNK story.</div>
                 </div>
@@ -1575,13 +1575,16 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
                 <div class="story a" style="--i:2; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:18px;">
                     <div style="position:relative; width:100%; max-width:1320px; border-radius:24px; overflow:hidden; border:1px solid var(--line); box-shadow:0 24px 80px rgba(0,0,0,0.5);">
                         <img src="assets/screenshot_patients.png?v=11" alt="SHRUNK clinical intelligence dashboard" style="width:100%; display:block;">
-                        <a href="dashboard/?v=11" target="_blank" rel="noopener"
+                        <a id="dashLink" href="dashboard/?v=12" target="_blank" rel="noopener"
                            style="position:absolute; bottom:18px; right:18px; background:linear-gradient(120deg, var(--primary), var(--accent)); color:#04121a; padding:12px 22px; border-radius:12px; font-weight:700; text-decoration:none; font-size:15px;">
                            Open Interactive Dashboard &rarr;
                         </a>
+                        <span id="dashLive" style="position:absolute; bottom:18px; left:18px; display:none; background:rgba(45,212,191,0.16); border:1px solid var(--accent); color:var(--accent); padding:8px 14px; border-radius:10px; font-size:13px; font-weight:600;">
+                            &#9679; Live node detected &mdash; opens the real system
+                        </span>
                     </div>
                     <p style="font-size:17px; color:var(--text-muted); text-align:center; max-width:980px;">
-                        Ten clinical-intelligence blocks, patient home-chat tracking, XAI, CEAI and federation — all running on the clinic's own Apertus node. Patient data never leaves the building.
+                        Ten clinical-intelligence blocks, document upload, PDF-ready export, patient home-chat tracking, XAI, CEAI and federation — all running on the clinic's own Apertus node. Patient data never leaves the building.
                     </p>
                 </div>
             </section>
@@ -2465,9 +2468,17 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
             storyPlayBtn.textContent = paused ? 'Play story' : 'Pause';
         }
 
-        storyVideo.addEventListener('play', function () { setStoryPlayLabel(false); });
+        if (storyCaption) { storyCaption.style.transition = 'opacity 0.45s ease'; }
+        storyVideo.addEventListener('play', function () {
+            setStoryPlayLabel(false);
+            // Final film has burned-in captions — hide the static banner during playback.
+            if (storyCaption) { storyCaption.style.opacity = '0'; }
+        });
         storyVideo.addEventListener('pause', function () { setStoryPlayLabel(true); });
-        storyVideo.addEventListener('ended', function () { setStoryPlayLabel(true); });
+        storyVideo.addEventListener('ended', function () {
+            setStoryPlayLabel(true);
+            if (storyCaption) { storyCaption.style.opacity = '1'; }
+        });
 
         if (storyPlayBtn) {
             storyPlayBtn.addEventListener('click', function () {
@@ -2498,6 +2509,31 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
 
     // ============================ INIT ===============================
     goTo(0, true);
+})();
+</script>
+
+<script>
+/* ===================== LIVE LOCAL NODE DETECTION =====================
+   If a SHRUNK node is running on this machine (python main.py, :5000),
+   the "Open Interactive Dashboard" button opens the real system instead
+   of the static demo. Otherwise it stays on the public dashboard. */
+(function () {
+    var btn = document.getElementById('dashLink');
+    var badge = document.getElementById('dashLive');
+    if (!btn) { return; }
+    var LOCAL = 'http://localhost:5000';
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctrl) { ctrl.abort(); } }, 2500);
+    fetch(LOCAL + '/api/ping', ctrl ? { signal: ctrl.signal, cache: 'no-store' } : { cache: 'no-store' })
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .then(function (j) {
+            clearTimeout(timer);
+            if (j && j.ok && j.app === 'shrunk-ai') {
+                btn.href = LOCAL + '/dashboard';
+                if (badge) { badge.style.display = 'inline-block'; }
+            }
+        })
+        .catch(function () { clearTimeout(timer); });
 })();
 </script>
 
