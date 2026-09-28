@@ -140,6 +140,9 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
         color: var(--text);
         font-family: var(--font);
         -webkit-font-smoothing: antialiased;
+        /* mobile: no pull-to-refresh / double-tap-zoom jolts; pinch still allowed */
+        overscroll-behavior: none;
+        touch-action: manipulation;
     }
 
     button { font-family: inherit; }
@@ -154,7 +157,7 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
     #stage {
         position: relative;
         width: 100vw; height: 56.25vw;
-        max-height: 100vh; max-width: 177.78vh;
+        max-height: 100vh; max-height: 100dvh; max-width: 177.78vh;
         overflow: hidden;
         background: var(--bg-2);
     }
@@ -2299,15 +2302,22 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
         else { if (!overview) prev(); }
     }, { passive: false });
 
-    var tX = 0, tY = 0;
+    var tX = 0, tY = 0, tOnUI = false;
     document.addEventListener('touchstart', function (e) {
         tX = e.changedTouches[0].screenX;
         tY = e.changedTouches[0].screenY;
+        // Swipes that start on the video, its controls, or a button/link must
+        // never navigate — they belong to that element.
+        var el = e.target;
+        tOnUI = !!(el && el.closest && el.closest('video, .story-video-wrap, a, button, input, #hud, #progress'));
     }, { passive: true });
     document.addEventListener('touchend', function (e) {
+        if (tOnUI) { tOnUI = false; tX = 0; tY = 0; return; }
         var dx = tX - e.changedTouches[0].screenX;
         var dy = tY - e.changedTouches[0].screenY;
-        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+        tX = 0; tY = 0;
+        // Stricter: 80px horizontal AND clearly horizontal (kills diagonal-scroll misfires)
+        if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 1.6) {
             if (dx > 0) { if (overview) toggleOverview(); else next(); }
             else { if (!overview) prev(); }
         }
@@ -2340,8 +2350,8 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
         }
     }
     document.getElementById('fsBtn').addEventListener('click', toggleFullscreen);
-    document.addEventListener('fullscreenchange', refit);
-    document.addEventListener('webkitfullscreenchange', refit);
+    document.addEventListener('fullscreenchange', function () { refit(true); });
+    document.addEventListener('webkitfullscreenchange', function () { refit(true); });
 
     // ======================= MOBILE-SAFE PDF EXPORT ====================
     // window.print() is unreliable/blank on iOS & Android. On mobile we open
@@ -2382,19 +2392,28 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
     };
 
     var resizeT;
-    function refit() {
+    var lastVVW = 0;
+    function refit(force) {
         clearTimeout(resizeT);
         resizeT = setTimeout(function () {
+            var vv = window.visualViewport;
+            // Pinch-zoom in progress (vv.scale !== 1): leave the camera alone.
+            if (vv && vv.scale !== 1 && !force) return;
+            // iOS URL-bar show/hide fires resize with an unchanged width —
+            // height-only changes must NOT re-snap the camera (the twitch).
+            var w = vv ? vv.width : window.innerWidth;
+            if (!force && Math.abs(w - lastVVW) < 8 && lastVVW !== 0) return;
+            lastVVW = w;
             applyCam(overview ? camOverview() : camFor(current), true);
         }, 90);
     }
-    window.addEventListener('resize', refit);
+    window.addEventListener('resize', function () { refit(false); });
     // iOS Safari: address-bar show/hide and rotation fire on visualViewport
     if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', refit);
+        window.visualViewport.addEventListener('resize', function () { refit(false); });
     }
     window.addEventListener('orientationchange', function () {
-        setTimeout(refit, 250);
+        setTimeout(function () { refit(true); }, 250);
     });
 
     // ========================== THEMES ===============================
@@ -2462,6 +2481,30 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
     var storyPlayBtn = document.getElementById('storyPlayBtn');
     var storyReplayBtn = document.getElementById('storyReplayBtn');
 
+    var isMobileDevice = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    // iPhone Safari has no Fullscreen API on <video> — webkitEnterFullscreen is
+    // the native player path. Android Chrome/Firefox use requestFullscreen.
+    function enterVideoFS() {
+        try {
+            if (storyVideo.webkitEnterFullscreen) { storyVideo.webkitEnterFullscreen(); return; }
+            var rq = storyVideo.requestFullscreen || storyVideo.webkitRequestFullscreen || storyVideo.mozRequestFullScreen;
+            if (rq) { var p = rq.call(storyVideo); if (p && p.catch) p.catch(function () {}); }
+        } catch (e) {}
+    }
+    function exitVideoFS() {
+        try {
+            var fsEl = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement;
+            if (fsEl) {
+                var ex = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen;
+                if (ex) { var p = ex.call(document); if (p && p.catch) p.catch(function () {}); }
+            }
+            if (storyVideo.webkitDisplayingFullscreen && storyVideo.webkitExitFullscreen) {
+                storyVideo.webkitExitFullscreen();
+            }
+        } catch (e) {}
+    }
+
     if (storyVideo) {
         function setStoryPlayLabel(paused) {
             if (!storyPlayBtn) return;
@@ -2473,11 +2516,13 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
             setStoryPlayLabel(false);
             // Final film has burned-in captions — hide the static banner during playback.
             if (storyCaption) { storyCaption.style.opacity = '0'; }
+            if (isMobileDevice) { enterVideoFS(); }
         });
         storyVideo.addEventListener('pause', function () { setStoryPlayLabel(true); });
         storyVideo.addEventListener('ended', function () {
             setStoryPlayLabel(true);
             if (storyCaption) { storyCaption.style.opacity = '1'; }
+            if (isMobileDevice) { exitVideoFS(); }
         });
 
         if (storyPlayBtn) {
@@ -2501,6 +2546,7 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
         }
         if (index !== storyIndex) {
             storyVideo.pause();
+            if (isMobileDevice) { exitVideoFS(); }
         } else {
             storyVideo.currentTime = 0;
             try { storyVideo.play().catch(function () {}); } catch (e) {}
