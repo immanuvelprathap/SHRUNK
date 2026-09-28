@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#04070f">
 <title>SHRUNK · dFRAG-Patient</title>
+<!-- mobile-v2 -->
 <style>
 :root{
   --bg:#04070f; --bg2:#0a1120; --card:#0d1628; --line:rgba(148,163,184,0.16);
@@ -123,7 +124,7 @@ ul.plain li b{color:var(--text)}
     <h2>One patient.<br>One continuous story.</h2>
     <p>SHRUNK · powered by dFRAG-Patient — sovereign, mental-health specific intelligence moves; patient data stays sealed.</p>
     <a class="btn btn-g" href="mailto:immanuvel.sagayaraju@students.unibe.ch">Request the full deck &rarr;</a>
-    <a class="btn btn-g" href="index.html" rel="noopener">View the full presentation (desktop) &rarr;</a>
+    <a class="btn btn-g" href="index.html?deck=1" rel="noopener">View the full presentation (desktop) &rarr;</a>
   </section>
 
   <div class="foot">SHRUNK · dFRAG-Patient · be-advanced Challenge Program · Bern, CH (Confidential)</div>
@@ -134,6 +135,21 @@ ul.plain li b{color:var(--text)}
    Exit when the film ends. Lightweight page — no camera world to crash. */
 (function () {
   var v = document.getElementById('storyVideo');
+
+  /* Android/Chrome: rotate to landscape inside fullscreen — works even with
+     the system portrait lock on. iOS has no orientation.lock API; the native
+     player rotates on physical device turn regardless of rotation lock. */
+  function lockLandscape() {
+    try {
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('landscape').catch(function () {});
+      }
+    } catch (e) {}
+  }
+  function unlockOrientation() {
+    try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) {}
+  }
+
   if (v) {
     v.addEventListener('play', function () {
       try {
@@ -148,6 +164,16 @@ ul.plain li b{color:var(--text)}
         if (fs) { var ex = document.exitFullscreen || document.webkitExitFullscreen; if (ex) ex.call(document); }
         if (v.webkitDisplayingFullscreen && v.webkitExitFullscreen) v.webkitExitFullscreen();
       } catch (e) {}
+      unlockOrientation();
+    });
+    /* Rotate on entering video fullscreen; restore on exit (Android). */
+    document.addEventListener('fullscreenchange', function () {
+      if (document.fullscreenElement === v) { lockLandscape(); }
+      else { unlockOrientation(); }
+    });
+    document.addEventListener('webkitfullscreenchange', function () {
+      if (document.webkitFullscreenElement === v) { lockLandscape(); }
+      else { unlockOrientation(); }
     });
   }
 
