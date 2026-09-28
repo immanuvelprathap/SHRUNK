@@ -9,17 +9,15 @@
 <meta name="theme-color" content="#0b1526">
 <title>SHRUNK · dFRAG-Patient Pitch Deck (Flow v9)</title>
 <script>
-/* Phones get the lightweight scroll page — the transformed world + fullscreen
-   video exceeds iOS tab memory and crashes/reloads. Tablets & desktop keep
-   the zoom deck. ?deck=1 forces the full presentation (e.g. demos). */
+/* Mobile stays on the full deck — the crash was GPU-layer pressure, fixed by
+   the is-mobile CSS below (no will-change on the world, lighter bg, video-FS
+   world hide). ?deck=1 kept for compatibility. */
 (function () {
     try {
-        var force = /[?&]deck=1/.test(location.search);
-        if (force) return;
         var uaMobile = /iPhone|iPod|Android.*Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         var smallTouch = navigator.maxTouchPoints > 0 && Math.min(screen.width, screen.height) < 768;
-        if ((uaMobile || smallTouch) && !/mobile\.html$/.test(location.pathname)) {
-            location.replace('mobile.html');
+        if (uaMobile || smallTouch) {
+            document.documentElement.classList.add('is-mobile');
         }
     } catch (e) {}
 })();
@@ -201,6 +199,17 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
             radial-gradient(circle at 72% 78%, color-mix(in srgb, var(--accent) 8%, transparent) 0%, transparent 42%),
             radial-gradient(circle at 50% 50%, var(--bg-2) 0%, var(--bg) 75%);
     }
+
+    /* ============ MOBILE GPU RELIEF (iOS tab-crash fix) ============
+       will-change:transform on a 5600x4300 world rasterizes ~24MP of layers;
+       combined with fullscreen video that exceeds the iOS tab budget.
+       On phones: drop will-change, shrink the bg, freeze the animated path,
+       and hide the world entirely while a video is fullscreen. */
+    .is-mobile #world { will-change: auto; }
+    .is-mobile .world-bg { inset: -400px; }
+    .is-mobile #flowpath path { animation: none; }
+    .is-mobile.video-fs #world,
+    .is-mobile.video-fs #flowpath { visibility: hidden; }
 
     .world-grid {
         position: absolute; inset: -1600px;
@@ -2535,6 +2544,27 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
         } catch (e) {}
     }
 
+    /* iOS crash fix: while the film is fullscreen, hide the transformed world —
+       nothing left for WebKit to re-composite on exit (was killing the tab). */
+    function videoFSChange() {
+        var inFS = !!(document.fullscreenElement === storyVideo ||
+                      document.webkitFullscreenElement === storyVideo ||
+                      storyVideo.webkitDisplayingFullscreen);
+        document.documentElement.classList.toggle('video-fs', inFS);
+        if (!inFS) { refit(true); }
+    }
+    document.addEventListener('fullscreenchange', videoFSChange);
+    document.addEventListener('webkitfullscreenchange', videoFSChange);
+    if (storyVideo) {
+        storyVideo.addEventListener('webkitbeginfullscreen', function () {
+            document.documentElement.classList.add('video-fs');
+        });
+        storyVideo.addEventListener('webkitendfullscreen', function () {
+            document.documentElement.classList.remove('video-fs');
+            refit(true);
+        });
+    }
+
     if (storyVideo) {
         function setStoryPlayLabel(paused) {
             if (!storyPlayBtn) return;
@@ -2577,6 +2607,7 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
         if (index !== storyIndex) {
             storyVideo.pause();
             if (isMobileDevice) { exitVideoFS(); }
+            document.documentElement.classList.remove('video-fs');
         } else {
             storyVideo.currentTime = 0;
             try { storyVideo.play().catch(function () {}); } catch (e) {}
