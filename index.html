@@ -211,6 +211,15 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
     .is-mobile.video-fs #world,
     .is-mobile.video-fs #flowpath { visibility: hidden; }
 
+    /* Video lives here during fullscreen on mobile — OUTSIDE the transformed
+       world so iOS never re-attaches the video layer into the heavy subtree
+       (that re-attach is what crashed the tab on fullscreen exit). */
+    #videoFSAnchor {
+        position: fixed; inset: 0; z-index: 9999;
+        background: #000; display: flex; align-items: center; justify-content: center;
+    }
+    #videoFSAnchor video { width: 100%; height: 100%; object-fit: contain; }
+
     .world-grid {
         position: absolute; inset: -1600px;
         background-image:
@@ -1386,9 +1395,9 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
                             <!-- Immanuvel's headshot, pulled live from the shared Google
                                  Drive folder. To use a local copy instead, save the image
                                  as docs/assets/immanuvel.jpeg and change src accordingly. -->
-                            <img src="https://drive.google.com/thumbnail?id=1bLGkfZ-J6Pqod5HxSMPVH5CrSTb_d9R6&sz=w400"
+                            <img src="assets/immanuvel.jpeg?v=12"
                                  alt="Immanuvel Prathap Sagayaraju"
-                                 onerror="this.onerror=null;this.src='assets/immanuvel.jpeg';">
+                                 onerror="this.onerror=null;this.src='https://drive.google.com/thumbnail?id=1bLGkfZ-J6Pqod5HxSMPVH5CrSTb_d9R6&sz=w400';">
                         </div>
                         <h3 style="font-size:24px;">Immanuvel Prathap<br>Sagayaraju</h3>
                         <div class="role">Founder &amp; Inventor</div>
@@ -1403,9 +1412,9 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
                             <!-- Pallav's headshot, pulled live from the shared Google Drive
                                  link. To use a local copy instead, save the image as
                                  docs/assets/pallav.jpeg and it will load automatically. -->
-                            <img src="https://drive.google.com/thumbnail?id=11_5fxCmp3eCk0JUdq7wSmlGhLl-EwyjS&sz=w400"
+                            <img src="assets/pallav.jpeg?v=12"
                                  alt="Pallav Gupta"
-                                 onerror="this.onerror=null;this.src='assets/pallav.jpeg';this.onerror=function(){this.style.display='none';};">
+                                 onerror="this.onerror=null;this.src='https://drive.google.com/thumbnail?id=11_5fxCmp3eCk0JUdq7wSmlGhLl-EwyjS&sz=w400';this.onerror=function(){this.style.display='none';};">
                         </div>
                         <h3 style="font-size:24px;">Pallav Gupta</h3>
                         <div class="role">Team Member</div>
@@ -1420,9 +1429,9 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
                             <!-- Anisha's headshot, pulled live from the shared Google Drive
                                  link. To use a local copy instead, save the image as
                                  docs/assets/anisha.jpeg and it will load automatically. -->
-                            <img src="https://drive.google.com/thumbnail?id=1GfSKE5extlS_DZUXxPy05owWu4BBqCWd&sz=w400"
+                            <img src="assets/anisha.jpeg?v=12"
                                  alt="Anisha Sharma"
-                                 onerror="this.onerror=null;this.src='assets/anisha.jpeg';this.onerror=function(){this.style.display='none';};">
+                                 onerror="this.onerror=null;this.src='https://drive.google.com/thumbnail?id=1GfSKE5extlS_DZUXxPy05owWu4BBqCWd&sz=w400';this.onerror=function(){this.style.display='none';};">
                         </div>
                         <h3 style="font-size:24px;">Anisha Sharma</h3>
                         <div class="role">Team Member</div>
@@ -1935,7 +1944,7 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
             <button class="hud-btn" id="fsBtn" aria-label="Toggle fullscreen">&#9974;</button>
         </div>
         <div id="progress" title="Drag to move · double-click to reset"></div>
-        <div id="hint">&#8592; &#8594; / wheel / swipe to navigate &nbsp;·&nbsp; O for map &nbsp;·&nbsp; F for fullscreen</div>
+        <div id="hint">&#8592; &#8594; / wheel / swipe to navigate &nbsp;·&nbsp; O for map &nbsp;·&nbsp; F for fullscreen &nbsp;·&nbsp; v14</div>
         <div id="rotateHint">&#8635; Rotate to landscape for the full experience</div>
     </div>
 </div>
@@ -2544,14 +2553,35 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
         } catch (e) {}
     }
 
-    /* iOS crash fix: while the film is fullscreen, hide the transformed world —
-       nothing left for WebKit to re-composite on exit (was killing the tab). */
+    /* iOS crash fix: on fullscreen ENTRY, reparent the video into a fixed
+       untransformed anchor — exiting then re-attaches into a plain div, not
+       the 24MP transformed world. World is also hidden during FS. */
+    function moveVideoToFSAnchor() {
+        if (!storyVideo || storyVideo._fsAnchor) return;
+        var anchor = document.createElement('div');
+        anchor.id = 'videoFSAnchor';
+        var parent = storyVideo.parentNode, next = storyVideo.nextSibling;
+        document.body.appendChild(anchor);
+        anchor.appendChild(storyVideo);
+        storyVideo._restore = { parent: parent, next: next };
+        storyVideo._fsAnchor = anchor;
+    }
+    function restoreVideo() {
+        if (!storyVideo || !storyVideo._fsAnchor) return;
+        storyVideo._restore.parent.insertBefore(storyVideo, storyVideo._restore.next);
+        storyVideo._fsAnchor.parentNode.removeChild(storyVideo._fsAnchor);
+        storyVideo._fsAnchor = null;
+        storyVideo._restore = null;
+    }
     function videoFSChange() {
         var inFS = !!(document.fullscreenElement === storyVideo ||
                       document.webkitFullscreenElement === storyVideo ||
                       storyVideo.webkitDisplayingFullscreen);
         document.documentElement.classList.toggle('video-fs', inFS);
-        if (!inFS) { refit(true); }
+        if (!inFS) {
+            restoreVideo();
+            refit(true);
+        }
     }
     document.addEventListener('fullscreenchange', videoFSChange);
     document.addEventListener('webkitfullscreenchange', videoFSChange);
@@ -2561,6 +2591,7 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
         });
         storyVideo.addEventListener('webkitendfullscreen', function () {
             document.documentElement.classList.remove('video-fs');
+            restoreVideo();
             refit(true);
         });
     }
@@ -2576,7 +2607,7 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
             setStoryPlayLabel(false);
             // Final film has burned-in captions — hide the static banner during playback.
             if (storyCaption) { storyCaption.style.opacity = '0'; }
-            if (isMobileDevice) { enterVideoFS(); }
+            if (isMobileDevice) { moveVideoToFSAnchor(); enterVideoFS(); }
         });
         storyVideo.addEventListener('pause', function () { setStoryPlayLabel(true); });
         storyVideo.addEventListener('ended', function () {
@@ -2606,7 +2637,7 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
         }
         if (index !== storyIndex) {
             storyVideo.pause();
-            if (isMobileDevice) { exitVideoFS(); }
+            if (isMobileDevice) { exitVideoFS(); restoreVideo(); }
             document.documentElement.classList.remove('video-fs');
         } else {
             storyVideo.currentTime = 0;
