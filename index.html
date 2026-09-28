@@ -8,6 +8,22 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b1526">
 <title>SHRUNK · dFRAG-Patient Pitch Deck (Flow v9)</title>
+<script>
+/* Phones get the lightweight scroll page — the transformed world + fullscreen
+   video exceeds iOS tab memory and crashes/reloads. Tablets & desktop keep
+   the zoom deck. ?deck=1 forces the full presentation (e.g. demos). */
+(function () {
+    try {
+        var force = /[?&]deck=1/.test(location.search);
+        if (force) return;
+        var uaMobile = /iPhone|iPod|Android.*Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        var smallTouch = navigator.maxTouchPoints > 0 && Math.min(screen.width, screen.height) < 768;
+        if ((uaMobile || smallTouch) && !/mobile\.html$/.test(location.pathname)) {
+            location.replace('mobile.html');
+        }
+    } catch (e) {}
+})();
+</script>
 <!--
 ================================================================================
 SHRUNK, PREZI-STYLE PITCH FLOW (v9)
