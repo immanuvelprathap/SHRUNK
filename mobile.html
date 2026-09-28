@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#04070f">
+<title>SHRUNK · dFRAG-Patient</title>
+<style>
+:root{
+  --bg:#04070f; --bg2:#0a1120; --card:#0d1628; --line:rgba(148,163,184,0.16);
+  --text:#f1f5f9; --muted:#93a4bc; --teal:#2dd4bf; --sky:#38bdf8; --gold:#f5b15c;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:680px;margin:0 auto;padding:0 20px}
+section{padding:34px 0;border-bottom:1px solid var(--line)}
+.kick{color:var(--teal);font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:8px}
+h1{font-size:44px;font-weight:800;letter-spacing:-0.03em;line-height:1.05}
+h2{font-size:26px;font-weight:700;letter-spacing:-0.01em;margin-bottom:12px}
+h3{font-size:17px;font-weight:700;margin-bottom:6px}
+p{color:var(--muted);font-size:15px;margin-bottom:10px}
+.hl{color:var(--teal)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-bottom:12px}
+.num{display:inline-block;width:26px;height:26px;line-height:26px;text-align:center;border-radius:8px;background:rgba(45,212,191,0.15);color:var(--teal);font-weight:800;font-size:13px;margin-right:8px}
+video{width:100%;display:block;border-radius:16px;border:1px solid var(--line);background:#000}
+.btn{display:block;text-align:center;text-decoration:none;font-weight:700;font-size:15px;padding:15px 20px;border-radius:14px;margin-top:10px}
+.btn-p{background:linear-gradient(120deg,var(--sky),var(--teal));color:#04121a}
+.btn-g{border:1px solid var(--teal);color:var(--teal)}
+.badge{display:none;margin-top:10px;font-size:13px;font-weight:600;color:var(--teal)}
+.team{display:flex;gap:12px;align-items:center}
+.avatar{width:46px;height:46px;flex:0 0 46px;border-radius:12px;background:rgba(45,212,191,0.15);color:var(--teal);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px}
+.team div p{font-size:13px;margin:0}
+.foot{padding:26px 0;text-align:center;color:var(--muted);font-size:12px}
+ul.plain{list-style:none}
+ul.plain li{padding:10px 0;border-bottom:1px solid var(--line);color:var(--muted);font-size:14px}
+ul.plain li b{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section id="prologue">
+    <div class="kick">The clinical workflow · a pain point</div>
+    <h2>Between every patient and every doctor, there is a distance.</h2>
+    <p>Records locked in corridors. Fragmented narratives retold in consultation rooms. Stigma stretched across years. We SHRUNK it — with clinical intelligence that is sovereign, while patient data stays sealed.</p>
+  </section>
+
+  <section id="story">
+    <div class="kick">The invisible problem · 128-second film</div>
+    <h2>Every patient has two stories.</h2>
+    <video id="storyVideo" poster="assets/story_poster.png?v=12" playsinline controls preload="metadata">
+      <source src="https://github.com/immanuvelprathap/SHRUNK/releases/download/v1.0/story.mp4" type="video/mp4">
+    </video>
+  </section>
+
+  <section id="title">
+    <div class="kick">be-advanced Challenge Program · Bern, CH</div>
+    <h1>SHRUNK</h1>
+    <p>Federated RAG-based edge clinical intelligence system | mental health<br>Powered by dFRAG-Patient</p>
+    <ul class="plain">
+      <li><b>Adaptive workflow</b> — visibility into the patient black-box problem.</li>
+      <li><b>Sovereign LLM</b> — psychiatry-adapted teacher on Swiss Apertus, via LoRA.</li>
+      <li><b>Student edge</b> — distilled insight shared between clinics, PHI sealed.</li>
+      <li><b>The wedge</b> — revFADP / Swiss EHR make central pools a legal crisis. The insight moves; the record stays sealed.</li>
+    </ul>
+  </section>
+
+  <section id="team">
+    <div class="kick">The team</div>
+    <h2>The minds engineering clinical intelligence.</h2>
+    <div class="card team"><div class="avatar">IP</div><div><h3>Immanuvel Prathap Sagayaraju</h3><p>Founder &amp; Inventor · MSc AI in Medicine, U Bern</p></div></div>
+    <div class="card team"><div class="avatar">PG</div><div><h3>Pallav Gupta</h3><p>Team member · problem solving, product value</p></div></div>
+    <div class="card team"><div class="avatar">AS</div><div><h3>Anisha Sharma</h3><p>Team member · reliable, scalable AI &amp; backend systems</p></div></div>
+  </section>
+
+  <section id="problem">
+    <div class="kick">The problem, and the shift</div>
+    <h2>What if healthcare intelligence could move without the data?</h2>
+    <div class="card"><h3>Adaptive workflow, black-box visible</h3><p>Between appointments the doctor knows nothing; the long-term record is fragmented. SHRUNK makes the black box visible.</p></div>
+    <div class="card"><h3>Apertus + mental-health LLM, privacy locked</h3><p>revFADP and EHR rules forbid pooling sensitive data. Sovereign open-weights Apertus keeps privacy locked.</p></div>
+    <div class="card"><h3>Distilled insights across clinics</h3><p>The Student distils mental-health insight and shares it through the airlock. Only de-identified insight moves.</p></div>
+  </section>
+
+  <section id="dashboard">
+    <div class="kick">From fragment to flow</div>
+    <h2>The dashboard turns the shadow record <span class="hl">into one continuous story.</span></h2>
+    <img src="assets/screenshot_patients.png?v=12" alt="SHRUNK clinical intelligence dashboard" style="width:100%;border-radius:16px;border:1px solid var(--line);display:block;">
+    <a id="dashLink" class="btn btn-p" href="dashboard/?v=12" target="_blank" rel="noopener">Open Interactive Dashboard &rarr;</a>
+    <a id="chatLink" class="btn btn-g" href="dashboard/?v=12" target="_blank" rel="noopener">Clinical Chat &mdash; upload &amp; export &rarr;</a>
+    <p id="dashLive" class="badge">&#9679; Live node detected — opens the real system on this machine</p>
+    <p style="margin-top:10px">Ten clinical-intelligence blocks, document upload, PDF-ready export, patient home-chat tracking, XAI, CEAI and federation — all running on the clinic's own Apertus node. Patient data never leaves the building.</p>
+  </section>
+
+  <section id="roadmap">
+    <div class="kick">The road ahead</div>
+    <h2>From PoC to rollout</h2>
+    <ul class="plain">
+      <li><b>1 · Book chapter &amp; IP</b> — Springer Nature Switzerland AG, manuscript under review.</li>
+      <li><b>2 · PoC conducted</b> — pipeline verified end-to-end on synthetic data.</li>
+      <li><b>3 · Clinical pilots</b> — Swiss clinics test the dashboard and companion app live.</li>
+      <li><b>4 · Clinical validation</b> — independent psychiatrists; sovereign-AI, revFADP, security review.</li>
+      <li><b>5 · Regulated rollout</b> — Swissmedic compliance + medical-record integrations.</li>
+    </ul>
+  </section>
+
+  <section id="ask">
+    <div class="kick">The ask</div>
+    <h2>What turns this prototype into a market-ready product</h2>
+    <div class="card"><h3>Pilots</h3><p>Real-time study of the doctor dashboard and patient companion app among Swiss institutes.</p></div>
+    <div class="card"><h3>Validation</h3><p>Independent clinical, sovereign-AI, privacy and cybersecurity review.</p></div>
+    <div class="card"><h3>Guidance</h3><p>Swissmedic software compliance and cantonal EMR procurement mentorship.</p></div>
+    <div class="card"><h3>Mentorship</h3><p>Business-model and go-to-market strategy, and placement.</p></div>
+    <div class="card"><h3>Network</h3><p>Building the network to create future opportunities.</p></div>
+  </section>
+
+  <section id="vision">
+    <div class="kick">The vision</div>
+    <h2>One patient.<br>One continuous story.</h2>
+    <p>SHRUNK · powered by dFRAG-Patient — sovereign, mental-health specific intelligence moves; patient data stays sealed.</p>
+    <a class="btn btn-g" href="mailto:immanuvel.sagayaraju@students.unibe.ch">Request the full deck &rarr;</a>
+    <a class="btn btn-g" href="index.html" rel="noopener">View the full presentation (desktop) &rarr;</a>
+  </section>
+
+  <div class="foot">SHRUNK · dFRAG-Patient · be-advanced Challenge Program · Bern, CH (Confidential)</div>
+</div>
+
+<script>
+/* iPhone: fullscreen on play via webkitEnterFullscreen; Android: requestFullscreen.
+   Exit when the film ends. Lightweight page — no camera world to crash. */
+(function () {
+  var v = document.getElementById('storyVideo');
+  if (v) {
+    v.addEventListener('play', function () {
+      try {
+        if (v.webkitEnterFullscreen) { v.webkitEnterFullscreen(); return; }
+        var rq = v.requestFullscreen || v.webkitRequestFullscreen;
+        if (rq) { var p = rq.call(v); if (p && p.catch) p.catch(function () {}); }
+      } catch (e) {}
+    });
+    v.addEventListener('ended', function () {
+      try {
+        var fs = document.fullscreenElement || document.webkitFullscreenElement;
+        if (fs) { var ex = document.exitFullscreen || document.webkitExitFullscreen; if (ex) ex.call(document); }
+        if (v.webkitDisplayingFullscreen && v.webkitExitFullscreen) v.webkitExitFullscreen();
+      } catch (e) {}
+    });
+  }
+
+  /* Live local node detection — same as the desktop deck. */
+  var dash = document.getElementById('dashLink');
+  var chat = document.getElementById('chatLink');
+  var badge = document.getElementById('dashLive');
+  if (!dash || !chat) return;
+  var LOCAL = 'http://localhost:5000';
+  var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 2500);
+  fetch(LOCAL + '/api/ping', ctrl ? { signal: ctrl.signal, cache: 'no-store' } : { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (j) {
+      clearTimeout(timer);
+      if (j && j.ok && j.app === 'shrunk-ai') {
+        dash.href = LOCAL + '/dashboard';
+        chat.href = LOCAL + '/doctor-chat';
+        if (badge) badge.style.display = 'block';
+      }
+    })
+    .catch(function () { clearTimeout(timer); });
+})();
+</script>
+</body>
+</html>
