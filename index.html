@@ -2501,11 +2501,24 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
 
     // iPhone Safari has no Fullscreen API on <video> — webkitEnterFullscreen is
     // the native player path. Android Chrome/Firefox use requestFullscreen.
+    function lockLandscape() {
+        try {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(function () {});
+            }
+        } catch (e) {}
+    }
+    function unlockOrientation() {
+        try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) {}
+    }
     function enterVideoFS() {
         try {
             if (storyVideo.webkitEnterFullscreen) { storyVideo.webkitEnterFullscreen(); return; }
             var rq = storyVideo.requestFullscreen || storyVideo.webkitRequestFullscreen || storyVideo.mozRequestFullScreen;
-            if (rq) { var p = rq.call(storyVideo); if (p && p.catch) p.catch(function () {}); }
+            if (rq) {
+                var p = rq.call(storyVideo);
+                if (p && p.then) { p.then(lockLandscape).catch(function () {}); }
+            }
         } catch (e) {}
     }
     function exitVideoFS() {
@@ -2518,6 +2531,7 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
             if (storyVideo.webkitDisplayingFullscreen && storyVideo.webkitExitFullscreen) {
                 storyVideo.webkitExitFullscreen();
             }
+            unlockOrientation();
         } catch (e) {}
     }
 
