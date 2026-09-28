@@ -219,6 +219,22 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
         background: #000; display: flex; align-items: center; justify-content: center;
     }
     #videoFSAnchor video { width: 100%; height: 100%; object-fit: contain; }
+    #videoFSAnchor .fsClose {
+        position: absolute; top: 12px; right: 14px; z-index: 10;
+        width: 42px; height: 42px; border-radius: 50%;
+        background: rgba(10,20,26,.72); color: #fff;
+        border: 1px solid rgba(255,255,255,.4);
+        font-size: 20px; line-height: 1; cursor: pointer;
+    }
+    /* Simulated landscape: on a portrait-locked phone the viewport never
+       rotates, so rotate the VIDEO 90deg — physically turning the phone CW
+       then shows a true full landscape frame. */
+    @media (orientation: portrait) {
+        #videoFSAnchor.sim video {
+            width: 100vh; height: 100vw; object-fit: contain;
+            transform: rotate(90deg);
+        }
+    }
 
     .world-grid {
         position: absolute; inset: -1600px;
@@ -1944,7 +1960,7 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
             <button class="hud-btn" id="fsBtn" aria-label="Toggle fullscreen">&#9974;</button>
         </div>
         <div id="progress" title="Drag to move · double-click to reset"></div>
-        <div id="hint">&#8592; &#8594; / wheel / swipe to navigate &nbsp;·&nbsp; O for map &nbsp;·&nbsp; F for fullscreen &nbsp;·&nbsp; v14</div>
+        <div id="hint">&#8592; &#8594; / wheel / swipe to navigate &nbsp;·&nbsp; O for map &nbsp;·&nbsp; F for fullscreen &nbsp;·&nbsp; v15</div>
         <div id="rotateHint">&#8635; Rotate to landscape for the full experience</div>
     </div>
 </div>
@@ -2272,6 +2288,7 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
         document.body.classList.remove('overview-mode');
         world.classList.remove('overview');
         current = index;
+        try { sessionStorage.setItem('shc_scene', String(index)); } catch (e) {}
         applyCam(camFor(index), instant);
         setActive(index);
     }
@@ -2553,16 +2570,34 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
         } catch (e) {}
     }
 
-    /* iOS crash fix: on fullscreen ENTRY, reparent the video into a fixed
-       untransformed anchor — exiting then re-attaches into a plain div, not
-       the 24MP transformed world. World is also hidden during FS. */
-    function moveVideoToFSAnchor() {
+    /* iOS crash fix: never use the native fullscreen player on iOS — the
+       exit-transition back into the transformed world kills the tab. Instead
+       the video is reparented into a fixed overlay ('sim' mode) that covers
+       the screen and plays inline; CSS rotates it 90deg in portrait so a
+       physically-rotated (even orientation-locked) phone gets full landscape.
+       Android keeps real fullscreen + orientation.lock. */
+    var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    function moveVideoToFSAnchor(sim) {
         if (!storyVideo || storyVideo._fsAnchor) return;
         var anchor = document.createElement('div');
         anchor.id = 'videoFSAnchor';
+        if (sim) { anchor.className = 'sim'; }
         var parent = storyVideo.parentNode, next = storyVideo.nextSibling;
         document.body.appendChild(anchor);
         anchor.appendChild(storyVideo);
+        if (sim) {
+            var c = document.createElement('button');
+            c.className = 'fsClose'; c.type = 'button';
+            c.innerHTML = '&times;';
+            c.setAttribute('aria-label', 'Close video');
+            c.addEventListener('click', function (e) {
+                e.preventDefault(); e.stopPropagation();
+                storyVideo.pause();
+                finishMobileFS();
+            });
+            anchor.appendChild(c);
+        }
         storyVideo._restore = { parent: parent, next: next };
         storyVideo._fsAnchor = anchor;
     }
@@ -2572,6 +2607,12 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
         storyVideo._fsAnchor.parentNode.removeChild(storyVideo._fsAnchor);
         storyVideo._fsAnchor = null;
         storyVideo._restore = null;
+    }
+    function finishMobileFS() {
+        try { exitVideoFS(); } catch (e) {}
+        document.documentElement.classList.remove('video-fs');
+        restoreVideo();
+        refit(true);
     }
     function videoFSChange() {
         var inFS = !!(document.fullscreenElement === storyVideo ||
@@ -2607,13 +2648,23 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
             setStoryPlayLabel(false);
             // Final film has burned-in captions — hide the static banner during playback.
             if (storyCaption) { storyCaption.style.opacity = '0'; }
-            if (isMobileDevice) { moveVideoToFSAnchor(); enterVideoFS(); }
+            if (isMobileDevice) {
+                if (isIOS) {
+                    moveVideoToFSAnchor(true);
+                    document.documentElement.classList.add('video-fs');
+                } else {
+                    moveVideoToFSAnchor(false);
+                    enterVideoFS();
+                }
+            }
         });
         storyVideo.addEventListener('pause', function () { setStoryPlayLabel(true); });
         storyVideo.addEventListener('ended', function () {
             setStoryPlayLabel(true);
             if (storyCaption) { storyCaption.style.opacity = '1'; }
-            if (isMobileDevice) { exitVideoFS(); }
+            if (isMobileDevice) {
+                if (isIOS) { finishMobileFS(); } else { exitVideoFS(); }
+            }
         });
 
         if (storyPlayBtn) {
@@ -2637,7 +2688,7 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
         }
         if (index !== storyIndex) {
             storyVideo.pause();
-            if (isMobileDevice) { exitVideoFS(); restoreVideo(); }
+            if (isMobileDevice) { finishMobileFS(); }
             document.documentElement.classList.remove('video-fs');
         } else {
             storyVideo.currentTime = 0;
@@ -2646,7 +2697,13 @@ GRID (centers):   left = cx - 800 · top = cy - 450   · world 5600x4300
     }
 
     // ============================ INIT ===============================
-    goTo(0, true);
+    /* If the tab reloaded mid-visit (iOS kills heavy pages), return the
+       viewer to the scene they were on instead of dumping them at scene 1. */
+    var savedScene = 0;
+    if (isMobileDevice) {
+        try { savedScene = parseInt(sessionStorage.getItem('shc_scene') || '0', 10) || 0; } catch (e) {}
+    }
+    goTo(savedScene, true);
 })();
 </script>
 
